@@ -1,46 +1,98 @@
 # BatchCaptain.AI — Capstone Plan
 
-## Problem
-Our campus mess/canteen menu is only announced in one centralized WhatsApp
-announcements channel, posted by our batch captains. Every time someone wants
-to know what's being served, they have to dig through that WhatsApp thread —
-or just ask the batch captains directly, who frequently don't remember either.
-It's a small, everyday annoyance, but a genuinely useful one to fix.
+## 1. Problem Statement
+Campus mess and canteen menus at FLAME University are announced through a
+single, centralized WhatsApp channel managed by batch captains. Finding out
+what's for the next meal means digging through chat history or asking the
+captains directly — who often don't know either. The information is manual,
+buried in text, and completely disconnected from the nutritional data
+students need to align meals with their training/diet routines.
 
-## Solution
-BatchCaptain.AI is a conversational agent students can query in plain language
-(e.g. "what's there to eat?"). It infers the relevant meal from the current
-time of day, replies with that meal's menu plus macros (calories/protein/carbs/
-fat), and offers a natural follow-up — e.g. after answering lunch, asking
-"want to know what's for dinner too?".
+## 2. Solution Overview
+BatchCaptain.AI is a gamified, UI-centric conversational agent that acts as a
+virtual, interactive proxy for the real batch captains. Students query it in
+natural language ("what's there to eat?"); the agent infers the relevant meal
+from time of day, retrieves the menu, calculates macros, and keeps the
+conversation going with natural follow-ups — all through a pixel-art
+companion interface rather than a plain text bot.
 
-## MVP scope (required for this course)
-- A day's menu loaded into a simple structured store (e.g. JSON), entered
-  manually or pasted from the WhatsApp announcement text — no live WhatsApp
-  integration required for MVP.
-- A small macros reference table per dish (approximate values are fine).
-- Natural-language query handling for at least: "what's for breakfast/lunch/
-  dinner" and "what's there to eat" (time-of-day-aware default).
-- A working chat interface (CLI is sufficient) a real user can try end to end.
-- At least one working follow-up flow (answer lunch → offer dinner).
+## 3. Core Agent Mechanics & Logic
+- **Time-aware intent parsing:** local clock infers meal context automatically
+  (e.g. querying at 2 PM defaults to lunch).
+  - Time blocks: Breakfast 07:00–10:30, Lunch 12:00–14:30, Snacks 16:00–18:00,
+    Dinner 19:30–22:00.
+- **Macro-nutrient enrichment:** menu items are cross-referenced against a
+  nutrition reference table; responses surface protein, carbs, fats, and
+  calories.
+- **Predictive conversational routing:** responses end with a contextual
+  follow-up instead of a dead end — e.g. "want me to load up the dinner menu
+  too?" or "looking for the vegetarian alternatives?"
 
-## Final / stretch goals (not required for MVP grading)
-- Automated ingestion straight from the WhatsApp announcements channel
-  (WhatsApp Business API, or a forwarded-message parser) instead of manual entry.
-- Menu history so past-date queries work ("what was lunch last Tuesday?").
-- Running macro totals for a user across a day/week.
-- Deploy as an actual WhatsApp/Telegram bot so batch captains post once and
-  it's queryable directly in chat, no separate app needed.
-- Dietary-preference filtering (veg / non-veg / allergens).
+## 4. Experience Design & Gamification
+- **The avatar:** an 8-/16-bit pixel-art character styled after the real batch
+  captain — the visual feedback loop for the agent's state.
+- **Animation states:** Idle (breathing/checking a phone), Thinking/Fetching
+  (flipping papers), Serving (handing over/uncovering a tray), Error/Unknown
+  (shrugging).
+- **Macro visuals:** retro-styled progress bars/stat screens for protein,
+  carbs, and fats.
+- **Gamification:** daily query streaks, unlockable avatar accessories (hats,
+  jackets) for consistent use, and easter-egg queries ("what's the worst
+  thing on the menu?") that trigger unique responses/animations.
 
-## AI-Involvement Level: AI-led with review
+## 5. Technical Architecture (high-level)
+- **Data ingestion layer:** webhook/scraper on the WhatsApp announcements
+  channel; an LLM parsing step turns the unstructured menu text/images into
+  structured JSON (date, meal type, items).
+- **AI & logic layer:** a lightweight NLP/SLM handles intent, typos, and
+  slang; a rules layer combines parsed intent + current timestamp to fetch
+  the right JSON node.
+- **Frontend layer:** a mobile-optimized web app (React/Vue), with an
+  animation layer (Lottie/SpriteJS-style) driving the pixel-art sprite
+  transitions off the agent's state.
 
-I'm aiming for **AI-led with review**: Claude will generate most of the actual
-implementation (menu parsing, the query/NLU handling, the chat interface) from
-my direction, and my role is to define scope, review generated code for
-correctness, test it against real menu data from our WhatsApp channel, and make
-the product calls on what belongs in MVP vs. later. I'm choosing this level
-because the project's value is in solving a real, specific annoyance quickly and
-well — not in the mechanics of writing a menu parser by hand — so I'd rather
-spend my own effort on direction, review, and validating it actually works for
-my batch, and let AI carry the bulk of implementation.
+## 6. MVP Scope (required for this course)
+- Data ingestion: manual entry (or simple scrape) of the daily WhatsApp menu
+  text — no live webhook required yet.
+- Time-inference logic: rule-based mapping from local time → meal
+  (breakfast/lunch/snacks/dinner).
+- Conversational interface: a basic web chat UI for natural-language queries.
+- LLM parsing: use an LLM to turn the unstructured menu text into clean,
+  structured output with estimated macros.
+- Static visuals: a static pixel-art avatar in the UI — animations are a
+  final-goal item, not MVP.
+
+## 7. Final / Stretch Goals (not required for MVP grading)
+- Automated WhatsApp → JSON sync, no manual entry.
+- Full dynamic avatar state machine (idle/thinking/serving/error animations
+  tied to agent state).
+- Gamification layer: streaks, unlockable accessories, easter eggs.
+- Predictive follow-up routing refined into a natural multi-turn flow.
+- Deeper macro tracking (running totals across a day/week).
+
+## 8. Development Roadmap
+1. **Data structuring & logic** — WhatsApp-to-JSON pipeline, time-inference
+   algorithm, basic text response loop.
+2. **Avatar & UI prototyping** — core pixel-art sprite sheets, state-to-
+   animation mapping.
+3. **Macro & conversation refinement** — macro-calculation logic, predictive
+   follow-up prompts.
+4. **Gamification & polish** — streaks, unlockables, user testing on UI
+   responsiveness and intent-parsing accuracy.
+
+## 9. AI-Involvement Level: AI-led with review
+I'm aiming for **AI-led with review**: Claude generates most of the
+implementation — menu parsing, the intent/time-inference logic, the chat
+interface, and the animation/state-machine wiring — from my direction, while
+I own scope decisions, review generated code for correctness, test it against
+real menu data and real usage from my batch, and make the creative calls on
+the avatar's design and personality. I'm choosing this level because the
+project's value is in solving a real, specific annoyance well and making it
+delightful to use — not in hand-writing parsers or animation boilerplate —
+so I'd rather spend my own effort on direction, review, and the product/
+design decisions, and let AI carry the bulk of implementation.
+
+## 10. Brainstorming Notes (not scoped yet)
+- High-protein query → avatar flexes.
+- Mess closed → avatar in pajamas with a "Zzz" bubble.
+- Universally loved item on the menu → a distinct celebratory animation.
