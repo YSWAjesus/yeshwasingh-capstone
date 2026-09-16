@@ -41,44 +41,43 @@ companion interface rather than a plain text bot.
   thing on the menu?") that trigger unique responses/animations.
 
 ## 5. Technical Architecture (high-level)
-- **Data ingestion layer:** direct WhatsApp scraping isn't possible — WhatsApp
-  blocks automated/agentic access to it. Instead, the mess uploads the weekly
-  menu as an Excel file to a shared Google Drive folder; the app fetches it
-  via a shared-link direct-download and parses the grid with pandas/openpyxl.
-  No macro data exists in the sheet itself — macros come from a separate
-  reference table, matched by dish name.
+- **Data ingestion layer:** there is no spreadsheet anywhere upstream — the
+  mess menu only ever exists as the photo posted to the batch WhatsApp
+  group, and WhatsApp itself blocks automated/agentic access. So the app
+  fetches that photo from a shared Google Drive folder (student manually
+  re-uploads the week's photo there) and OCRs/structures it directly with
+  Gemini's vision + JSON output. No macro data exists in the photo itself —
+  macros come from a separate reference table, matched by dish name.
 - **AI & logic layer:** rule-based intent parsing (keyword-match meal names,
   else infer from time of day); a rules layer combines parsed intent +
-  current timestamp to fetch the right section of the parsed menu.
+  current timestamp to fetch the right section of the OCR'd menu. Gemini is
+  also used, grounded against the day's real menu items, to pre-recognize
+  what's in a tray photo for the macro tracker.
 - **Frontend layer:** for this stage, a webpage (Streamlit) — not the full
-  app that's the final vision. Includes the chat UI and a photo-based tray
+  app that's the final vision. Includes the chat UI and the photo-based tray
   tracker (see MVP scope below).
 
 ## 6. MVP Scope (required for this course)
-- Data ingestion: Excel file fetched from a shared Google Drive link and
-  parsed directly — no manual retyping, no live WhatsApp integration.
+- Data ingestion: the week's menu photo (manually re-uploaded to Drive by
+  the student each week) fetched and OCR'd/structured via Gemini vision —
+  no spreadsheet, no live WhatsApp integration, no manual retyping.
 - Time-inference logic: rule-based mapping from local time → meal
   (breakfast/lunch/snacks/dinner).
 - Conversational interface: a basic web chat UI (Streamlit) for
   natural-language queries, replying with real menu items + a macro estimate.
-- Macro estimation: a hand-built reference table matched by dish name (no
-  LLM/vision API key available yet) — flags anything not in the table rather
-  than inventing a number.
+- Macro estimation: a hand-built reference table matched by dish name,
+  flagging anything not in the table rather than inventing a number.
 - **Photo-based macro tracker** (added per professor's feedback): take/upload
-  a photo of your tray, then confirm which of today's actual menu items are
-  on it from a checklist; macros are summed the same way as in chat.
-  Auto-recognizing food straight from the photo needs a vision API key we
-  don't have yet — that's the final-goal upgrade path for this same feature,
-  not blocking for MVP.
+  a photo of your tray; Gemini pre-recognizes which of today's actual menu
+  items are visible (grounded against the real menu, so it can't invent a
+  dish that isn't on offer), you review/adjust the checklist, then macros
+  are summed the same way as in chat.
 - Static visuals: a static pixel-art avatar in the UI — animations are a
   final-goal item, not MVP.
 
 ## 7. Final / Stretch Goals (not required for MVP grading)
-- Automated Google Drive sync (auto-detect new menu uploads) instead of a
-  hardcoded file ID.
-- Real vision-based food recognition for the photo tracker (auto-detect
-  dishes from the photo) once an LLM/vision API key/budget exists, replacing
-  the manual-confirm checklist.
+- Automate the weekly photo upload itself (batch captain's WhatsApp post →
+  Drive, without the student doing it by hand).
 - Full dynamic avatar state machine (idle/thinking/serving/error animations
   tied to agent state).
 - Gamification layer: streaks, unlockable accessories, easter eggs.

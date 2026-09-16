@@ -6,6 +6,29 @@ commit + push.
 
 ---
 
+### 2026-09-16 — Switch ingestion to Gemini OCR, real photo recognition
+- **Time spent:** ~1.5 hr
+- **Tokens used (approx.):** ~110k
+- **Shipped:** Replaced the Excel-based ingestion with real Gemini vision
+  OCR, after confirming with the professor that no spreadsheet exists
+  upstream of the menu photo (only ever posted as an image in the batch
+  WhatsApp group) — OCR-ing the photo directly is the intended approach,
+  using the Gemini Edu API. Removed `generate_sample_menu.py`/
+  `sample_menu.xlsx` and the pandas/openpyxl dependency; added
+  `gemini_client.py` (thin wrapper around `google-generativeai`, `.env`-based
+  key handling) and rewrote `menu_data.py` to fetch the real menu photo from
+  Drive and OCR/structure it into the same internal shape as before, so
+  `query.py`/`time_logic.py`/the chat UI needed no changes. Upgraded the
+  Photo Tracker from a manual-only stub to real Gemini-based recognition,
+  grounded against the day's actual menu items so it can't hallucinate a
+  dish that isn't on offer — still human-reviewable before macros are
+  computed. Found and fixed a real ~20% intermittent failure rate in the
+  menu OCR call (confirmed via repeated testing, not assumed) by adding a
+  retry-with-validation loop. Verified end-to-end against the real Drive
+  photo and real API key: menu OCR, time/keyword-based chat queries, and
+  the tray-recognition grounding logic (correctly returns nothing on a
+  non-food test image) all confirmed working live.
+
 ### 2026-09-16 — MVP build (menu chat + photo tracker)
 - **Time spent:** ~2 hr
 - **Tokens used (approx.):** ~140k
