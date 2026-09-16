@@ -1,119 +1,170 @@
 """
-Fetches and parses the weekly mess menu.
+Fetches and parses the weekly mess menu from a photo (no spreadsheet exists
+upstream — the mess menu only ever exists as the image posted to the batch
+WhatsApp group). Gemini's vision + JSON-mode output does the OCR/structuring
+in one call; this module just wraps that with a Drive fetch and a fallback.
 
-The menu lives as an Excel grid: row 1/2 are "Day"/"Date" headers across
-7 day columns, then the rest of the sheet is a sequence of banner rows
-(a section name in column A, rest of the row blank) each followed by
-category rows (category label in column A, one item per day column).
-Sunday's brunch breaks that pattern — see SUNDAY_BRUNCH_BANNER below — so
-it's parsed as a flat list of items instead of a per-day grid.
-
-This is written to be format-driven, not hardcoded to specific categories,
-so a real .xlsx from Google Drive with the same shape parses correctly
-without code changes — only DRIVE_FILE_ID needs to be swapped in menu_data.py
-once the mess uploads the real file.
+Output shape (unchanged from the earlier Excel-based version, so query.py
+and time_logic.py need no changes):
+  {
+    "Monday": {"date": "14-Sep", "Breakfast": {category: item, ...},
+               "Lunch - Rice Bowl (Rasoi Dining)": {...}, "Lunch": {...},
+               "Evening Snacks": {...}, "Dinner": {...}},
+    ...
+    "Sunday": {"date": "20-Sep", "Brunch": ["item", "item", ...]},
+  }
 """
 
 import os
 from pathlib import Path
 
-import openpyxl
 import requests
 
-SAMPLE_MENU_PATH = Path(__file__).parent / "sample_menu.xlsx"
-CACHED_MENU_PATH = Path(__file__).parent / ".cache" / "menu.xlsx"
+from gemini_client import GeminiError, generate_json
 
-# Set this once the real Excel file is uploaded to Drive and shared as
-# "Anyone with the link" -> Viewer. Leave as None to use the local sample.
-DRIVE_FILE_ID = os.environ.get("DRIVE_FILE_ID") or None
+SAMPLE_MENU_PATH = Path(__file__).parent / "sample_menu.jpg"
+CACHED_MENU_PATH = Path(__file__).parent / ".cache" / "menu.jpg"
 
-SUNDAY_BRUNCH_BANNER = "Sunday Brunch"
+# The real photo already sitting in the student's shared Drive folder.
+# Update this each week after re-uploading a fresh menu photo to Drive.
+DRIVE_FILE_ID = os.environ.get("DRIVE_FILE_ID") or "1-oPVFOPdBshCwpXypDPgZlIj84hoI4w0"
+
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
+MENU_PROMPT = """
+You are reading a weekly mess/canteen menu from a photo. It's a grid: days
+of the week as columns (Monday through Sunday, each with a date), and food
+categories as rows, grouped under meal-section banners such as Breakfast,
+a "Rice Bowl Concept" lunch line, the main Lunch line, Evening Snacks, and
+Dinner. Sunday typically breaks the pattern with its own "Brunch Menu"
+column that does not line up with the weekday categories — treat Sunday's
+items as a flat list instead of category:item pairs.
 
-def fetch_menu_excel(file_id: str = None) -> Path:
+Return ONLY JSON matching exactly this shape (no extra commentary):
+
+{
+  "Monday": {
+    "date": "<date text as shown, e.g. 14-Sep>",
+    "Breakfast": {"<category>": "<item>", ...},
+    "Lunch - Rice Bowl (Rasoi Dining)": {"<category>": "<item>", ...},
+    "Lunch": {"<category>": "<item>", ...},
+    "Evening Snacks": {"<category>": "<item>", ...},
+    "Dinner": {"<category>": "<item>", ...}
+  },
+  "Tuesday": { ... same shape ... },
+  "Wednesday": { ... },
+  "Thursday": { ... },
+  "Friday": { ... },
+  "Saturday": { ... },
+  "Sunday": {
+    "date": "<date text>",
+    "Brunch": ["<item>", "<item>", ...]
+  }
+}
+
+Rules:
+- Use the exact section names shown above as JSON keys, even if the photo's
+  own labels are ambiguous or repeated (e.g. two "Lunch" banners in the photo
+  map to "Lunch - Rice Bowl (Rasoi Dining)" for the rice-bowl-concept block
+  and "Lunch" for the regular detailed lunch block).
+- Category labels are whatever the row label says (e.g. "Cereal", "Dal",
+  "Soup"). If a category legitimately repeats within a section in the photo
+  (e.g. two separate beverage rows), disambiguate with a short parenthetical
+  so JSON keys stay unique, e.g. "Beverage (Tea)" and "Beverage (Coffee)".
+- If a cell is genuinely blank/not on the menu for that day, omit that
+  category for that day rather than inventing a value.
+- If a day/section isn't visible in the photo at all, omit that key entirely.
+"""
+
+TRACKER_PROMPT_TEMPLATE = """
+Here is a photo of a food tray. Here is today's actual menu item list:
+{items}
+
+Which of these EXACT items (only from this list, verbatim) are visibly
+present on the tray in the photo? Return ONLY JSON: {{"detected": ["item",
+...]}}. If none are clearly identifiable, return {{"detected": []}}. Do not
+include any item not in the list above.
+"""
+
+
+def fetch_menu_image(file_id: str = None) -> Path:
     """
-    Download the menu Excel from Google Drive (file must be shared as
-    "Anyone with the link"). Falls back to the bundled sample if no
-    file_id is configured, so the app always has something to run against.
+    Download the menu photo from Google Drive (file must be shared as
+    "Anyone with the link"). Falls back to the bundled sample photo if the
+    fetch fails, so the app always has something to run against.
     """
     file_id = file_id or DRIVE_FILE_ID
-    if not file_id:
-        return SAMPLE_MENU_PATH
-
     url = f"https://drive.google.com/uc?export=download&id={file_id}"
-    response = requests.get(url, timeout=15)
-    response.raise_for_status()
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()
+        if not response.content:
+            raise ValueError("empty response body")
+    except Exception:
+        return SAMPLE_MENU_PATH
 
     CACHED_MENU_PATH.parent.mkdir(exist_ok=True)
     CACHED_MENU_PATH.write_bytes(response.content)
     return CACHED_MENU_PATH
 
 
-def parse_menu(path: Path = None) -> dict:
+def parse_menu_image(image_path: Path = None, attempts: int = 3) -> dict:
     """
-    Parse the menu grid into:
-      {
-        "Monday": {"date": "14-Sep", "Breakfast": {category: item, ...}, ...},
-        ...
-        "Sunday": {"date": "20-Sep", "Brunch": ["item", "item", ...]},
-      }
+    OCR + structure the menu photo via Gemini vision.
+
+    Observed in testing: this call occasionally (~1 in 4-5 tries) returns a
+    response that doesn't match the expected shape — likely the model
+    struggling with the length/complexity of a full weekly grid in one
+    shot, not a prompt bug (the same image parses correctly most of the
+    time). Retrying is the practical fix; only raises after all attempts
+    fail so a real, persistent problem still surfaces to the UI.
     """
-    path = path or SAMPLE_MENU_PATH
-    wb = openpyxl.load_workbook(path, data_only=True)
-    ws = wb.active
+    image_path = image_path or SAMPLE_MENU_PATH
 
-    rows = list(ws.iter_rows(values_only=True))
-    day_row = rows[0]
-    date_row = rows[1]
+    last_error = None
+    for _ in range(attempts):
+        try:
+            menu = generate_json(MENU_PROMPT, image_path=image_path)
+        except GeminiError as exc:
+            last_error = exc
+            continue
 
-    days = [str(d) for d in day_row[1:8]]
-    dates = [str(d) for d in date_row[1:8]]
-
-    menu = {day: {"date": date} for day, date in zip(days, dates)}
-
-    current_section = None
-    sunday_items = []
-
-    for row in rows[2:]:
-        label = row[0]
-        day_values = row[1:8]
-
-        is_banner = label not in (None, "") and all(
-            v in (None, "") for v in day_values
+        if any(day in menu for day in DAYS):
+            return menu
+        last_error = GeminiError(
+            "Gemini's response didn't contain any recognizable day of the week."
         )
-        if is_banner:
-            current_section = str(label)
-            continue
 
-        if current_section == SUNDAY_BRUNCH_BANNER:
-            # Flat list: item text lives in the "Monday" column slot.
-            item = day_values[0]
-            if item:
-                sunday_items.append(str(item))
-            continue
-
-        if current_section is None:
-            continue
-
-        category = str(label) if label else None
-        if category is None:
-            continue
-
-        for day, value in zip(days, day_values):
-            if value:
-                menu[day].setdefault(current_section, {})[category] = str(value)
-
-    if "Sunday" in menu:
-        menu["Sunday"]["Brunch"] = sunday_items
-
-    return menu
+    raise GeminiError(
+        f"Couldn't get a usable menu reading after {attempts} attempts "
+        f"(last error: {last_error}) — the photo may be unreadable."
+    )
 
 
 def load_menu() -> dict:
-    """Convenience wrapper: fetch (or use sample) then parse."""
-    path = fetch_menu_excel()
-    return parse_menu(path)
+    """Convenience wrapper: fetch (or use sample) then parse via Gemini."""
+    path = fetch_menu_image()
+    return parse_menu_image(path)
+
+
+def detect_items_in_photo(photo_path, candidate_items: list) -> list:
+    """
+    Ask Gemini which of today's real menu items are visible in a tray photo.
+    Grounded against candidate_items so it can never invent a dish that
+    isn't actually on the menu. Returns [] (rather than raising) on any
+    Gemini failure, so the UI can fall back to manual selection.
+    """
+    if not candidate_items:
+        return []
+    prompt = TRACKER_PROMPT_TEMPLATE.format(items="\n".join(f"- {i}" for i in candidate_items))
+    try:
+        result = generate_json(prompt, image_path=photo_path)
+    except GeminiError:
+        return []
+
+    detected = result.get("detected", [])
+    candidate_set = set(candidate_items)
+    return [item for item in detected if item in candidate_set]
 
 
 def sections_for_meal_type(day: str, meal_type: str):
