@@ -1,0 +1,1388 @@
+{
+  "aloo bhaji": {
+    "aliases": [],
+    "calories": 150,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 3,
+    "source": "seed"
+  },
+  "aloo tomato rassa": {
+    "aliases": [],
+    "calories": 150,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 3,
+    "source": "seed"
+  },
+  "banana": {
+    "aliases": [],
+    "calories": 105,
+    "carbs": 27,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "banana custard": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 4,
+    "source": "seed"
+  },
+  "banana tomato rassa": {
+    "aliases": [],
+    "calories": 140,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 2,
+    "source": "seed"
+  },
+  "black chana masala": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 10,
+    "source": "seed"
+  },
+  "bombay sandwich": {
+    "aliases": [],
+    "calories": 280,
+    "carbs": 38,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 7,
+    "source": "seed"
+  },
+  "boondi raita": {
+    "aliases": [],
+    "calories": 140,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 4,
+    "source": "seed"
+  },
+  "brown bread": {
+    "aliases": [],
+    "calories": 80,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 3,
+    "source": "seed"
+  },
+  "brown onion rice": {
+    "aliases": [],
+    "calories": 230,
+    "carbs": 44,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 4,
+    "source": "seed"
+  },
+  "butter": {
+    "aliases": [],
+    "calories": 100,
+    "carbs": 0,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 0,
+    "source": "seed"
+  },
+  "butter milk": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 4,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 2,
+    "source": "seed"
+  },
+  "capsicum zunka": {
+    "aliases": [],
+    "calories": 140,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 5,
+    "source": "seed"
+  },
+  "carrot beet salad": {
+    "aliases": [],
+    "calories": 45,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "chana dal wada": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 7,
+    "source": "seed"
+  },
+  "chana gassi": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 8,
+    "source": "seed"
+  },
+  "chilka wali green moong": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 10,
+    "source": "seed"
+  },
+  "chilly bhaji": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 3,
+    "source": "seed"
+  },
+  "chinese samosa": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 4,
+    "source": "seed"
+  },
+  "choco flakes": {
+    "aliases": [],
+    "calories": 150,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 2,
+    "source": "seed"
+  },
+  "chocolate honey": {
+    "aliases": [],
+    "calories": 120,
+    "carbs": 25,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 1,
+    "source": "seed"
+  },
+  "chocolate icecream": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 4,
+    "source": "seed"
+  },
+  "chole masala": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 10,
+    "source": "seed"
+  },
+  "coconut chutney": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 4,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 1,
+    "source": "seed"
+  },
+  "coconut chutney/ curd": {
+    "aliases": [],
+    "calories": 75,
+    "carbs": 5,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 2,
+    "source": "seed"
+  },
+  "coffee": {
+    "aliases": [],
+    "calories": 60,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 2,
+    "source": "seed"
+  },
+  "coffee/ bournvita": {
+    "aliases": [],
+    "calories": 110,
+    "carbs": 18,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 3,
+    "source": "seed"
+  },
+  "corn cheese ball": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 5,
+    "source": "seed"
+  },
+  "cornflakes": {
+    "aliases": [],
+    "calories": 120,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 2,
+    "source": "seed"
+  },
+  "cucumber juice": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "curd": {
+    "aliases": [],
+    "calories": 60,
+    "carbs": 5,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 3,
+    "source": "seed"
+  },
+  "cut papaya": {
+    "aliases": [],
+    "calories": 55,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "dahi wada": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 6,
+    "source": "seed"
+  },
+  "dal adraki": {
+    "aliases": [],
+    "calories": 170,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 9,
+    "source": "seed"
+  },
+  "dal dhaba": {
+    "aliases": [],
+    "calories": 190,
+    "carbs": 21,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 9,
+    "source": "seed"
+  },
+  "dal fry": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 21,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 9,
+    "source": "seed"
+  },
+  "dal kich": {
+    "aliases": [],
+    "calories": 170,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 8,
+    "source": "seed"
+  },
+  "dal rasam": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 4,
+    "source": "seed"
+  },
+  "dal tadka": {
+    "aliases": [],
+    "calories": 170,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 9,
+    "source": "seed"
+  },
+  "dal waran": {
+    "aliases": [],
+    "calories": 160,
+    "carbs": 19,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 8,
+    "source": "seed"
+  },
+  "daliya upma": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 38,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 6,
+    "source": "seed"
+  },
+  "dhokla": {
+    "aliases": [],
+    "calories": 160,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 5,
+    "source": "seed"
+  },
+  "double dal tadka": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 9,
+    "source": "seed"
+  },
+  "dry fruit sheera barfi": {
+    "aliases": [],
+    "calories": 300,
+    "carbs": 32,
+    "confidence": "medium",
+    "fat": 16,
+    "protein": 5,
+    "source": "seed"
+  },
+  "dum aloo banarasi": {
+    "aliases": [],
+    "calories": 240,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 13,
+    "protein": 4,
+    "source": "seed"
+  },
+  "dum banana": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 2,
+    "source": "seed"
+  },
+  "farshan / chop onion": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 2,
+    "source": "seed"
+  },
+  "french fried": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 33,
+    "confidence": "medium",
+    "fat": 13,
+    "protein": 3,
+    "source": "seed"
+  },
+  "fruit juice": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "fryums": {
+    "aliases": [],
+    "calories": 120,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 1,
+    "source": "seed"
+  },
+  "garlic dal tadka": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 9,
+    "source": "seed"
+  },
+  "ghee podi idly": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 32,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 5,
+    "source": "seed"
+  },
+  "green & sweet chutney": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "green peas chowder": {
+    "aliases": [],
+    "calories": 120,
+    "carbs": 16,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 5,
+    "source": "seed"
+  },
+  "green salad": {
+    "aliases": [],
+    "calories": 35,
+    "carbs": 7,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "gulab jamun": {
+    "aliases": [],
+    "calories": 280,
+    "carbs": 45,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 3,
+    "source": "seed"
+  },
+  "hakka noodles": {
+    "aliases": [],
+    "calories": 320,
+    "carbs": 48,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 7,
+    "source": "seed"
+  },
+  "hot & cold milk": {
+    "aliases": [],
+    "calories": 120,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 6,
+    "source": "seed"
+  },
+  "hot & sour sauce": {
+    "aliases": [],
+    "calories": 20,
+    "carbs": 4,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "hot garlic vegetable soup": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 13,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 3,
+    "source": "seed"
+  },
+  "idly": {
+    "aliases": [],
+    "calories": 150,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 4,
+    "source": "seed"
+  },
+  "jalebi": {
+    "aliases": [],
+    "calories": 300,
+    "carbs": 55,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 2,
+    "source": "seed"
+  },
+  "jaljeera": {
+    "aliases": [],
+    "calories": 30,
+    "carbs": 7,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "jeera rice": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 4,
+    "source": "seed"
+  },
+  "kashmiri pulao": {
+    "aliases": [],
+    "calories": 320,
+    "carbs": 55,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 6,
+    "source": "seed"
+  },
+  "kimchi": {
+    "aliases": [],
+    "calories": 30,
+    "carbs": 5,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 1,
+    "source": "seed"
+  },
+  "kulcha": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 35,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 5,
+    "source": "seed"
+  },
+  "lancha": {
+    "aliases": [],
+    "calories": 280,
+    "carbs": 48,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 3,
+    "source": "seed"
+  },
+  "lauki do pyaza": {
+    "aliases": [],
+    "calories": 120,
+    "carbs": 11,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 3,
+    "source": "seed"
+  },
+  "lemon / sev": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 2,
+    "source": "seed"
+  },
+  "lemon juice": {
+    "aliases": [],
+    "calories": 30,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "maggi": {
+    "aliases": [],
+    "calories": 350,
+    "carbs": 50,
+    "confidence": "medium",
+    "fat": 13,
+    "protein": 8,
+    "source": "seed"
+  },
+  "malpua": {
+    "aliases": [],
+    "calories": 290,
+    "carbs": 45,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 3,
+    "source": "seed"
+  },
+  "manchow soup": {
+    "aliases": [],
+    "calories": 100,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 3,
+    "source": "seed"
+  },
+  "mango tang": {
+    "aliases": [],
+    "calories": 100,
+    "carbs": 25,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "mangotang": {
+    "aliases": [],
+    "calories": 100,
+    "carbs": 25,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "masala bhat": {
+    "aliases": [],
+    "calories": 240,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 5,
+    "source": "seed"
+  },
+  "masala bhel": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 32,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 5,
+    "source": "seed"
+  },
+  "masala poha": {
+    "aliases": [],
+    "calories": 250,
+    "carbs": 40,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 5,
+    "source": "seed"
+  },
+  "matki sambar": {
+    "aliases": [],
+    "calories": 130,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 6,
+    "source": "seed"
+  },
+  "matki sample": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 9,
+    "source": "seed"
+  },
+  "matki sprouts dry": {
+    "aliases": [],
+    "calories": 150,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 9,
+    "source": "seed"
+  },
+  "medu wada": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 5,
+    "source": "seed"
+  },
+  "mili juli veg": {
+    "aliases": [],
+    "calories": 150,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 4,
+    "source": "seed"
+  },
+  "minestorni soup": {
+    "aliases": [],
+    "calories": 110,
+    "carbs": 17,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 4,
+    "source": "seed"
+  },
+  "mirchi salan": {
+    "aliases": [],
+    "calories": 160,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 3,
+    "source": "seed"
+  },
+  "mix bhaji": {
+    "aliases": [],
+    "calories": 150,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 3,
+    "source": "seed"
+  },
+  "mix cut fruit": {
+    "aliases": [],
+    "calories": 70,
+    "carbs": 17,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "mix salad": {
+    "aliases": [],
+    "calories": 45,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 1,
+    "source": "seed"
+  },
+  "mix veg handi": {
+    "aliases": [],
+    "calories": 180,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 5,
+    "source": "seed"
+  },
+  "mix veg pakoda": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 4,
+    "source": "seed"
+  },
+  "mix veg peshwari": {
+    "aliases": [],
+    "calories": 190,
+    "carbs": 16,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 5,
+    "source": "seed"
+  },
+  "mixed fruit jam": {
+    "aliases": [],
+    "calories": 55,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "mixed pickle": {
+    "aliases": [],
+    "calories": 25,
+    "carbs": 3,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 0,
+    "source": "seed"
+  },
+  "mixed veg salad": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "mixk salad": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "moong dal halwa": {
+    "aliases": [],
+    "calories": 320,
+    "carbs": 34,
+    "confidence": "medium",
+    "fat": 18,
+    "protein": 6,
+    "source": "seed"
+  },
+  "moong dal kachori": {
+    "aliases": [],
+    "calories": 230,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 5,
+    "source": "seed"
+  },
+  "moong home style": {
+    "aliases": [],
+    "calories": 170,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 9,
+    "source": "seed"
+  },
+  "motichoor ladoo": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 34,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 3,
+    "source": "seed"
+  },
+  "onion lachha salad": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "onion rice": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 43,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 4,
+    "source": "seed"
+  },
+  "pal payassam": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 40,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 5,
+    "source": "seed"
+  },
+  "pancake": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 4,
+    "source": "seed"
+  },
+  "paneer mutter": {
+    "aliases": [],
+    "calories": 280,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 20,
+    "protein": 13,
+    "source": "seed"
+  },
+  "papadi chat": {
+    "aliases": [],
+    "calories": 250,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 5,
+    "source": "seed"
+  },
+  "parwal masala": {
+    "aliases": [],
+    "calories": 140,
+    "carbs": 13,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 3,
+    "source": "seed"
+  },
+  "pav": {
+    "aliases": [],
+    "calories": 130,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 4,
+    "source": "seed"
+  },
+  "peanut chana chat": {
+    "aliases": [],
+    "calories": 230,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 9,
+    "source": "seed"
+  },
+  "phulka": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 18,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 3,
+    "source": "seed"
+  },
+  "pizza": {
+    "aliases": [],
+    "calories": 280,
+    "carbs": 33,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 10,
+    "source": "seed"
+  },
+  "plain rice": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 44,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 4,
+    "source": "seed"
+  },
+  "pongal": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 40,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 6,
+    "source": "seed"
+  },
+  "poori bhaji": {
+    "aliases": [],
+    "calories": 350,
+    "carbs": 45,
+    "confidence": "medium",
+    "fat": 16,
+    "protein": 6,
+    "source": "seed"
+  },
+  "potato 65": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 3,
+    "source": "seed"
+  },
+  "punjabi chole": {
+    "aliases": [],
+    "calories": 280,
+    "carbs": 35,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 11,
+    "source": "seed"
+  },
+  "punugulu": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 4,
+    "source": "seed"
+  },
+  "ragda chat": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 34,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 8,
+    "source": "seed"
+  },
+  "rajma masala": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 11,
+    "source": "seed"
+  },
+  "rasam": {
+    "aliases": [],
+    "calories": 60,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 2,
+    "source": "seed"
+  },
+  "rice kheer": {
+    "aliases": [],
+    "calories": 210,
+    "carbs": 32,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 5,
+    "source": "seed"
+  },
+  "roasted papad": {
+    "aliases": [],
+    "calories": 35,
+    "carbs": 6,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 2,
+    "source": "seed"
+  },
+  "roasted vegetable soup": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 13,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 3,
+    "source": "seed"
+  },
+  "sabudana khichdi": {
+    "aliases": [],
+    "calories": 300,
+    "carbs": 45,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 3,
+    "source": "seed"
+  },
+  "sabz shorba": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 13,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 3,
+    "source": "seed"
+  },
+  "sambar": {
+    "aliases": [],
+    "calories": 130,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 6,
+    "source": "seed"
+  },
+  "schezwan sauce": {
+    "aliases": [],
+    "calories": 25,
+    "carbs": 5,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "shahi tukda": {
+    "aliases": [],
+    "calories": 320,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 15,
+    "protein": 4,
+    "source": "seed"
+  },
+  "sheer khurma": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 34,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 4,
+    "source": "seed"
+  },
+  "slice cake": {
+    "aliases": [],
+    "calories": 250,
+    "carbs": 36,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 3,
+    "source": "seed"
+  },
+  "steam rice": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 44,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 4,
+    "source": "seed"
+  },
+  "steamed rice": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 44,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 4,
+    "source": "seed"
+  },
+  "sweet corn veg soup": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 3,
+    "source": "seed"
+  },
+  "taak": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 18,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 3,
+    "source": "seed"
+  },
+  "tandoori potato": {
+    "aliases": [],
+    "calories": 170,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 3,
+    "source": "seed"
+  },
+  "tandoori salad": {
+    "aliases": [],
+    "calories": 50,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 2,
+    "source": "seed"
+  },
+  "tang": {
+    "aliases": [],
+    "calories": 90,
+    "carbs": 23,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "tea": {
+    "aliases": [],
+    "calories": 60,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 2,
+    "source": "seed"
+  },
+  "tindli chana": {
+    "aliases": [],
+    "calories": 160,
+    "carbs": 18,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 6,
+    "source": "seed"
+  },
+  "tomato chutney": {
+    "aliases": [],
+    "calories": 60,
+    "carbs": 10,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 1,
+    "source": "seed"
+  },
+  "tomato ketchup": {
+    "aliases": [],
+    "calories": 20,
+    "carbs": 5,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 0,
+    "source": "seed"
+  },
+  "tossed salad": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 7,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 1,
+    "source": "seed"
+  },
+  "turai masala": {
+    "aliases": [],
+    "calories": 130,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 3,
+    "source": "seed"
+  },
+  "uttapam": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 32,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 5,
+    "source": "seed"
+  },
+  "veg chowder soup": {
+    "aliases": [],
+    "calories": 120,
+    "carbs": 16,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 3,
+    "source": "seed"
+  },
+  "veg manchurian": {
+    "aliases": [],
+    "calories": 200,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 5,
+    "source": "seed"
+  },
+  "veg salad": {
+    "aliases": [],
+    "calories": 40,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 0,
+    "protein": 1,
+    "source": "seed"
+  },
+  "veg upma": {
+    "aliases": [],
+    "calories": 220,
+    "carbs": 35,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 5,
+    "source": "seed"
+  },
+  "vegetable fried rice": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 46,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 5,
+    "source": "seed"
+  },
+  "vegetable garlic fried rice": {
+    "aliases": [],
+    "calories": 260,
+    "carbs": 45,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 5,
+    "source": "seed"
+  },
+  "vermicelli upma": {
+    "aliases": [],
+    "calories": 230,
+    "carbs": 38,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 5,
+    "source": "seed"
+  },
+  "wheat bread": {
+    "aliases": [],
+    "calories": 80,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 3,
+    "source": "seed"
+  },
+  "wheat flakes": {
+    "aliases": [],
+    "calories": 130,
+    "carbs": 27,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 3,
+    "source": "seed"
+  },
+  "white bread": {
+    "aliases": [],
+    "calories": 80,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 2,
+    "source": "seed"
+  }
+}
