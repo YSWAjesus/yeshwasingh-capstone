@@ -2,20 +2,45 @@
 
 ## Project totals
 
-Running total across every session below, Assessment 1 through the MVP.
+Running total across every session below, Assessment 1 through deployment.
 
 | | |
 |---|---|
-| **Sessions logged** | 8 |
-| **Total time** | ~15 hr |
-| **Total tokens (approx.)** | ~1.9M |
-| **Commits** | 18 across 5 branches |
+| **Sessions logged** | 9 |
+| **Total time** | ~16 hr |
+| **Total tokens (approx.)** | ~2.0M |
+| **Commits** | 20 across 5 branches (the last two straight to `main`, deploy fixes) |
 | **Span** | 2026-09-11 → 2026-09-18 |
 
 Per-session detail follows, newest first. One entry per commit; date, time
 spent, rough tokens used, what shipped.
 
 ---
+
+### 2026-09-18 — Railway deployment (live)
+
+- **Time spent:** ~1 hr
+- **Tokens used (approx.):** ~120k
+- **Shipped:** BatchCaptain.AI is live at
+  https://yeshwasingh-capstone-production.up.railway.app — deployed from
+  `main` on Railway, verified on the real URL rather than locally: the menu
+  photo OCRs on the server, "what's for dinner" returns Friday's Aahar and
+  Jain counter lines with per-dish macros, and the layout holds at 375px.
+- **What broke — two things, one hiding behind the other:**
+  - The deployed app kept answering `API_KEY_INVALID`. The key itself was
+    fine (verified against the Gemini endpoint, HTTP 200). The cause was the
+    Railway RAW variables editor, which takes `NAME=value` lines — only the
+    bare key had been pasted, so `GEMINI_API_KEY` didn't exist as a variable
+    at all. Same mistake as the local `.env` earlier in the project.
+  - Fixing that exposed a second fault. A rebuild came back with
+    `startCommand` unset in the service manifest, so Railpack fell back to
+    its default `python app.py`. Running a Streamlit script under bare
+    Python executes it and exits — nothing binds to `$PORT` — so the site
+    502'd while the build still reported SUCCESS. A green build is not a
+    running app. Fixed with a `Procfile`, which Railpack always reads, so
+    the entrypoint survives a rebuild; `railway.json` keeps the same command.
+  - Worth recording: pushing the fix to GitHub did **not** trigger a Railway
+    build on its own. The deploy had to be run explicitly.
 
 ### 2026-09-18 — Figma artwork, in-bar CTAs, mobile, deploy prep
 - **Time spent:** ~2 hr 20 min
