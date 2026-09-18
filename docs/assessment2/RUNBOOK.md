@@ -8,17 +8,14 @@ containing real `mcp__*` tool calls. Follow these in order.
 
 1. Go to <https://www.tavily.com> and sign up.
 2. Copy the API key from the dashboard (starts with `tvly-`).
-3. Open `.claude/settings.local.json` in this folder and replace
-   `paste-your-tavily-key-here` with it. Save.
+3. Add it to `.env` alongside the Gemini key:
+   ```
+   TAVILY_API_KEY=tvly-...
+   ```
 
-> Both keys live in `.env`. The MCP server picks it up because `.mcp.json`
-> sources that file before launching — see the note at the bottom about why
-> `${TAVILY_API_KEY}` alone does not work.
-
-That file is gitignored, so the key never reaches GitHub.
-
-> It goes here rather than in `.env` because `.env` is read by the Python app,
-> while the MCP server reads the environment Claude Code itself runs in.
+`.env` is gitignored, so neither key reaches GitHub. Both the Python app and
+the MCP server read from it — see the note at the bottom for why `.mcp.json`
+sources the file rather than referencing `${TAVILY_API_KEY}`.
 
 ## 2. Restart Claude Code so it picks up `.mcp.json`
 
@@ -106,11 +103,11 @@ saying so in the PR.
 /Users/jesussingh/Downloads/yeshwasingh-capstone/data
 ```
 
-Change that one line to your own checkout's `data/` directory. It is absolute
-on purpose: `${CLAUDE_PROJECT_DIR}` is **not** expanded inside `args` (it is
-expanded inside `env`, which is why the tavily server works), and a relative
-path depends on the working directory Claude Code happens to launch the server
-with. An absolute path removes both failure modes.
+Change that one line to your own checkout's `data/` directory, and the `.env`
+path in the tavily entry too. They are absolute on purpose: `${VAR}` is not
+expanded anywhere in `.mcp.json`, and a relative path depends on whatever
+working directory Claude Code launches the server with. Absolute paths remove
+both failure modes at once.
 
 ## Why `.mcp.json` sources `.env` instead of using `${TAVILY_API_KEY}`
 
