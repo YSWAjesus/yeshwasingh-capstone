@@ -91,12 +91,17 @@ def inject_theme() -> None:
   padding-top: .5rem !important;
 }}
 
+/* Near-black fill with a thin lilac edge, per the mock — not a purple slab. */
 [data-testid="stChatInput"] {{
-  background: rgba(20,10,44,.72) !important;
-  border: 2px solid {LILAC} !important;
-  border-radius: 14px !important;
-  box-shadow: 0 6px 26px rgba(0,0,0,.45);
-  backdrop-filter: blur(6px);
+  background: #0d0620 !important;
+  border: 1.5px solid rgba(178,140,255,.75) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,.55);
+}}
+/* Divider after the "+", as drawn. */
+[data-testid="stChatInputFileUploadButton"] {{
+  border-right: 1px solid rgba(178,140,255,.35);
+  margin-right: .55rem; padding-right: .2rem;
 }}
 [data-testid="stChatInputTextArea"] {{
   font-family: 'Pixelify Sans', monospace !important;
@@ -222,10 +227,42 @@ def inject_theme() -> None:
   display: block; object-fit: contain;
 }}
 
-/* Suggested follow-up button, indented clear of the captain and kept
-   inside the column so a long meal name can't run off the edge. */
-.stButton {{ margin-left: 100px; max-width: calc(100% - 108px); }}
-.stButton > button {{ white-space: normal; text-align: left; }}
+/* ---------------- follow-up pills, sitting in the prompt bar ----------------
+   Streamlit's chat input is a sealed component, so real buttons cannot be
+   placed inside its DOM. These are genuine st.buttons lifted into position
+   over the bar: visually inside it, structurally layered on top. Only the
+   pills take pointer events, so the rest of the bar stays clickable to type
+   in. The block is found via :has() on a marker div rather than a Streamlit
+   class name, because those are emotion hashes that change every release. */
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
+  position: fixed; left: 50%; transform: translateX(-50%);
+  bottom: 25px; z-index: 120;          /* centres the pills in the bar */
+  width: 1290px; max-width: 94vw;
+  padding-left: 8.4rem;                /* clears the "+" and its divider */
+  pointer-events: none;
+  gap: .4rem !important;
+}}
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+  [data-testid="stHorizontalBlock"] {{ gap: .45rem !important; }}
+
+.bc-cta-anchor {{ height: 0; }}
+
+.stButton > button {{
+  pointer-events: auto;
+  background: rgba(13,6,32,.9);
+  border: 1.5px solid rgba(178,140,255,.75);
+  border-radius: 999px;
+  color: #CDB8FF;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: .82rem;
+  padding: .18rem .9rem;
+  white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}}
+.stButton > button:hover {{
+  border-color: {ACCENT}; color: {ACCENT};
+  background: rgba(255,138,61,.08);
+}}
 .stButton > button {{
   background: rgba(255,255,255,.05);
   border: 1px solid rgba(178,140,255,.5);

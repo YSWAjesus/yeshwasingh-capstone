@@ -95,13 +95,21 @@ def _render_serving_html(serving) -> str:
             f'</span></h4><ul>{"".join(rows)}</ul>')
 
 
-def _suggest_follow_up(menu, weekday, meal_type):
-    """Only offer a meal that actually has data — never a dead end."""
+def _suggest_follow_ups(menu, weekday, meal_type, limit=2):
+    """Offer only meals that actually have data — never a dead end."""
+    day_menu = halls.resolve_day(menu, weekday)
+    found = []
     for candidate in _NEXT_MEAL.get(meal_type, []):
-        day_menu = halls.resolve_day(menu, weekday)
         if halls.servings_for_meal(day_menu, candidate):
-            return candidate
-    return None
+            found.append(candidate)
+        if len(found) == limit:
+            break
+    return found
+
+
+def _suggest_follow_up(menu, weekday, meal_type):
+    found = _suggest_follow_ups(menu, weekday, meal_type, limit=1)
+    return found[0] if found else None
 
 
 def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
@@ -187,10 +195,17 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
         html.append(f'<div class="none">{missing} {noun} in the macro table '
                     f'yet — nothing invented for them.</div>')
 
-    follow_up = _suggest_follow_up(menu, weekday, meal_type)
+    follow_ups = _suggest_follow_ups(menu, weekday, meal_type)
+    follow_up = follow_ups[0] if follow_ups else None
     return {
         "reply": "\n\n".join(parts),
         "reply_html": "".join(html),
+        # Rendered as pills inside the prompt bar. Each is a real query the
+        # app can answer, so none of them is a dead end.
+        "follow_up_options": [
+            {"label": f"What's for {m.lower()}?", "prompt": f"what's for {m.lower()}"}
+            for m in follow_ups
+        ],
         "meal_type": meal_type,
         "follow_up": follow_up,
         "follow_up_label": f"What's for {follow_up.lower()}?" if follow_up else None,

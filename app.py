@@ -106,10 +106,6 @@ for index, message in enumerate(st.session_state.messages):
         continue
 
     ui.answer_bubble(message.get("html") or message["content"])
-    if index == len(st.session_state.messages) - 1 and message.get("follow_up_prompt"):
-        if st.button(message["follow_up_label"], key=f"followup_{index}"):
-            st.session_state.pending_prompt = message["follow_up_prompt"]
-            st.rerun()
 
 # ------------------------------------------------------------ tray tracker
 tray_photo = st.session_state.tray_photo
@@ -143,6 +139,22 @@ if tray_photo is not None:
             st.session_state.tray_photo = None
             st.rerun()
 
+# ------------------------------------------- follow-up pills in the prompt bar
+# Rendered just before the input so they land next to it in the DOM; CSS
+# lifts the whole block into position over the bar.
+last_message = st.session_state.messages[-1] if st.session_state.messages else None
+options = (last_message or {}).get("follow_up_options") or []
+if options:
+    with st.container():
+        st.markdown('<div class="bc-cta-anchor"></div>', unsafe_allow_html=True)
+        # Weighted so the pills sit next to each other rather than being
+        # spread evenly across the full bar width.
+        columns = st.columns([3] * len(options) + [14])
+        for position, option in enumerate(options):
+            if columns[position].button(option["label"], key=f"cta_{position}"):
+                st.session_state.pending_prompt = option["prompt"]
+                st.rerun()
+
 # ------------------------------------------------- captain on the prompt bar
 if has_conversation:
     last = st.session_state.messages[-1] if st.session_state.messages else None
@@ -169,8 +181,7 @@ if typed:
         "role": "assistant",
         "content": result["reply"],
         "html": result.get("reply_html"),
-        "follow_up_prompt": result["follow_up_prompt"],
-        "follow_up_label": result["follow_up_label"],
+        "follow_up_options": result.get("follow_up_options") or [],
     })
     st.session_state.tagline = random.choice(TAGLINES)
     st.rerun()
