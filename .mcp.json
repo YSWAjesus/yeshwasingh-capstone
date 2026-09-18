@@ -6,7 +6,7 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem@latest",
-        "${CLAUDE_PROJECT_DIR}/data"
+        "./data"
       ]
     },
     "tavily": {
