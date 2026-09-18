@@ -5,6 +5,7 @@ A generic question ("what's there to eat?") should answer the meal you can
 actually still go and eat, not the one that just closed.
 """
 
+import re
 from datetime import datetime, time
 
 # ---------------------------------------------------------------------------
@@ -91,9 +92,15 @@ def day_offset_from_text(text: str):
     """
     lowered = text.lower()
 
-    if "day after tomorrow" in lowered:
+    # Spelling-tolerant: people type tomorow / tommorow / tommorrow / tmrw.
+    # Listing exact variants missed "tommorow" in real use, so match the shape.
+    # Grouped, so prefixing it below binds to the whole alternation rather
+    # than just its first branch.
+    tomorrow = re.compile(r"(?:\bt(?:o|')?m+o*r+o*w\b|\btmrw?\b|\btmr\b)")
+
+    if re.search(r"day\s+after\s+" + tomorrow.pattern, lowered):
         return 2
-    if "tomorrow" in lowered or "tmrw" in lowered or "tomorow" in lowered:
+    if tomorrow.search(lowered):
         return 1
     if "today" in lowered or "tonight" in lowered:
         return 0

@@ -57,6 +57,17 @@ def main():
     size = _save(hero, tight, 320, DEST / "hero_idle.png")
     print(f"{'hero (tight crop)':34s} -> derived/hero_idle.png  {size}")
 
+    # Perch poses, each cropped tight to its OWN pixels. The shared box left
+    # up to 180px of invisible margin, which is why she kept landing away
+    # from the prompt bar instead of on it: the app was positioning the
+    # bounding box, not the character. Cropped tight, the image's bottom edge
+    # IS her feet, so planting her on the bar is exact.
+    for path in sorted(SOURCE.glob("avatar_*.png")):
+        image = Image.open(path).convert("RGBA")
+        box = image.getbbox()
+        size = _save(image, box, 200, DEST / f"perch_{path.name}")
+        print(f"{'perch ' + path.stem:34s} -> derived/perch_{path.name}  {size}")
+
 
 if __name__ == "__main__":
     main()

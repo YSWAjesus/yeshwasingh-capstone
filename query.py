@@ -51,13 +51,12 @@ def _render_serving(serving) -> str:
         title = serving.hall[0].upper() + serving.hall[1:]  # "the Jain counter"
         lines = [f"**{title}** — {note}"]
 
-    for category, dish in serving.rows:
-        label = f"{category}: {dish}" if category else dish
+    for _category, dish in serving.rows:
         macro = macros.lookup(dish)
         if macro:
-            lines.append(f"- {label} — {macros.format_macros(macro)}")
+            lines.append(f"- {dish} — {macros.format_macros(macro)}")
         else:
-            lines.append(f"- {label} — _no macro estimate yet_")
+            lines.append(f"- {dish} — _no macro estimate yet_")
     return "\n".join(lines)
 
 
@@ -77,8 +76,11 @@ def _render_serving_html(serving) -> str:
             note += ", same as the main line today"
 
     rows = []
-    for category, dish in serving.rows:
-        label = f"{_escape(category)}: {_escape(dish)}" if category else _escape(dish)
+    for _category, dish in serving.rows:
+        # Just the dish. The menu's row labels ("Gravy Veg", "Dry Veg- jain")
+        # are how the mess organises its grid, not something a hungry student
+        # needs read back to them.
+        label = _escape(dish)
         macro = macros.lookup(dish)
         if macro:
             rows.append(

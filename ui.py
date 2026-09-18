@@ -205,18 +205,22 @@ def inject_theme() -> None:
 .bc-answer li {{ margin: .18rem 0; }}
 
 /* ---------------- captain on the prompt bar ---------------- */
-/* She stands ON the bar: low enough to overlap its top edge, and behind it
-   in z-order so the input always stays clickable. */
+/* She stands ON the bar. The sprites are cropped tight to their own pixels,
+   so the image's bottom edge is her feet — anchoring that just inside the
+   bar's top edge plants her on it rather than floating her above it. */
 .bc-perch {{
-  position: fixed; left: 0; right: 0; bottom: 64px;
+  position: fixed; left: 0; right: 0; bottom: 54px;
   pointer-events: none; z-index: 1;
+  display: flex; justify-content: center;
 }}
-/* Matches stBottomBlockContainer's max-width so she lands on the left end of
-   the prompt bar rather than floating somewhere inside it. */
 .bc-perch-inner {{
-  max-width: 1290px; margin: 0 auto; padding-left: 5rem;
+  width: 100%; max-width: 1290px; padding-left: 3.6rem;
+  display: flex; align-items: flex-end; height: 120px;
 }}
-.bc-perch img {{ height: 104px; display: block; }}
+.bc-perch img {{
+  max-height: 118px; max-width: 150px; width: auto;
+  display: block; object-fit: contain;
+}}
 
 /* Suggested follow-up button, indented clear of the captain and kept
    inside the column so a long meal name can't run off the edge. */
@@ -265,7 +269,8 @@ def perch(state: str, pose_index: int = 0) -> None:
         name = ANSWER_POSES[pose_index % len(ANSWER_POSES)]
     else:
         name = AVATAR.get(state, AVATAR["idle"])
-    src = _sprite(name)
+    # Tight-cropped variant, so the bottom of the image is her feet.
+    src = _sprite(f"perch_{name}") or _sprite(name)
     if not src:
         return
     st.markdown(
