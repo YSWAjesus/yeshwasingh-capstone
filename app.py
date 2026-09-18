@@ -29,8 +29,11 @@ import query
 import ui
 from gemini_client import GeminiError
 
+# "wide" then constrained in CSS: the default "centered" layout caps the
+# content column at ~704px, which pinches the prompt bar well short of the
+# width the design calls for.
 st.set_page_config(page_title="BatchCaptain.AI", page_icon="🍛",
-                   layout="centered")
+                   layout="wide")
 ui.inject_theme()
 
 # Shown in the prompt bar, one per session, in placeholder grey.

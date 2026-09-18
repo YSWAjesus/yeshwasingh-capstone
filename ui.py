@@ -56,10 +56,20 @@ def inject_theme() -> None:
     st.markdown(
         f"""
 <style>
+/* Dark at the top, opening into purple toward the prompt bar — the light
+   sits low, behind the captain, as in the mock. */
 .stApp {{
-  background: linear-gradient(180deg,#4b2494 0%,#2a1358 45%,#0b0618 100%) !important;
+  background: linear-gradient(180deg,#07040f 0%,#160a33 38%,#341a6b 72%,#5a2da8 100%) !important;
   background-attachment: fixed !important;
 }}
+
+/* Wide layout, reined back in to the design's column width. */
+[data-testid="stMainBlockContainer"] {{
+  max-width: 1150px !important;
+  padding-top: 3.4rem !important;
+  margin: 0 auto !important;
+}}
+[data-testid="stBottomBlockContainer"] {{ max-width: 1290px !important; }}
 [data-testid="stHeader"], .stAppHeader {{ background: transparent !important; }}
 [data-testid="stToolbar"], .stAppToolbar {{ display: none !important; }}
 
@@ -105,52 +115,66 @@ def inject_theme() -> None:
   font-family: 'Pixelify Sans', monospace;
 }}
 
-/* Wordmark */
+/* Wordmark, pinned to the top-left of the viewport rather than sitting in
+   the centred content column. */
 .bc-mark {{
+  position: fixed; top: 14px; left: 26px; z-index: 80;
   font-family: 'Pixelify Sans', monospace;
-  font-size: 1.15rem; letter-spacing: .5px;
-  margin: -1rem 0 0 0; opacity: .95;
+  font-size: 1.15rem; letter-spacing: .5px; opacity: .95;
+  pointer-events: none;
 }}
 .bc-mark em {{ color: {LILAC}; font-style: normal; }}
 
 /* ---------------- landing hero ----------------
-   A three-column row rather than absolute positioning, so the bubbles can
-   never overlap the captain or each other however narrow the window gets.
-   The bubbles are drawn in CSS: the exported bubble.png is a 216x174 sprite
-   whose chunky border does not survive being stretched to arbitrary sizes. */
+   The bubbles are positioned against the FIGURE, not the page, so they stay
+   tucked either side of her head at any window width instead of drifting to
+   the far edges. */
 .bc-hero {{
-  display: flex; justify-content: center; align-items: flex-start;
-  gap: .6rem; margin: 1.5rem 0 0 0; flex-wrap: nowrap;
+  display: flex; justify-content: center; align-items: flex-end;
+  min-height: 62vh; margin-top: .5rem;
 }}
-.bc-hero-figure {{ flex: 0 0 auto; align-self: flex-end; }}
+.bc-hero-figure {{ position: relative; flex: 0 0 auto; }}
 .bc-hero img {{
-  height: 44vh; max-height: 380px; min-height: 210px;
+  height: 58vh; max-height: 560px; min-height: 260px;
   display: block; pointer-events: none;
 }}
 .bc-say {{
-  position: relative; flex: 1 1 0; max-width: 11rem; margin-top: 2.2rem;
+  position: absolute; width: 12.5rem;
   font-family: 'Pixelify Sans', monospace;
-  font-size: .78rem; line-height: 1.4; text-align: center;
+  font-size: .8rem; line-height: 1.45; text-align: center;
   color: #16141f; background: #e9e9e9;
-  padding: .7rem .75rem;
+  padding: .75rem .8rem;
   border: 3px solid #14121c;
-  box-shadow: 5px 5px 0 rgba(0,0,0,.45);
+  box-shadow: 6px 6px 0 rgba(0,0,0,.5);
 }}
-.bc-say::after {{        /* pixel tail pointing down at the captain */
-  content: ""; position: absolute; bottom: -9px; width: 12px; height: 12px;
-  background: #e9e9e9;
-  border-right: 3px solid #14121c; border-bottom: 3px solid #14121c;
-  transform: rotate(45deg);
-}}
-.bc-say-l::after {{ right: 18px; }}
-.bc-say-r::after {{ left: 18px; }}
-.bc-say-r {{ margin-top: .6rem; }}
+/* Anchored to the tight hero crop, so these land beside her head: a small
+   gap on the left, a slight overlap on the right, as drawn. */
+.bc-say-l {{ right: 100%; margin-right: 26px; top: 19%; }}
+.bc-say-r {{ left: 100%;  margin-left: -30px;  top: 11%; }}
 
-@media (max-width: 720px) {{
-  .bc-hero {{ flex-wrap: wrap; justify-content: center; }}
-  .bc-say {{ flex: 0 0 auto; max-width: 47%; margin-top: 0; font-size: .72rem; }}
-  .bc-hero-figure {{ order: 3; flex-basis: 100%; text-align: center; }}
-  .bc-hero img {{ margin: 0 auto; height: 34vh; }}
+/* Two-step staircase, so the tail reads as pixel art rather than a smooth
+   triangle. bubble.png's own tail can't be used here: border-image repeats
+   it along the whole edge. */
+.bc-say::before, .bc-say::after {{
+  content: ""; position: absolute; background: #e9e9e9;
+}}
+.bc-say::before {{
+  bottom: -11px; width: 22px; height: 11px;
+  border-left: 3px solid #14121c; border-right: 3px solid #14121c;
+}}
+.bc-say::after {{
+  bottom: -21px; width: 11px; height: 11px;
+  border: 3px solid #14121c; border-top: none;
+}}
+.bc-say-l::before {{ right: 26px; }}
+.bc-say-l::after  {{ right: 26px; }}
+.bc-say-r::before {{ left: 26px; }}
+.bc-say-r::after  {{ left: 37px; }}
+
+@media (max-width: 900px) {{
+  .bc-say {{ width: 9.5rem; font-size: .72rem; }}
+  .bc-say-l {{ margin-right: -.6rem; }}
+  .bc-say-r {{ margin-left: -.6rem; }}
 }}
 
 /* ---------------- answer bubble ---------------- */
@@ -187,8 +211,10 @@ def inject_theme() -> None:
   position: fixed; left: 0; right: 0; bottom: 64px;
   pointer-events: none; z-index: 1;
 }}
+/* Matches stBottomBlockContainer's max-width so she lands on the left end of
+   the prompt bar rather than floating somewhere inside it. */
 .bc-perch-inner {{
-  max-width: 46rem; margin: 0 auto; padding-left: .5rem;
+  max-width: 1290px; margin: 0 auto; padding-left: 5rem;
 }}
 .bc-perch img {{ height: 104px; display: block; }}
 
@@ -216,15 +242,17 @@ def wordmark() -> None:
 
 def hero(left_line: str, right_line: str) -> None:
     """Landing state: the captain large, with the value proposition either side."""
-    src = _sprite(AVATAR["idle"])
+    src = _sprite("hero_idle.png") or _sprite(AVATAR["idle"])
     if not src:
         return
     st.markdown(
         f"""
 <div class="bc-hero">
-  <div class="bc-say bc-say-l">{left_line}</div>
-  <div class="bc-hero-figure"><img src="{src}"/></div>
-  <div class="bc-say bc-say-r">{right_line}</div>
+  <div class="bc-hero-figure">
+    <div class="bc-say bc-say-l">{left_line}</div>
+    <div class="bc-say bc-say-r">{right_line}</div>
+    <img src="{src}"/>
+  </div>
 </div>
 """,
         unsafe_allow_html=True,

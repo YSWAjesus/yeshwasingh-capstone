@@ -19,25 +19,43 @@ SOURCE = Path(__file__).resolve().parent.parent / "assets"
 DEST = SOURCE / "derived"
 
 # Shared crop box (left, upper, right, lower) in the 1620x2160 export space.
-# Chosen to contain every pose plus the lightbulb glow of the "answering"
-# sprite, with a little headroom.
+# Every perch pose uses this SAME box so she doesn't jump position when the
+# app swaps states; it's sized to contain the widest pose plus the lightbulb
+# glow of the "answering" sprite.
 CROP = (500, 330, 1400, 1700)
 
 TARGET_WIDTH = 420  # what the app actually renders at
+
+# The hero pose is cropped tight to her body instead. The shared box leaves
+# ~180px of transparent margin beside her, and the landing page anchors the
+# speech bubbles to the image's edges — with the loose box they end up a
+# quarter of the screen away from her head. Only the idle pose needs this,
+# because the hero never swaps states.
+HERO_SOURCE = "avatar_idle.png"
+HERO_PAD = 18
+
+
+def _save(image, crop, width, out):
+    cropped = image.crop(crop)
+    ratio = width / cropped.width
+    resized = cropped.resize((width, int(cropped.height * ratio)), Image.LANCZOS)
+    resized.save(out, optimize=True)
+    return resized.size
 
 
 def main():
     DEST.mkdir(exist_ok=True)
     for path in sorted(SOURCE.glob("avatar_*.png")):
         image = Image.open(path).convert("RGBA")
-        cropped = image.crop(CROP)
-        ratio = TARGET_WIDTH / cropped.width
-        resized = cropped.resize(
-            (TARGET_WIDTH, int(cropped.height * ratio)), Image.LANCZOS
-        )
-        out = DEST / path.name
-        resized.save(out, optimize=True)
-        print(f"{path.name:34s} -> {out.relative_to(SOURCE.parent)}  {resized.size}")
+        size = _save(image, CROP, TARGET_WIDTH, DEST / path.name)
+        print(f"{path.name:34s} -> derived/{path.name}  {size}")
+
+    hero = Image.open(SOURCE / HERO_SOURCE).convert("RGBA")
+    bbox = hero.getbbox()
+    tight = (bbox[0] - HERO_PAD, bbox[1] - HERO_PAD,
+             bbox[2] + HERO_PAD, bbox[3] + HERO_PAD)
+    size = _save(hero, tight, 320, DEST / "hero_idle.png")
+    print(f"{'hero (tight crop)':34s} -> derived/hero_idle.png  {size}")
 
 
 if __name__ == "__main__":
