@@ -78,6 +78,34 @@ MEAL_KEYWORDS = {
 }
 
 
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+            "Saturday", "Sunday"]
+
+
+def day_offset_from_text(text: str):
+    """Days from today the user is asking about, or None if they didn't say.
+
+    Handles "tomorrow"/"today"/"tonight" and bare weekday names ("on friday").
+    A named weekday resolves to the NEXT one, so asking on Friday about
+    "monday" looks three days forward rather than four days back.
+    """
+    lowered = text.lower()
+
+    if "day after tomorrow" in lowered:
+        return 2
+    if "tomorrow" in lowered or "tmrw" in lowered or "tomorow" in lowered:
+        return 1
+    if "today" in lowered or "tonight" in lowered:
+        return 0
+
+    from datetime import datetime as _dt
+    today_index = _dt.now().weekday()
+    for index, name in enumerate(WEEKDAYS):
+        if name.lower() in lowered:
+            return (index - today_index) % 7
+    return None
+
+
 def meal_type_from_text(now_text: str):
     """Return the meal named in the text, or None.
 

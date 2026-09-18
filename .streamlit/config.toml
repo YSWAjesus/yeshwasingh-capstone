@@ -1,8 +1,8 @@
 [theme]
 base = "dark"
-# Streamlit 1.50 can load a web font directly from config, which applies it to
-# headings and widgets too — a CSS @import does not reach all of them.
-font = "'Pixelify Sans':https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap, sans-serif"
+# Inter for body text — Pixelify Sans is the display face only. At paragraph
+# size and length it costs too much readability, and menu replies are long.
+font = "Inter:https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap, sans-serif"
 headingFont = "'Pixelify Sans':https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap, sans-serif"
 backgroundColor = "#1d0f3d"
 secondaryBackgroundColor = "#2a1358"
