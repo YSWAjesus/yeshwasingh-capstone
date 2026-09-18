@@ -131,55 +131,16 @@ def inject_theme() -> None:
 .bc-mark em {{ color: {LILAC}; font-style: normal; }}
 
 /* ---------------- landing hero ----------------
-   The bubbles are positioned against the FIGURE, not the page, so they stay
-   tucked either side of her head at any window width instead of drifting to
-   the far edges. */
+   One exported graphic: the captain with both speech bubbles already set in
+   Figma. Nothing to position, and the pixel tails are the real artwork
+   rather than a CSS approximation of them. */
 .bc-hero {{
   display: flex; justify-content: center; align-items: flex-end;
-  min-height: 62vh; margin-top: .5rem;
+  min-height: 60vh; margin-top: .5rem;
 }}
-.bc-hero-figure {{ position: relative; flex: 0 0 auto; }}
 .bc-hero img {{
-  height: 58vh; max-height: 560px; min-height: 260px;
+  max-height: 62vh; max-width: 100%;
   display: block; pointer-events: none;
-}}
-.bc-say {{
-  position: absolute; width: 12.5rem;
-  font-family: 'Pixelify Sans', monospace;
-  font-size: .8rem; line-height: 1.45; text-align: center;
-  color: #16141f; background: #e9e9e9;
-  padding: .75rem .8rem;
-  border: 3px solid #14121c;
-  box-shadow: 6px 6px 0 rgba(0,0,0,.5);
-}}
-/* Anchored to the tight hero crop, so these land beside her head: a small
-   gap on the left, a slight overlap on the right, as drawn. */
-.bc-say-l {{ right: 100%; margin-right: 26px; top: 19%; }}
-.bc-say-r {{ left: 100%;  margin-left: -30px;  top: 11%; }}
-
-/* Two-step staircase, so the tail reads as pixel art rather than a smooth
-   triangle. bubble.png's own tail can't be used here: border-image repeats
-   it along the whole edge. */
-.bc-say::before, .bc-say::after {{
-  content: ""; position: absolute; background: #e9e9e9;
-}}
-.bc-say::before {{
-  bottom: -11px; width: 22px; height: 11px;
-  border-left: 3px solid #14121c; border-right: 3px solid #14121c;
-}}
-.bc-say::after {{
-  bottom: -21px; width: 11px; height: 11px;
-  border: 3px solid #14121c; border-top: none;
-}}
-.bc-say-l::before {{ right: 26px; }}
-.bc-say-l::after  {{ right: 26px; }}
-.bc-say-r::before {{ left: 26px; }}
-.bc-say-r::after  {{ left: 37px; }}
-
-@media (max-width: 900px) {{
-  .bc-say {{ width: 9.5rem; font-size: .72rem; }}
-  .bc-say-l {{ margin-right: -.6rem; }}
-  .bc-say-r {{ margin-left: -.6rem; }}
 }}
 
 /* ---------------- answer bubble ---------------- */
@@ -236,7 +197,9 @@ def inject_theme() -> None:
    class name, because those are emotion hashes that change every release. */
 [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
   position: fixed; left: 50%; transform: translateX(-50%);
-  bottom: 25px; z-index: 120;          /* centres the pills in the bar */
+  /* Anchored off the bar's BOTTOM edge, which is stable — its top moves as
+     the input grows and shrinks with focus. */
+  bottom: 32px; z-index: 120;
   width: 1290px; max-width: 94vw;
   padding-left: 8.4rem;                /* clears the "+" and its divider */
   pointer-events: none;
@@ -254,8 +217,10 @@ def inject_theme() -> None:
   border-radius: 999px;
   color: #CDB8FF;
   font-family: 'Pixelify Sans', monospace;
-  font-size: .82rem;
-  padding: .18rem .9rem;
+  font-size: .78rem;
+  /* Deliberately shorter than the bar so it reads as sitting inside it. */
+  height: 28px; min-height: 28px; line-height: 1;
+  padding: 0 .85rem;
   white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }}
@@ -281,23 +246,13 @@ def wordmark() -> None:
                 unsafe_allow_html=True)
 
 
-def hero(left_line: str, right_line: str) -> None:
-    """Landing state: the captain large, with the value proposition either side."""
-    src = _sprite("hero_idle.png") or _sprite(AVATAR["idle"])
+def hero() -> None:
+    """Landing state: the composed graphic, exactly as exported from Figma."""
+    src = _sprite("hero_composed.png")
     if not src:
         return
-    st.markdown(
-        f"""
-<div class="bc-hero">
-  <div class="bc-hero-figure">
-    <div class="bc-say bc-say-l">{left_line}</div>
-    <div class="bc-say bc-say-r">{right_line}</div>
-    <img src="{src}"/>
-  </div>
-</div>
-""",
-        unsafe_allow_html=True,
-    )
+    st.markdown(f'<div class="bc-hero"><img src="{src}"/></div>',
+                unsafe_allow_html=True)
 
 
 def perch(state: str, pose_index: int = 0) -> None:

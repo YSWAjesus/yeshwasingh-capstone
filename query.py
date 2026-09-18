@@ -200,12 +200,16 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
     return {
         "reply": "\n\n".join(parts),
         "reply_html": "".join(html),
-        # Rendered as pills inside the prompt bar. Each is a real query the
-        # app can answer, so none of them is a dead end.
-        "follow_up_options": [
-            {"label": f"What's for {m.lower()}?", "prompt": f"what's for {m.lower()}"}
-            for m in follow_ups
-        ],
+        # Rendered as pills inside the prompt bar. Each is a real action the
+        # app can carry out, so none of them is a dead end. The first is the
+        # next meal that actually has data; the second opens the tray tracker,
+        # which is where totalling macros is meaningful (you tick your own
+        # plate) rather than summing a whole buffet.
+        "follow_up_options": (
+            [{"label": f"What's for {m.lower()}?",
+              "prompt": f"what's for {m.lower()}"} for m in follow_ups[:1]]
+            + [{"label": "Track what I ate", "action": "tray"}]
+        ),
         "meal_type": meal_type,
         "follow_up": follow_up,
         "follow_up_label": f"What's for {follow_up.lower()}?" if follow_up else None,

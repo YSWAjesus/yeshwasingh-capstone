@@ -46,10 +46,6 @@ TAGLINES = [
     "What's for lunch tomorrow?",
 ]
 
-HERO_LEFT = "Upload images of your meal to get exact macro counts!"
-HERO_RIGHT = "Ask what's for lunch and track what you actually ate..."
-
-
 @st.cache_data(ttl=1800, show_spinner="Reading this week's menu photo...")
 def get_menu():
     return menu_data.load_menu()
@@ -68,6 +64,7 @@ def get_detected_items(photo_bytes: bytes, candidate_items: tuple):
 
 st.session_state.setdefault("messages", [])
 st.session_state.setdefault("tray_photo", None)
+st.session_state.setdefault("show_tray", False)
 st.session_state.setdefault("pose", 0)
 st.session_state.setdefault("tagline", random.choice(TAGLINES))
 
@@ -93,11 +90,13 @@ elif menu_source == "cache":
             "just now.")
 
 pending = st.session_state.pop("pending_prompt", None)
-has_conversation = bool(st.session_state.messages) or st.session_state.tray_photo
+has_conversation = (bool(st.session_state.messages)
+                    or st.session_state.tray_photo is not None
+                    or st.session_state.show_tray)
 
 # ------------------------------------------------------------ landing state
 if not has_conversation:
-    ui.hero(HERO_LEFT, HERO_RIGHT)
+    ui.hero()
 
 # -------------------------------------------------------------- transcript
 for index, message in enumerate(st.session_state.messages):
@@ -108,6 +107,14 @@ for index, message in enumerate(st.session_state.messages):
     ui.answer_bubble(message.get("html") or message["content"])
 
 # ------------------------------------------------------------ tray tracker
+if st.session_state.show_tray and st.session_state.tray_photo is None:
+    st.caption("Snap or upload your tray — hit **+** in the bar below, or use "
+               "the camera.")
+    snap = st.camera_input("Photograph your tray", label_visibility="collapsed")
+    if snap is not None:
+        st.session_state.tray_photo = snap.getvalue()
+        st.rerun()
+
 tray_photo = st.session_state.tray_photo
 if tray_photo is not None:
     today = datetime.now().strftime("%A")
@@ -137,6 +144,7 @@ if tray_photo is not None:
                 st.caption("No estimate yet for: " + ", ".join(unmatched))
         if st.button("Clear tray"):
             st.session_state.tray_photo = None
+            st.session_state.show_tray = False
             st.rerun()
 
 # ------------------------------------------- follow-up pills in the prompt bar
@@ -152,7 +160,10 @@ if options:
         columns = st.columns([3] * len(options) + [14])
         for position, option in enumerate(options):
             if columns[position].button(option["label"], key=f"cta_{position}"):
-                st.session_state.pending_prompt = option["prompt"]
+                if option.get("action") == "tray":
+                    st.session_state.show_tray = True
+                else:
+                    st.session_state.pending_prompt = option["prompt"]
                 st.rerun()
 
 # ------------------------------------------------- captain on the prompt bar
