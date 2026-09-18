@@ -8,10 +8,20 @@ argument-hint: "<dish name>"
 
 You are estimating macros for **one** dish: `$ARGUMENTS`.
 
-Write the result to `data/proposals/<slug>.json` (slug = the dish name,
-lowercased, non-alphanumerics replaced with `-`). Write it through the
-**filesystem MCP server**, not the Write tool — you are not permitted to touch
-the live table, only to propose.
+Write the result through the **filesystem MCP server**
+(`mcp__filesystem__write_file`), not the Write tool — you are not permitted to
+touch the live table, only to propose.
+
+That server is sandboxed to the project's `data/` directory, so give it the
+**absolute** path:
+
+```
+/Users/jesussingh/Downloads/yeshwasingh-capstone/data/proposals/<slug>.json
+```
+
+where `<slug>` is the dish name lowercased with non-alphanumerics replaced by
+`-`. If a write is refused as outside the allowed directory, you used a
+relative path — retry with the absolute one.
 
 ## Output schema
 

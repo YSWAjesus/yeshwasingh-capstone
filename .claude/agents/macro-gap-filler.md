@@ -4,7 +4,7 @@ description: Closes the "no macro estimate yet" gap in BatchCaptain's macro tabl
 tools: Skill, Read, Bash, mcp__filesystem__read_text_file, mcp__filesystem__write_file, mcp__filesystem__list_directory, mcp__filesystem__create_directory, mcp__tavily__tavily_search, mcp__tavily__tavily_extract
 disallowedTools: WebSearch, WebFetch, Write, Edit
 skills: nutrition-lookup
-maxTurns: 60
+maxTurns: 150
 color: orange
 ---
 

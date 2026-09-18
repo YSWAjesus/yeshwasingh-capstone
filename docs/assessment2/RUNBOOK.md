@@ -11,6 +11,10 @@ containing real `mcp__*` tool calls. Follow these in order.
 3. Open `.claude/settings.local.json` in this folder and replace
    `paste-your-tavily-key-here` with it. Save.
 
+> Both keys live in `.env`. The MCP server picks it up because `.mcp.json`
+> sources that file before launching — see the note at the bottom about why
+> `${TAVILY_API_KEY}` alone does not work.
+
 That file is gitignored, so the key never reaches GitHub.
 
 > It goes here rather than in `.env` because `.env` is read by the Python app,
@@ -107,3 +111,21 @@ on purpose: `${CLAUDE_PROJECT_DIR}` is **not** expanded inside `args` (it is
 expanded inside `env`, which is why the tavily server works), and a relative
 path depends on the working directory Claude Code happens to launch the server
 with. An absolute path removes both failure modes.
+
+## Why `.mcp.json` sources `.env` instead of using `${TAVILY_API_KEY}`
+
+`${VAR}` inside `.mcp.json` is **not** expanded — not in `args`, and not in
+`env` either. The trap is that the tavily server still *starts* and still
+registers its 5 tools with the literal string as its key, so `/mcp` shows it
+**connected** and everything looks fine. It then returns
+`Unauthorized: missing or invalid API key` on every single query.
+
+Connected is not the same as authenticated. If a server is green but every
+call 401s, check that the key actually reached the process:
+
+```bash
+bash -c 'set -a; . ./.env; set +a; echo "${TAVILY_API_KEY:0:9}"'
+```
+
+The server is therefore launched through `bash -c 'set -a; . .env; set +a; exec npx ...'`,
+which sources the gitignored `.env` so the key never enters a committed file.

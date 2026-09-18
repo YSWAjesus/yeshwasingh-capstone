@@ -24,9 +24,16 @@ REQUIRED = ("calories", "protein", "carbs", "fat")
 # A mess serving that claims 2000 kcal, or 80g of protein, is a research
 # failure — usually per-100g values or a whole-recipe yield mistaken for one
 # plate. Bounds are deliberately generous; they catch blunders, not nuance.
-MIN_KCAL, MAX_KCAL = 40, 900
+#
+# The floor is 10, not 40: condiments are legitimately tiny. A 40 floor
+# rejected the table's own stored values for mixed pickle (25 kcal) and
+# roasted papad (35 kcal), which meant a correct record could never be
+# re-submitted for them. The all-zero check below is what actually catches
+# empty records.
+MIN_KCAL, MAX_KCAL = 10, 900
 MAX_PROTEIN, MAX_FAT, MAX_CARBS = 40, 45, 150
 ATWATER_TOLERANCE = 0.15
+ATWATER_FLOOR_KCAL = 20
 
 
 def validate(dish: str, record: dict):
@@ -61,11 +68,15 @@ def validate(dish: str, record: dict):
     # Atwater check: the macros must roughly reconstruct the calorie figure.
     # Catches the common failure of researching macros and calories separately
     # from sources using different serving sizes.
+    # The absolute floor matters for condiments: at 25 kcal, rounding grams to
+    # integers can shift the implied figure by more than 15% on its own, so a
+    # pure percentage test rejects perfectly good records.
     implied = 4 * protein + 4 * carbs + 9 * fat
-    if calories > 0 and abs(implied - calories) > ATWATER_TOLERANCE * calories:
+    tolerance = max(ATWATER_TOLERANCE * calories, ATWATER_FLOOR_KCAL)
+    if calories > 0 and abs(implied - calories) > tolerance:
         problems.append(
             f"macros imply {implied:.0f} kcal but record says {calories} "
-            f"(>{int(ATWATER_TOLERANCE * 100)}% apart)"
+            f"(more than {tolerance:.0f} kcal apart)"
         )
     return problems
 

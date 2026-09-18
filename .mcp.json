@@ -11,9 +11,11 @@
     },
     "tavily": {
       "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "tavily-mcp@latest"],
-      "env": { "TAVILY_API_KEY": "${TAVILY_API_KEY}" }
+      "command": "bash",
+      "args": [
+        "-c",
+        "set -a; . /Users/jesussingh/Downloads/yeshwasingh-capstone/.env; set +a; exec npx -y tavily-mcp@latest"
+      ]
     }
   }
 }

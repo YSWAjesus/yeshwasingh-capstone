@@ -27,13 +27,15 @@
     "source": "seed"
   },
   "banana custard": {
-    "aliases": [],
+    "aliases": [
+      "banana custurd"
+    ],
     "calories": 200,
     "carbs": 30,
     "confidence": "medium",
     "fat": 7,
     "protein": 4,
-    "source": "seed"
+    "source": "Existing seed record for 'banana custard', numbers unchanged. Menu spelling 'Banana Custurd' is an OCR typo of the same dessert; name resolution only, no new nutrition research."
   },
   "banana tomato rassa": {
     "aliases": [],
@@ -126,13 +128,15 @@
     "source": "seed"
   },
   "chana dal wada": {
-    "aliases": [],
+    "aliases": [
+      "chatpata dal wada"
+    ],
     "calories": 200,
     "carbs": 22,
     "confidence": "medium",
     "fat": 9,
     "protein": 7,
-    "source": "seed"
+    "source": "Existing seed record for 'chana dal wada', numbers unchanged. Menu name 'Chatpata Dal Wada' is the same fried dal wada ('chatpata' = tangy/spiced seasoning); mapped as nearest-analogue alias. No new nutrition research."
   },
   "chana gassi": {
     "aliases": [],
@@ -261,13 +265,15 @@
     "source": "seed"
   },
   "cucumber juice": {
-    "aliases": [],
+    "aliases": [
+      "cucumbar juice"
+    ],
     "calories": 40,
     "carbs": 9,
     "confidence": "medium",
     "fat": 0,
     "protein": 1,
-    "source": "seed"
+    "source": "Existing seed record for 'cucumber juice', numbers unchanged. Menu spelling 'Cucumbar Juice' is an OCR typo of the same drink; name resolution only, no new nutrition research."
   },
   "curd": {
     "aliases": [],
@@ -315,13 +321,15 @@
     "source": "seed"
   },
   "dal fry": {
-    "aliases": [],
+    "aliases": [
+      "mix dal fry"
+    ],
     "calories": 180,
     "carbs": 21,
     "confidence": "medium",
     "fat": 6,
     "protein": 9,
-    "source": "seed"
+    "source": "Existing seed record for 'dal fry', numbers unchanged. Menu name 'Mix Dal Fry' is the same preparation made with mixed lentils rather than one; lentil varieties differ negligibly in macros, so mapped as nearest-analogue alias. No new nutrition research."
   },
   "dal kich": {
     "aliases": [],
@@ -432,13 +440,15 @@
     "source": "seed"
   },
   "fruit juice": {
-    "aliases": [],
+    "aliases": [
+      "mix fruit juice"
+    ],
     "calories": 90,
     "carbs": 22,
     "confidence": "medium",
     "fat": 0,
     "protein": 1,
-    "source": "seed"
+    "source": "Existing seed record for 'fruit juice', numbers unchanged. Menu name 'Mix Fruit Juice' is the same beverage (mixed-fruit juice) under a longer name; nearest-analogue name resolution, no new nutrition research."
   },
   "fryums": {
     "aliases": [],
@@ -531,13 +541,15 @@
     "source": "seed"
   },
   "hot garlic vegetable soup": {
-    "aliases": [],
+    "aliases": [
+      "hot garlic soup"
+    ],
     "calories": 90,
     "carbs": 13,
     "confidence": "medium",
     "fat": 3,
     "protein": 3,
-    "source": "seed"
+    "source": "Existing seed record for 'hot garlic vegetable soup', numbers unchanged. Menu name 'Hot Garlic Soup' is the shortened form of the same soup; name resolution only, no new nutrition research."
   },
   "idly": {
     "aliases": [],
@@ -594,13 +606,15 @@
     "source": "seed"
   },
   "kulcha": {
-    "aliases": [],
+    "aliases": [
+      "kulche"
+    ],
     "calories": 210,
     "carbs": 35,
     "confidence": "medium",
     "fat": 6,
     "protein": 5,
-    "source": "seed"
+    "source": "Existing seed record for 'kulcha', numbers unchanged. Menu spelling 'Kulche' is an OCR/plural variant of the same bread; name resolution only, no new nutrition research."
   },
   "lancha": {
     "aliases": [],
@@ -891,13 +905,15 @@
     "source": "seed"
   },
   "motichoor ladoo": {
-    "aliases": [],
+    "aliases": [
+      "motichur ladoo"
+    ],
     "calories": 260,
     "carbs": 34,
     "confidence": "medium",
     "fat": 12,
     "protein": 3,
-    "source": "seed"
+    "source": "Existing seed record for 'motichoor ladoo', numbers unchanged. Menu spelling 'Motichur Ladoo' is an OCR/transliteration variant of the same sweet; name resolution only, no new nutrition research."
   },
   "onion lachha salad": {
     "aliases": [],
@@ -1152,13 +1168,15 @@
     "source": "seed"
   },
   "sheer khurma": {
-    "aliases": [],
+    "aliases": [
+      "sheer kurma"
+    ],
     "calories": 260,
     "carbs": 34,
     "confidence": "medium",
     "fat": 11,
     "protein": 4,
-    "source": "seed"
+    "source": "Existing seed record for 'sheer khurma', numbers unchanged. Menu spelling 'Sheer Kurma' is an OCR/transliteration variant of the same dessert; name resolution only, no new nutrition research."
   },
   "slice cake": {
     "aliases": [],
@@ -1314,13 +1332,15 @@
     "source": "seed"
   },
   "veg salad": {
-    "aliases": [],
+    "aliases": [
+      "crunchy veg salad"
+    ],
     "calories": 40,
     "carbs": 8,
     "confidence": "medium",
     "fat": 0,
     "protein": 1,
-    "source": "seed"
+    "source": "Existing seed record for 'veg salad', numbers unchanged. Menu name 'Crunchy Veg Salad' is the same raw vegetable salad with a descriptive adjective; mapped as nearest-analogue alias. No new nutrition research."
   },
   "veg upma": {
     "aliases": [],
