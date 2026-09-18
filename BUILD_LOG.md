@@ -6,16 +6,42 @@ Running total across every session below, Assessment 1 through the MVP.
 
 | | |
 |---|---|
-| **Sessions logged** | 7 |
-| **Total time** | ~12 hr 40 min |
-| **Total tokens (approx.)** | ~1.6M |
-| **Commits** | 14 across 5 branches |
+| **Sessions logged** | 8 |
+| **Total time** | ~15 hr |
+| **Total tokens (approx.)** | ~1.9M |
+| **Commits** | 18 across 5 branches |
 | **Span** | 2026-09-11 → 2026-09-18 |
 
 Per-session detail follows, newest first. One entry per commit; date, time
 spent, rough tokens used, what shipped.
 
 ---
+
+### 2026-09-18 — Figma artwork, in-bar CTAs, mobile, deploy prep
+- **Time spent:** ~2 hr 20 min
+- **Tokens used (approx.):** ~300k
+- **Shipped:** The landing page now renders `hero_composed.png` — the captain
+  with both speech bubbles positioned in Figma — as a single exported image,
+  which deleted every line of bubble-placement CSS. Trying to rebuild that
+  composition in CSS was the wrong call; the artwork was always the answer.
+  Perch poses use tight crops so the image's bottom edge is her feet and
+  planting her on the prompt bar is exact.
+  - Follow-up CTAs moved **into** the prompt bar as pills. Streamlit's chat
+    input is sealed, so these are real buttons lifted over it — visually
+    inside, structurally layered. The second one opens the tray tracker;
+    the mock's "Want to know macros?" had no honest behaviour behind it,
+    since macros already show per dish.
+  - **Mobile**, because photographing a tray means a phone. Bar spans the
+    screen, hero scales, pills stay inline and fit; the captain stands down
+    when pills are up, as a 375px bar can't hold both.
+  - Deploy prep: pinned `requirements.txt`, `.python-version`, `railway.json`
+    with an explicit Streamlit start command, and a README rewritten so a
+    stranger can clone and run it.
+  - **What broke:** the CTA pills rendered see-through. The alpha wasn't the
+    cause — a stale duplicate `.stButton` rule sat *after* the new one and
+    won on source order, resetting the background. Also, Streamlit stacks
+    columns on narrow screens, which pushed a pill clean out of the bar on
+    mobile until the row was forced inline.
 
 ### 2026-09-18 — UI rebuilt to the Figma mock; day queries
 - **Time spent:** ~3 hr
