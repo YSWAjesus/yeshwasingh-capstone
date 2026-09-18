@@ -1,51 +1,71 @@
 """
-Time-of-day -> meal section inference.
+Time-of-day -> meal inference.
 
-Time blocks (from plan.md):
-  Breakfast   07:00-10:30
-  Lunch       12:00-14:30
-  Snacks      16:00-18:00
-  Dinner      19:30-22:00
-
-Outside these windows, we fall back to whichever meal is coming up next so
-the agent never just says "nothing right now" during a quiet hour.
+A generic question ("what's there to eat?") should answer the meal you can
+actually still go and eat, not the one that just closed.
 """
 
 from datetime import datetime, time
 
-BLOCKS = [
-    ("Breakfast", time(7, 0), time(10, 30)),
-    ("Lunch", time(12, 0), time(14, 30)),
-    ("Snacks", time(16, 0), time(18, 0)),
+# ---------------------------------------------------------------------------
+# REAL SERVING WINDOWS — EDIT ME.
+# This table is the only place the app learns when meals happen; everything
+# else derives from it. Times confirmed with the mess on 2026-09-17.
+#     (name, opens, closes)   24h local time; "closes" = the counter shuts
+# ---------------------------------------------------------------------------
+SERVING_WINDOWS = [
+    ("Breakfast", time(7, 30), time(10, 0)),
+    ("Lunch", time(11, 30), time(15, 0)),
+    ("Snacks", time(17, 0), time(18, 0)),
     ("Dinner", time(19, 30), time(22, 0)),
 ]
 
-# Order used to find "the next upcoming meal" when we're between windows.
-_ORDER = ["Breakfast", "Lunch", "Snacks", "Dinner"]
+# How long after a window closes a generic "what's there to eat?" still answers
+# the meal that just ended, before rolling forward to the next one.
+GRACE_MINUTES = 10
+
+
+def _mins(t) -> int:
+    """Minutes since midnight — avoids timedelta and midnight-wrap arithmetic."""
+    return t.hour * 60 + t.minute
+
+
+def meal_context(now: datetime = None) -> dict:
+    """
+    {"meal_type", "status": serving|just_ended|upcoming, "day_offset": 0|1}
+
+    day_offset=1 means the meal is tomorrow's — without it, a query at 23:00
+    would answer with this morning's breakfast, eaten 16 hours ago.
+    """
+    now = now or datetime.now()
+    current = _mins(now.time())
+
+    for name, start, end in SERVING_WINDOWS:
+        if _mins(start) <= current <= _mins(end):
+            return {"meal_type": name, "status": "serving", "day_offset": 0}
+        if _mins(end) < current <= _mins(end) + GRACE_MINUTES:
+            return {"meal_type": name, "status": "just_ended", "day_offset": 0}
+
+    for name, start, _end in SERVING_WINDOWS:
+        if current < _mins(start):
+            return {"meal_type": name, "status": "upcoming", "day_offset": 0}
+
+    return {"meal_type": SERVING_WINDOWS[0][0], "status": "upcoming",
+            "day_offset": 1}
 
 
 def infer_meal_type(now: datetime = None) -> str:
-    """
-    Return one of "Breakfast", "Lunch", "Snacks", "Dinner" based on the
-    current time. Sunday callers should map this through to "Brunch" for
-    Breakfast/Lunch — see menu_data.sections_for_meal_type.
-    """
-    now = now or datetime.now()
-    current = now.time()
-
-    for name, start, end in BLOCKS:
-        if start <= current <= end:
-            return name
-
-    # Between windows: pick the next one that starts later today, else
-    # wrap around to the first block of the next day.
-    for name, start, _ in BLOCKS:
-        if current < start:
-            return name
-    return BLOCKS[0][0]
+    return meal_context(now)["meal_type"]
 
 
-# Keywords a user might type, mapped to the meal type they mean.
+def window_for(meal_type: str):
+    for name, start, end in SERVING_WINDOWS:
+        if name == meal_type:
+            return start, end
+    return None
+
+
+# Keywords a user might type, mapped to the meal they mean.
 MEAL_KEYWORDS = {
     "breakfast": "Breakfast",
     "brunch": "Breakfast",
@@ -58,10 +78,21 @@ MEAL_KEYWORDS = {
 }
 
 
-def meal_type_from_text(text: str):
-    """Return a meal type if the text names one explicitly, else None."""
-    lowered = text.lower()
-    for keyword, meal_type in MEAL_KEYWORDS.items():
-        if keyword in lowered:
-            return meal_type
-    return None
+def meal_type_from_text(now_text: str):
+    """Return the meal named in the text, or None.
+
+    Matches on position in the sentence rather than dict order, and prefers
+    longer keywords. Without this, "what's for dinner this evening?" resolves
+    to Snacks, because "evening" happens to be checked first.
+    """
+    lowered = now_text.lower()
+    best_position = None
+    best_meal = None
+    for keyword in sorted(MEAL_KEYWORDS, key=len, reverse=True):
+        position = lowered.find(keyword)
+        if position == -1:
+            continue
+        if best_position is None or position < best_position:
+            best_position = position
+            best_meal = MEAL_KEYWORDS[keyword]
+    return best_meal

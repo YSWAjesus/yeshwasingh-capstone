@@ -37,7 +37,6 @@ MACROS = {
     "poori bhaji": {"calories": 350, "protein": 6, "carbs": 45, "fat": 16},
     "medu wada": {"calories": 180, "protein": 5, "carbs": 20, "fat": 9},
     "idly": {"calories": 150, "protein": 4, "carbs": 30, "fat": 1},
-    "choco flakes ": {"calories": 150, "protein": 2, "carbs": 30, "fat": 3},
     "veg upma": {"calories": 220, "protein": 5, "carbs": 35, "fat": 7},
     "masala poha": {"calories": 250, "protein": 5, "carbs": 40, "fat": 8},
     "daliya upma": {"calories": 210, "protein": 6, "carbs": 38, "fat": 5},
@@ -138,7 +137,6 @@ MACROS = {
     "masala bhel": {"calories": 220, "protein": 5, "carbs": 32, "fat": 8},
     "chilly bhaji": {"calories": 210, "protein": 3, "carbs": 22, "fat": 12},
     "bombay sandwich": {"calories": 280, "protein": 7, "carbs": 38, "fat": 10},
-    "masala poha ": {"calories": 250, "protein": 5, "carbs": 40, "fat": 8},
     "lemon / sev": {"calories": 90, "protein": 2, "carbs": 12, "fat": 4},
     "coconut chutney/ curd": {"calories": 75, "protein": 2, "carbs": 5, "fat": 5},
     "tomato ketchup": {"calories": 20, "protein": 0, "carbs": 5, "fat": 0},
@@ -149,7 +147,6 @@ MACROS = {
     "roasted vegetable soup": {"calories": 90, "protein": 3, "carbs": 13, "fat": 2},
     "dal rasam": {"calories": 90, "protein": 4, "carbs": 12, "fat": 3},
     "mixk salad": {"calories": 40, "protein": 1, "carbs": 8, "fat": 0},
-    "carrot beet salad ": {"calories": 45, "protein": 1, "carbs": 9, "fat": 0},
     "mixed veg salad": {"calories": 40, "protein": 1, "carbs": 8, "fat": 0},
     "hakka noodles": {"calories": 320, "protein": 7, "carbs": 48, "fat": 10},
     "matki sprouts dry": {"calories": 150, "protein": 9, "carbs": 20, "fat": 4},
@@ -157,7 +154,6 @@ MACROS = {
     "schezwan sauce": {"calories": 25, "protein": 0, "carbs": 5, "fat": 0},
     "dum aloo banarasi": {"calories": 240, "protein": 4, "carbs": 26, "fat": 13},
     "dum banana": {"calories": 180, "protein": 2, "carbs": 24, "fat": 9},
-    "dal kich ": {"calories": 170, "protein": 8, "carbs": 20, "fat": 5},
     "vegetable fried rice": {"calories": 260, "protein": 5, "carbs": 46, "fat": 7},
     "mangotang": {"calories": 100, "protein": 0, "carbs": 25, "fat": 0},
     "mango tang": {"calories": 100, "protein": 0, "carbs": 25, "fat": 0},
@@ -170,7 +166,6 @@ MACROS = {
     "banana custard": {"calories": 200, "protein": 4, "carbs": 30, "fat": 7},
     "motichoor ladoo": {"calories": 260, "protein": 3, "carbs": 34, "fat": 12},
     "slice cake": {"calories": 250, "protein": 3, "carbs": 36, "fat": 10},
-    "corn cheese ball ": {"calories": 210, "protein": 5, "carbs": 20, "fat": 12},
     "pizza": {"calories": 280, "protein": 10, "carbs": 33, "fat": 12},
     "mili juli veg": {"calories": 150, "protein": 4, "carbs": 14, "fat": 8},
     "chana gassi": {"calories": 200, "protein": 8, "carbs": 22, "fat": 9},
@@ -180,36 +175,52 @@ MACROS = {
     "chilka wali green moong": {"calories": 180, "protein": 10, "carbs": 24, "fat": 5},
     "garlic dal tadka": {"calories": 180, "protein": 9, "carbs": 20, "fat": 6},
     "mix bhaji": {"calories": 150, "protein": 3, "carbs": 15, "fat": 8},
-    "veg salad ": {"calories": 40, "protein": 1, "carbs": 8, "fat": 0},
     "tang": {"calories": 90, "protein": 0, "carbs": 23, "fat": 0},
 }
 
 
-def _normalize(name: str) -> str:
-    return name.strip().lower()
+def _normalize(name) -> str:
+    return str(name).strip().lower()
 
 
-def lookup(dish_name: str):
+def lookup(dish_name):
     """Return macro dict for a single dish, or None if not in the table."""
     return MACROS.get(_normalize(dish_name))
 
 
+def per_item_macros(items):
+    """[{'item': str, 'macros': {...} or None}] — order preserved.
+
+    macros=None means "not in the table". It never means a guessed number.
+    """
+    return [{"item": str(item), "macros": lookup(item)} for item in items]
+
+
+def format_macros(macro) -> str:
+    """One rendering shared by chat and the tray tracker, so they can't disagree."""
+    if not macro:
+        return "no macro estimate yet"
+    return (f"{macro['calories']} kcal · {macro['protein']}g P · "
+            f"{macro['carbs']}g C · {macro['fat']}g F")
+
+
 def estimate_macros(items):
     """
-    Sum macros for a list of dish names.
+    Sum macros across a list of dish names.
 
-    Returns (totals, unmatched) where totals is a {calories, protein, carbs,
-    fat} dict for everything found in the table, and unmatched is the list
-    of dish names that had no entry (so the UI can say "not estimated yet"
-    instead of inventing a number).
+    Only meaningful when the caller knows the person is eating all of them —
+    i.e. the tray tracker, where the user ticks their own plate. A whole
+    buffet menu must NOT be summed; use per_item_macros for that.
+
+    Returns (totals, unmatched); unmatched lists dishes with no entry so the
+    UI can say "not estimated yet" instead of inventing a number.
     """
     totals = {"calories": 0, "protein": 0, "carbs": 0, "fat": 0}
     unmatched = []
-    for item in items:
-        macro = lookup(item)
-        if macro is None:
-            unmatched.append(item)
+    for entry in per_item_macros(items):
+        if entry["macros"] is None:
+            unmatched.append(entry["item"])
             continue
         for key in totals:
-            totals[key] += macro[key]
+            totals[key] += entry["macros"][key]
     return totals, unmatched

@@ -1,88 +1,136 @@
 """
-Turns a user's chat message into a menu answer: figure out which meal they
-mean (explicit keyword, else time-of-day), look up that day's items, format
-a reply, and suggest a follow-up (a different meal they might want next).
+Turns a chat message into a menu answer: work out which meal is meant, which
+halls are serving, and render it with per-dish macros and a follow-up the user
+can actually click.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
-import menu_data
+import halls
+import macros
 import time_logic
-from macros import estimate_macros
 
-FOLLOW_UP_ORDER = ["Breakfast", "Lunch", "Snacks", "Dinner"]
+# What to offer next after answering each meal.
+_NEXT_MEAL = {
+    "Breakfast": ["Lunch", "Snacks", "Dinner"],
+    "Lunch": ["Snacks", "Dinner", "Breakfast"],
+    "Snacks": ["Dinner", "Breakfast", "Lunch"],
+    "Dinner": ["Breakfast", "Lunch", "Snacks"],
+}
 
 
-def _next_meal_type(meal_type: str) -> str:
-    idx = FOLLOW_UP_ORDER.index(meal_type)
-    return FOLLOW_UP_ORDER[(idx + 1) % len(FOLLOW_UP_ORDER)]
+def _headline(servings) -> str:
+    """One sentence naming what each hall has — only halls with real data."""
+    clauses = []
+    for serving in servings:
+        if serving.hall is None:
+            return ""  # Sunday brunch: no hall split to report
+        dish = halls.headline_dish(serving)
+        if not dish:
+            continue
+        if serving.same_as_main:
+            clauses.append("the Jain counter has the same thing")
+        elif "Jain" in serving.hall:
+            clauses.append(f"the Jain option is {dish}")
+        else:
+            clauses.append(f"in {serving.hall} there's {dish}")
+    if not clauses:
+        return ""
+    if len(clauses) == 1:
+        return f"Today {clauses[0]}."
+    return f"Today {', '.join(clauses[:-1])}, and {clauses[-1]}."
 
 
-def _format_section(section_name: str, content) -> str:
-    lines = [f"**{section_name}**"]
-    if isinstance(content, dict):
-        for category, item in content.items():
-            lines.append(f"- {category}: {item}")
-    elif isinstance(content, list):
-        for item in content:
-            lines.append(f"- {item}")
+def _render_serving(serving) -> str:
+    if serving.hall is None:
+        lines = [f"**Sunday brunch** — {serving.note}"]
+    else:
+        note = serving.note
+        if serving.same_as_main:
+            note += ", same as the main line today"
+        title = serving.hall[0].upper() + serving.hall[1:]  # "the Jain counter"
+        lines = [f"**{title}** — {note}"]
+
+    for category, dish in serving.rows:
+        label = f"{category}: {dish}" if category else dish
+        macro = macros.lookup(dish)
+        if macro:
+            lines.append(f"- {label} — {macros.format_macros(macro)}")
+        else:
+            lines.append(f"- {label} — _no macro estimate yet_")
     return "\n".join(lines)
 
 
-def _items_from_sections(day_menu: dict, section_names) -> list:
-    items = []
-    for section in section_names:
-        content = day_menu.get(section)
-        if isinstance(content, dict):
-            items.extend(content.values())
-        elif isinstance(content, list):
-            items.extend(content)
-    return items
+def _suggest_follow_up(menu, weekday, meal_type):
+    """Only offer a meal that actually has data — never a dead end."""
+    for candidate in _NEXT_MEAL.get(meal_type, []):
+        day_menu = halls.resolve_day(menu, weekday)
+        if halls.servings_for_meal(day_menu, candidate):
+            return candidate
+    return None
 
 
 def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
     """
     Returns:
-      {
-        "reply": str,              # chat-style markdown reply
-        "meal_type": str,          # the meal that was answered
-        "follow_up": str,          # suggested next meal to ask about
-      }
+      reply             markdown answer
+      meal_type         the meal that was answered
+      follow_up         meal type to offer next, or None
+      follow_up_label   button text, or None
+      follow_up_prompt  what clicking the button should ask, or None
+      servings          the Serving objects behind this answer
     """
     now = now or datetime.now()
-    weekday = now.strftime("%A")
 
-    meal_type = time_logic.meal_type_from_text(user_text) or time_logic.infer_meal_type(now)
-    section_names = menu_data.sections_for_meal_type(weekday, meal_type)
-    day_menu = menu.get(weekday, {})
+    asked = time_logic.meal_type_from_text(user_text)
+    if asked:
+        meal_type = asked
+        weekday = now.strftime("%A")
+        status = None
+    else:
+        context = time_logic.meal_context(now)
+        meal_type = context["meal_type"]
+        status = context["status"]
+        weekday = (now + timedelta(days=context["day_offset"])).strftime("%A")
 
-    if not section_names or not any(s in day_menu for s in section_names):
-        reply = (
-            f"I don't have {meal_type.lower()} data for {weekday} yet — "
-            "the menu file might not cover it (e.g. no evening snacks/dinner "
-            "listed for Sunday in the current sheet)."
-        )
-        return {"reply": reply, "meal_type": meal_type, "follow_up": _next_meal_type(meal_type)}
+    day_menu = halls.resolve_day(menu, weekday)
+    servings = halls.servings_for_meal(day_menu, meal_type)
 
-    parts = []
-    for section in section_names:
-        if section in day_menu:
-            parts.append(_format_section(section, day_menu[section]))
-    body = "\n\n".join(parts)
+    if not servings:
+        reply = (f"I don't have {meal_type.lower()} listed for {weekday} in "
+                 f"this week's menu photo.")
+        return {"reply": reply, "meal_type": meal_type, "follow_up": None,
+                "follow_up_label": None, "follow_up_prompt": None,
+                "servings": []}
 
-    items = _items_from_sections(day_menu, section_names)
-    totals, unmatched = estimate_macros(items)
-    macro_line = (
-        f"\n\n_Roughly {totals['calories']} kcal · {totals['protein']}g protein · "
-        f"{totals['carbs']}g carbs · {totals['fat']}g fat "
-        f"(estimated across everything above)_"
-    )
-    if unmatched:
-        macro_line += f"\n_Not estimated yet: {', '.join(unmatched)}_"
+    if status == "just_ended":
+        opener = f"{meal_type} is just finishing — here's what was on:"
+    elif status == "upcoming":
+        window = time_logic.window_for(meal_type)
+        starts = window[0].strftime("%H:%M") if window else ""
+        opener = f"{meal_type} starts at {starts} — here's what's coming:"
+    else:
+        opener = f"Here's {weekday}'s {meal_type.lower()}:"
 
-    reply = f"Here's {weekday}'s {meal_type.lower()}:\n\n{body}{macro_line}"
+    parts = [opener]
+    headline = _headline(servings)
+    if headline:
+        parts.append(headline)
+    parts.append("\n\n".join(_render_serving(s) for s in servings))
 
-    follow_up = _next_meal_type(meal_type)
-    reply += f"\n\nWant to know what's for {follow_up.lower()} too?"
+    missing = sum(1 for s in servings for _c, d in s.rows if not macros.lookup(d))
+    if missing:
+        parts.append(f"_{missing} dish{'es' if missing > 1 else ''} "
+                     f"aren't in the macro table yet — no numbers invented for them._")
+    parts.append("_Taking some of this? The tray tracker totals up just what's "
+                 "on your plate._")
 
-    return {"reply": reply, "meal_type": meal_type, "follow_up": follow_up}
+    follow_up = _suggest_follow_up(menu, weekday, meal_type)
+    return {
+        "reply": "\n\n".join(parts),
+        "meal_type": meal_type,
+        "follow_up": follow_up,
+        "follow_up_label": f"What's for {follow_up.lower()}?" if follow_up else None,
+        "follow_up_prompt": f"what's for {follow_up.lower()}" if follow_up else None,
+        "servings": servings,
+    }

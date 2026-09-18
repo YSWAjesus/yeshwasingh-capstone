@@ -6,6 +6,38 @@ commit + push.
 
 ---
 
+### 2026-09-18 — Dining halls, per-dish macros, pixel-art UI
+- **Time spent:** ~3 hr
+- **Tokens used (approx.):** ~430k (incl. a 3-agent research pass)
+- **Shipped:** Branch `feat/dining-halls-ui`.
+  - **Dining halls:** new `halls.py` models Rasoi (rice-bowl counter), Aahar
+    (main line) and the Jain counter (a row filter inside Aahar, not a
+    section). Replies now read "Today in Rasoi there's X, in Aahar there's Y,
+    and the Jain counter has the same thing." A hall with no data is silently
+    absent rather than invented — snacks correctly shows Aahar only.
+  - **Per-dish macros** replace the aggregate total. The old total wasn't just
+    meaningless for a buffet, it was wrong: the Jain rows duplicate the main
+    rows, inflating Monday lunch from 1595 to 1985 kcal. The tray tracker keeps
+    its total, because there you tick only your own plate.
+  - **Real serving windows** (7:30–10:00 / 11:30–15:00 / 17:00–18:00 /
+    19:30–22:00) in one editable config, plus a 10-minute grace rule. Fixes the
+    reported bug where 10:15 answered breakfast; it now answers lunch.
+  - **UI:** dropped `st.tabs` so `st.chat_input` actually pins to the bottom
+    (it only pins with no ancestor block — this was the real cause, not CSS),
+    Pixelify Sans + purple gradient theme, pixel-art avatar with idle /
+    thinking / answering / error states, the canned greeting replaced by four
+    suggestion chips, and the follow-up turned into a real clickable button.
+  - **Bugs fixed while in there:** "what's for dinner this evening?" returned
+    Snacks (keyword matched by dict order); 23:00 showed this morning's
+    breakfast; Sunday's snacks and dinner were discarded by the OCR prompt and
+    then reported as non-existent; "N/A" cells surfaced as dishes; a lapsed
+    Drive link could serve an HTML page to Gemini as an image; a stale bundled
+    menu could be shown silently as this week's; six macro entries were
+    unreachable due to trailing spaces.
+  - **Startup:** parsed menus are cached on disk keyed by image hash — cold
+    start went from 47.8s to 2.4s, and restarts no longer re-roll the ~1-in-5
+    malformed-OCR dice.
+
 ### 2026-09-16 — Switch ingestion to Gemini OCR, real photo recognition
 - **Time spent:** ~1.5 hr
 - **Tokens used (approx.):** ~110k
