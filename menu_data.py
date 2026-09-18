@@ -15,11 +15,14 @@ and time_logic.py need no changes):
   }
 """
 
+import hashlib
+import json
 import os
 from pathlib import Path
 
 import requests
 
+import halls
 from gemini_client import GeminiError, generate_json
 
 SAMPLE_MENU_PATH = Path(__file__).parent / "sample_menu.jpg"
@@ -58,11 +61,18 @@ Return ONLY JSON matching exactly this shape (no extra commentary):
   "Saturday": { ... },
   "Sunday": {
     "date": "<date text>",
-    "Brunch": ["<item>", "<item>", ...]
+    "Brunch": ["<item>", "<item>", ...],
+    "Evening Snacks": {"<category>": "<item>", ...},
+    "Dinner": {"<category>": "<item>", ...}
   }
 }
 
 Rules:
+- SUNDAY: the breakfast/lunch rows are replaced by one combined brunch column,
+  so return those as the flat "Brunch" list. But Sunday usually DOES have its
+  own Evening Snacks and Dinner rows in the grid — read them like any other
+  day and return them as normal category objects. Only omit them if the photo
+  genuinely has nothing there.
 - Use the exact section names shown above as JSON keys, even if the photo's
   own labels are ambiguous or repeated (e.g. two "Lunch" banners in the photo
   map to "Lunch - Rice Bowl (Rasoi Dining)" for the rice-bowl-concept block
@@ -87,25 +97,40 @@ include any item not in the list above.
 """
 
 
-def fetch_menu_image(file_id: str = None) -> Path:
+_IMAGE_MAGIC = (b"\xff\xd8\xff", b"\x89PNG\r\n\x1a\n")
+
+
+def fetch_menu_image(file_id: str = None):
     """
-    Download the menu photo from Google Drive (file must be shared as
-    "Anyone with the link"). Falls back to the bundled sample photo if the
-    fetch fails, so the app always has something to run against.
+    Download this week's menu photo from Google Drive (shared as "Anyone with
+    the link"). Returns (path, source) where source is "drive", "cache" or
+    "sample", so the UI can say which menu it is actually showing.
+
+    Falling back silently would be dangerous: a lapsed share link or a brief
+    network blip would make the app present a months-old bundled menu as if it
+    were today's.
     """
     file_id = file_id or DRIVE_FILE_ID
     url = f"https://drive.google.com/uc?export=download&id={file_id}"
     try:
         response = requests.get(url, timeout=15)
         response.raise_for_status()
-        if not response.content:
+        content = response.content
+        if not content:
             raise ValueError("empty response body")
+        # A lapsed share link returns 200 OK with an HTML sign-in page, which
+        # would otherwise be written as .jpg and posted to Gemini as an image.
+        if not content.startswith(_IMAGE_MAGIC):
+            raise ValueError("Drive returned something that isn't an image "
+                             "(the share link may have lapsed)")
     except Exception:
-        return SAMPLE_MENU_PATH
+        if CACHED_MENU_PATH.exists():
+            return CACHED_MENU_PATH, "cache"
+        return SAMPLE_MENU_PATH, "sample"
 
     CACHED_MENU_PATH.parent.mkdir(exist_ok=True)
-    CACHED_MENU_PATH.write_bytes(response.content)
-    return CACHED_MENU_PATH
+    CACHED_MENU_PATH.write_bytes(content)
+    return CACHED_MENU_PATH, "drive"
 
 
 def parse_menu_image(image_path: Path = None, attempts: int = 3) -> dict:
@@ -129,10 +154,13 @@ def parse_menu_image(image_path: Path = None, attempts: int = 3) -> dict:
             last_error = exc
             continue
 
-        if any(day in menu for day in DAYS):
+        days_found = [d for d in DAYS if halls.resolve_day(menu, d)]
+        # Accepting a single day would let through exactly the partial
+        # response this retry loop exists to catch.
+        if len(days_found) >= 5:
             return menu
         last_error = GeminiError(
-            "Gemini's response didn't contain any recognizable day of the week."
+            f"Gemini returned only {len(days_found)} of 7 days — partial read."
         )
 
     raise GeminiError(
@@ -141,10 +169,32 @@ def parse_menu_image(image_path: Path = None, attempts: int = 3) -> dict:
     )
 
 
-def load_menu() -> dict:
-    """Convenience wrapper: fetch (or use sample) then parse via Gemini."""
-    path = fetch_menu_image()
-    return parse_menu_image(path)
+PARSE_CACHE_DIR = Path(__file__).parent / ".cache" / "parsed"
+
+
+def load_menu(use_cache: bool = True):
+    """Fetch this week's photo and OCR it. Returns (menu, source).
+
+    The parsed result is cached on disk keyed by a hash of the image bytes, so
+    restarting the app doesn't re-run a 15-60s OCR call on an unchanged photo
+    (and doesn't re-roll the ~1-in-5 malformed-response dice). A new photo has
+    different bytes, so it misses the cache and is read fresh.
+    """
+    path, source = fetch_menu_image()
+    image_bytes = path.read_bytes()
+    digest = hashlib.sha256(image_bytes).hexdigest()[:16]
+    cache_file = PARSE_CACHE_DIR / f"{digest}.json"
+
+    if use_cache and cache_file.exists():
+        try:
+            return json.loads(cache_file.read_text()), source
+        except ValueError:
+            cache_file.unlink(missing_ok=True)
+
+    menu = parse_menu_image(path)
+    PARSE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    cache_file.write_text(json.dumps(menu, indent=2))
+    return menu, source
 
 
 def detect_items_in_photo(photo_path, candidate_items: list) -> list:
@@ -162,35 +212,26 @@ def detect_items_in_photo(photo_path, candidate_items: list) -> list:
     except GeminiError:
         return []
 
+    # Gemini occasionally returns a bare list instead of the object we asked
+    # for; .get() on that would raise straight past the caller's handler.
+    if not isinstance(result, dict):
+        return []
+
     detected = result.get("detected", [])
+    if not isinstance(detected, list):
+        return []
     candidate_set = set(candidate_items)
     return [item for item in detected if item in candidate_set]
 
 
-def sections_for_meal_type(day: str, meal_type: str):
-    """
-    Map a (day, meal_type) pair to the section key(s) that apply.
-
-    Sunday collapses Breakfast+Lunch into "Brunch". Weekday Lunch pulls in
-    both lunch lines (the Rice Bowl concept and the regular Lunch line) —
-    both are genuinely on offer the same day.
-    """
-    if day == "Sunday":
-        if meal_type in ("Breakfast", "Lunch"):
-            return ["Brunch"]
-        return []  # Evening Snacks / Dinner data not available for Sunday yet
-
-    if meal_type == "Lunch":
-        return ["Lunch - Rice Bowl (Rasoi Dining)", "Lunch"]
-    if meal_type == "Snacks":
-        return ["Evening Snacks"]
-    return [meal_type]
-
-
 def all_items_for_day(menu: dict, day: str):
-    """Flat list of every dish name on a given day, across all sections."""
+    """Every real dish on a given day, across all sections.
+
+    Filters out the "N/A"/"N/L" placeholders the mess prints in empty cells,
+    which would otherwise show up as tickable items on the tray tracker.
+    """
     items = []
-    day_menu = menu.get(day, {})
+    day_menu = halls.resolve_day(menu, day)
     for section, content in day_menu.items():
         if section == "date":
             continue
@@ -198,4 +239,4 @@ def all_items_for_day(menu: dict, day: str):
             items.extend(content.values())
         elif isinstance(content, list):
             items.extend(content)
-    return items
+    return [i for i in items if halls.is_real_dish(i)]
