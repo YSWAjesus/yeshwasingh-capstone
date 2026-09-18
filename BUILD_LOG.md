@@ -6,6 +6,43 @@ commit + push.
 
 ---
 
+### 2026-09-18 — Agentic macro-gap pipeline (Assessment 2)
+- **Time spent:** ~2 hr
+- **Tokens used (approx.):** ~254k (agent runs: 82k + 172k)
+- **Shipped:** Branch `feat/agentic-macro-refresh`. A custom Skill, a looping
+  subagent, two MCP servers and a workflow, run end-to-end on the real menu.
+  - **Skill** `nutrition-lookup` — one dish in, one schema-conformant record
+    out. Carries the serving conventions (1 katori dal ≈ 150g, 1 chapati ≈
+    40g), a source hierarchy topped by IFCT/NIN-ICMR, the sanity gate, a Jain
+    derivation rule, and an explicit `unresolved` protocol instead of guessing.
+  - **Agent** `macro-gap-filler` — perceive (audit script) → reason (rank by
+    how often a dish appears; decide new record vs alias vs not-a-dish) → act
+    (skill + MCP search) → observe (merge script's accept/reject verdict).
+  - **MCP** — `filesystem` sandboxed to `data/`, and `tavily` for research.
+    The agent is denied `Write`/`Edit`, so MCP is its only route to write.
+  - **Result: 48 missing dishes → 2, over 13 passes.** 36 accepted, 0 rejected
+    on macro grounds, 2 deliberate `unresolved`. Table 154 → 188 entries, all
+    188 passing independent re-validation. 33 carry cited URLs.
+  - The 2 remaining are `Beverage of the Day` and `Pastry of the Day` —
+    placeholders, not food. The drink varies buttermilk-to-squash, a five-fold
+    calorie spread, so any single number would be fabricated. The app keeps
+    showing "no macro estimate yet" for them, which is the correct outcome.
+  - **What broke:** Tavily reported *connected* with all 5 tools registered and
+    401'd on every query — `${TAVILY_API_KEY}` isn't expanded anywhere in
+    `.mcp.json`, so the server launched with the literal string as its key. A
+    green status line only proves a process started. Fixed by launching it
+    through bash sourcing the gitignored `.env`. Earlier the same day,
+    `${CLAUDE_PROJECT_DIR}` failed the same way in `args` and took the
+    filesystem server down with `CONNECTION_CLOSED`.
+  - **What the design caught:** the agent surfaced both of those as explicit
+    blockers instead of inventing 34 plausible numbers, because it cannot
+    declare its own success and its skill forbids unsourced guesses. It also
+    caught a bug in my validator — a 40 kcal floor rejected the table's own
+    `mixed pickle` (25) and `roasted papad` (35) — and refused to raise 25 to
+    45 to clear it, calling it the "nudging numbers to fit" the skill forbids.
+    It was right; the gate was wrong. Floor is now 10 kcal with a 20 kcal
+    absolute Atwater tolerance, verified against all 154 pre-existing entries.
+
 ### 2026-09-18 — Dining halls, per-dish macros, pixel-art UI
 - **Time spent:** ~3 hr
 - **Tokens used (approx.):** ~430k (incl. a 3-agent research pass)

@@ -119,9 +119,12 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
     parts.append("\n\n".join(_render_serving(s) for s in servings))
 
     missing = sum(1 for s in servings for _c, d in s.rows if not macros.lookup(d))
-    if missing:
-        parts.append(f"_{missing} dish{'es' if missing > 1 else ''} "
-                     f"aren't in the macro table yet — no numbers invented for them._")
+    if missing == 1:
+        parts.append("_1 dish isn't in the macro table yet — "
+                     "no number invented for it._")
+    elif missing:
+        parts.append(f"_{missing} dishes aren't in the macro table yet — "
+                     f"no numbers invented for them._")
     parts.append("_Taking some of this? The tray tracker totals up just what's "
                  "on your plate._")
 
