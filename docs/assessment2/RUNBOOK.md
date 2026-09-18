@@ -93,3 +93,17 @@ Some menu cells aren't dishes — `Beverage of the Day`, `Pastry of the Day`.
 The skill is instructed to return `unresolved` for these rather than invent
 numbers. Leaving them visibly unresolved is the correct outcome and worth
 saying so in the PR.
+
+## Note for anyone cloning this repo
+
+`.mcp.json` points the filesystem server at an absolute path:
+
+```
+/Users/jesussingh/Downloads/yeshwasingh-capstone/data
+```
+
+Change that one line to your own checkout's `data/` directory. It is absolute
+on purpose: `${CLAUDE_PROJECT_DIR}` is **not** expanded inside `args` (it is
+expanded inside `env`, which is why the tavily server works), and a relative
+path depends on the working directory Claude Code happens to launch the server
+with. An absolute path removes both failure modes.
