@@ -108,11 +108,19 @@ for index, message in enumerate(st.session_state.messages):
 
 # ------------------------------------------------------------ tray tracker
 if st.session_state.show_tray and st.session_state.tray_photo is None:
-    st.caption("Snap or upload your tray — hit **+** in the bar below, or use "
-               "the camera.")
+    st.caption("Add a photo of your tray — **+** in the bar below opens your "
+               "camera roll (and the camera itself on a phone).")
+    # The in-page camera widget needs a secure context: it works on localhost
+    # and over HTTPS, but a phone hitting this over plain http on the LAN gets
+    # a blocked camera. The "+" upload path has no such restriction and opens
+    # the native "Take Photo" picker on iOS and Android, so it is the reliable
+    # route on a phone until this is deployed behind HTTPS.
     snap = st.camera_input("Photograph your tray", label_visibility="collapsed")
     if snap is not None:
         st.session_state.tray_photo = snap.getvalue()
+        st.rerun()
+    if st.button("Never mind"):
+        st.session_state.show_tray = False
         st.rerun()
 
 tray_photo = st.session_state.tray_photo

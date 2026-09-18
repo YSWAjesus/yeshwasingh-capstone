@@ -113,6 +113,11 @@ def inject_theme() -> None:
   color: rgba(243,236,255,.38) !important;
   font-family: 'Pixelify Sans', monospace !important;
 }}
+/* When the CTA pills are on the bar they occupy the same space as the hint,
+   so the hint is hidden rather than left to collide with them. */
+body:has(.bc-cta-anchor) [data-testid="stChatInputTextArea"]::placeholder {{
+  color: transparent !important;
+}}
 [data-testid="stChatInputFileUploadButton"] svg {{ display: none !important; }}
 [data-testid="stChatInputFileUploadButton"] button::after {{
   content: "+";
@@ -127,6 +132,11 @@ def inject_theme() -> None:
   font-family: 'Pixelify Sans', monospace;
   font-size: 1.15rem; letter-spacing: .5px; opacity: .95;
   pointer-events: none;
+  /* It is fixed, so answers scroll underneath it — this keeps it legible
+     instead of tangling with the dish list. */
+  background: rgba(7,4,15,.82);
+  padding: .12rem .55rem .18rem .5rem; border-radius: 9px;
+  backdrop-filter: blur(6px);
 }}
 .bc-mark em {{ color: {LILAC}; font-style: normal; }}
 
@@ -212,7 +222,9 @@ def inject_theme() -> None:
 
 .stButton > button {{
   pointer-events: auto;
-  background: rgba(13,6,32,.9);
+  /* Fully opaque: these sit ON the bar, so any transparency lets the
+     placeholder text show through them. */
+  background: #1a0d3d;
   border: 1.5px solid rgba(178,140,255,.75);
   border-radius: 999px;
   color: #CDB8FF;
@@ -228,13 +240,67 @@ def inject_theme() -> None:
   border-color: {ACCENT}; color: {ACCENT};
   background: rgba(255,138,61,.08);
 }}
-.stButton > button {{
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(178,140,255,.5);
-  border-radius: 10px;
-  color: #E8DCFF; font-size: .85rem;
+
+/* ---------------- phone ----------------
+   Photographing a tray is the whole reason this has to work on a phone, so
+   the desktop tuning above gets pulled in: the bar spans the screen, the
+   pills shrink enough that two still fit beside the "+", and the captain
+   moves to the right-hand end of the bar so she cannot sit under them. */
+@media (max-width: 640px) {{
+  [data-testid="stMainBlockContainer"] {{
+    padding-top: 3rem !important;
+    padding-left: .75rem !important; padding-right: .75rem !important;
+  }}
+  [data-testid="stBottomBlockContainer"] {{
+    padding-left: .5rem !important; padding-right: .5rem !important;
+  }}
+  .bc-mark {{ font-size: .95rem; top: 10px; left: 12px; }}
+
+  .bc-hero {{ min-height: 44vh; }}
+  .bc-hero img {{ max-height: 42vh; max-width: 94vw; }}
+
+  .bc-answer {{
+    padding: .95rem 1rem; border-radius: 18px;
+    font-size: .9rem; margin-bottom: .8rem;
+  }}
+  .bc-answer::after {{ left: 24px; }}
+  .bc-answer h4 {{ font-size: .92rem; }}
+  .bc-answer .macros {{ font-size: .75rem; }}
+
+  /* Captain to the right-hand end, clear of the pills. */
+  .bc-perch {{ bottom: 46px; }}
+  .bc-perch-inner {{
+    padding-left: 0; padding-right: .4rem;
+    justify-content: flex-end; height: 86px;
+  }}
+  .bc-perch img {{ max-height: 82px; max-width: 98px; }}
+  /* A phone's bar is too narrow for the captain AND two pills. The pills do
+     a job; she is decoration, so she stands down while they are showing. */
+  body:has(.bc-cta-anchor) .bc-perch {{ display: none; }}
+
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
+    width: 100%; max-width: 100%;
+    padding-left: 3rem; padding-right: .4rem;
+    bottom: 30px;
+  }}
+  /* Streamlit stacks columns on narrow screens, which would push a pill
+     out of the bar. Keep them inline and size them to fit a phone. */
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+    [data-testid="stHorizontalBlock"] {{
+    flex-wrap: nowrap !important; gap: .3rem !important;
+  }}
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+    [data-testid="stColumn"] {{
+    width: auto !important; flex: 0 0 auto !important;
+    min-width: 0 !important;
+  }}
+  .stButton > button {{
+    font-size: .62rem; height: 24px; min-height: 24px; padding: 0 .45rem;
+  }}
+  [data-testid="stChatInputTextArea"] {{ font-size: .85rem !important; }}
+  [data-testid="stChatInputFileUploadButton"] button::after {{ font-size: 1.5rem; }}
 }}
-.stButton > button:hover {{ border-color: {ACCENT}; color: {ACCENT}; }}
+
 </style>
 """,
         unsafe_allow_html=True,
