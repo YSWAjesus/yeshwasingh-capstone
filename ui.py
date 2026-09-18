@@ -1,6 +1,15 @@
 """
-Presentation layer: the pixel-art skin, the avatar state machine, and the
-speech bubble. Kept out of app.py so the app file stays about behaviour.
+Presentation layer: the pixel-art skin, the avatar, and the speech bubbles.
+
+Layout follows the Figma mock:
+
+  Landing  — the captain large and centred, two pixel speech bubbles flanking
+             her head carrying the value proposition. Nothing else but the
+             prompt bar. The minimalism is the point.
+  Answering — the answer fills a large bubble, and the captain is SMALL and
+             propped on the prompt bar at bottom left. That is what the
+             "_promptbar" suffix on the sprite filenames means: those poses are
+             drawn to sit on the bar, not to float at the top of the page.
 """
 
 import base64
@@ -21,7 +30,7 @@ AVATAR = {
     "error": "avatar_erroroccured.png",
 }
 
-# Extra poses, cycled so repeated answers don't look identical.
+# Cycled so repeated answers don't look identical.
 ANSWER_POSES = [
     "avatar_response5_promptbar.png",
     "avatar_response3_promptbar.png",
@@ -30,107 +39,305 @@ ANSWER_POSES = [
 ]
 
 ACCENT = "#FF8A3D"
+LILAC = "#B28CFF"
 
 
 def _data_uri(path: Path) -> str:
     return "data:image/png;base64," + base64.b64encode(path.read_bytes()).decode()
 
 
+def _sprite(name: str):
+    path = SPRITES / name
+    return _data_uri(path) if path.exists() else None
+
+
 def inject_theme() -> None:
-    """Gradient background, pixel chrome, and the sticky prompt bar styling."""
     bubble = _data_uri(ASSETS / "bubble.png")
     st.markdown(
         f"""
 <style>
+/* Dark at the top, opening into purple toward the prompt bar — the light
+   sits low, behind the captain, as in the mock. */
 .stApp {{
-  background: linear-gradient(180deg,#4b2494 0%,#2a1358 45%,#0b0618 100%) !important;
+  background: linear-gradient(180deg,#07040f 0%,#160a33 38%,#341a6b 72%,#5a2da8 100%) !important;
   background-attachment: fixed !important;
 }}
+
+/* Wide layout, reined back in to the design's column width. */
+[data-testid="stMainBlockContainer"] {{
+  max-width: 1150px !important;
+  padding-top: 3.4rem !important;
+  margin: 0 auto !important;
+}}
+[data-testid="stBottomBlockContainer"] {{ max-width: 1290px !important; }}
 [data-testid="stHeader"], .stAppHeader {{ background: transparent !important; }}
 [data-testid="stToolbar"], .stAppToolbar {{ display: none !important; }}
-[data-testid="stBottom"] {{ background: transparent !important; }}
-[data-testid="stBottomBlockContainer"] {{
+
+/* The prompt bar sits on the gradient, not on a slab. Streamlit paints a
+   background on several nested containers down there, so all of them have to
+   be cleared or a lighter purple band shows through behind the bar. */
+[data-testid="stBottom"],
+[data-testid="stBottom"] > div,
+[data-testid="stBottomBlockContainer"],
+[data-testid="stBottomBlockContainer"] > div,
+.stBottom, .stBottom > div {{
   background: transparent !important;
-  padding-bottom: 1.75rem !important;
-  padding-top: .75rem !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}}
+[data-testid="stBottomBlockContainer"] {{
+  padding-bottom: 1.5rem !important;
+  padding-top: .5rem !important;
 }}
 
-/* The prompt bar. It only pins to the bottom because app.py calls
-   st.chat_input at top level — putting it inside any container or tab makes
-   Streamlit render it inline instead. */
+/* Near-black fill with a thin lilac edge, per the mock — not a purple slab. */
 [data-testid="stChatInput"] {{
-  background: rgba(255,255,255,.07) !important;
-  border: 3px solid #B28CFF !important;
-  border-radius: 0 !important;
-  box-shadow: 4px 4px 0 rgba(0,0,0,.45);
+  background: #0d0620 !important;
+  border: 1.5px solid rgba(178,140,255,.75) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,.55);
 }}
-/* Pixelify renders wide, so the default size clips the placeholder. */
+/* Divider after the "+", as drawn. */
+[data-testid="stChatInputFileUploadButton"] {{
+  border-right: 1px solid rgba(178,140,255,.35);
+  margin-right: .55rem; padding-right: .2rem;
+}}
 [data-testid="stChatInputTextArea"] {{
-  font-size: .95rem !important;
-  line-height: 1.5 !important;
+  font-family: 'Pixelify Sans', monospace !important;
+  font-size: .92rem !important;   /* Pixelify runs wide; larger clips the hint */
+  caret-color: {LILAC} !important;   /* the blinking lilac insertion point */
+  color: #F3ECFF !important;
 }}
 [data-testid="stChatInputTextArea"]::placeholder {{
-  color: rgba(243,236,255,.40) !important;
+  color: rgba(243,236,255,.38) !important;
+  font-family: 'Pixelify Sans', monospace !important;
 }}
-[data-testid="stMainBlockContainer"] {{ padding-top: 2rem !important; }}
+/* When the CTA pills are on the bar they occupy the same space as the hint,
+   so the hint is hidden rather than left to collide with them. */
+body:has(.bc-cta-anchor) [data-testid="stChatInputTextArea"]::placeholder {{
+  color: transparent !important;
+}}
 [data-testid="stChatInputFileUploadButton"] svg {{ display: none !important; }}
 [data-testid="stChatInputFileUploadButton"] button::after {{
   content: "+";
-  font-size: 1.7rem; line-height: 1; color: #B28CFF;
+  font-size: 1.8rem; line-height: 1; color: {LILAC};
+  font-family: 'Pixelify Sans', monospace;
 }}
 
-/* Pixel speech bubble, sliced from the exported art so the border keeps its
-   chunky pixels at any size. */
-.bc-bubble {{
-  border-style: solid;
-  border-width: 34px 30px 46px 30px;
-  border-image: url("{bubble}") 34 30 46 30 repeat;
-  background: #e9e9e9;
-  color: #14121c;
-  padding: .25rem 1rem 1rem 1rem;
-  margin: 0 auto 1.5rem auto;
-  max-width: 44rem;
-  image-rendering: pixelated;
+/* Wordmark, pinned to the top-left of the viewport rather than sitting in
+   the centred content column. */
+.bc-mark {{
+  position: fixed; top: 14px; left: 26px; z-index: 80;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 1.15rem; letter-spacing: .5px; opacity: .95;
+  pointer-events: none;
+  /* It is fixed, so answers scroll underneath it — this keeps it legible
+     instead of tangling with the dish list. */
+  background: rgba(7,4,15,.82);
+  padding: .12rem .55rem .18rem .5rem; border-radius: 9px;
+  backdrop-filter: blur(6px);
 }}
-.bc-bubble p, .bc-bubble li {{ color: #14121c !important; }}
+.bc-mark em {{ color: {LILAC}; font-style: normal; }}
 
-.bc-avatar {{ pointer-events: none; }}
-.bc-kcal {{ color: {ACCENT}; font-weight: 700; }}
-.bc-macros {{ font-size: .78rem; opacity: .72; }}
+/* ---------------- landing hero ----------------
+   One exported graphic: the captain with both speech bubbles already set in
+   Figma. Nothing to position, and the pixel tails are the real artwork
+   rather than a CSS approximation of them. */
+.bc-hero {{
+  display: flex; justify-content: center; align-items: flex-end;
+  min-height: 60vh; margin-top: .5rem;
+}}
+.bc-hero img {{
+  max-height: 62vh; max-width: 100%;
+  display: block; pointer-events: none;
+}}
 
-/* Suggestion chips */
-.stButton > button {{
-  background: rgba(255,255,255,.06);
+/* ---------------- answer bubble ---------------- */
+.bc-answer {{
+  position: relative;
+  background: rgba(30,14,64,.66);
   border: 2px solid rgba(178,140,255,.55);
-  border-radius: 0;
-  color: #E8DCFF;
+  border-radius: 26px;
+  padding: 1.4rem 1.6rem;
+  margin: 0 0 1.1rem 0;
+  backdrop-filter: blur(4px);
+  font-size: .95rem; line-height: 1.6;
+}}
+.bc-answer::after {{           /* tail pointing down-left to the captain */
+  content: ""; position: absolute; left: 34px; bottom: -14px;
+  border-width: 14px 14px 0 0; border-style: solid;
+  border-color: rgba(30,14,64,.66) transparent transparent transparent;
+}}
+.bc-answer h4 {{
+  font-family: 'Pixelify Sans', monospace;
+  margin: 1rem 0 .35rem 0; font-size: 1rem; color: {LILAC};
+}}
+.bc-answer .kcal {{ color: {ACCENT}; font-family: 'Pixelify Sans', monospace; }}
+.bc-answer .macros {{ opacity: .62; font-size: .8rem; }}
+.bc-answer .none {{ opacity: .45; font-size: .8rem; font-style: italic; }}
+.bc-answer .lead {{ font-size: 1.02rem; margin-bottom: .2rem; }}
+.bc-answer ul {{ margin: .1rem 0 .2rem 0; padding-left: 1.1rem; }}
+.bc-answer li {{ margin: .18rem 0; }}
+
+/* ---------------- captain on the prompt bar ---------------- */
+/* She stands ON the bar. The sprites are cropped tight to their own pixels,
+   so the image's bottom edge is her feet — anchoring that just inside the
+   bar's top edge plants her on it rather than floating her above it. */
+.bc-perch {{
+  position: fixed; left: 0; right: 0; bottom: 54px;
+  pointer-events: none; z-index: 1;
+  display: flex; justify-content: center;
+}}
+.bc-perch-inner {{
+  width: 100%; max-width: 1290px; padding-left: 3.6rem;
+  display: flex; align-items: flex-end; height: 120px;
+}}
+.bc-perch img {{
+  max-height: 118px; max-width: 150px; width: auto;
+  display: block; object-fit: contain;
+}}
+
+/* ---------------- follow-up pills, sitting in the prompt bar ----------------
+   Streamlit's chat input is a sealed component, so real buttons cannot be
+   placed inside its DOM. These are genuine st.buttons lifted into position
+   over the bar: visually inside it, structurally layered on top. Only the
+   pills take pointer events, so the rest of the bar stays clickable to type
+   in. The block is found via :has() on a marker div rather than a Streamlit
+   class name, because those are emotion hashes that change every release. */
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
+  position: fixed; left: 50%; transform: translateX(-50%);
+  /* Anchored off the bar's BOTTOM edge, which is stable — its top moves as
+     the input grows and shrinks with focus. */
+  bottom: 32px; z-index: 120;
+  width: 1290px; max-width: 94vw;
+  padding-left: 8.4rem;                /* clears the "+" and its divider */
+  pointer-events: none;
+  gap: .4rem !important;
+}}
+[data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+  [data-testid="stHorizontalBlock"] {{ gap: .45rem !important; }}
+
+.bc-cta-anchor {{ height: 0; }}
+
+.stButton > button {{
+  pointer-events: auto;
+  /* Fully opaque: these sit ON the bar, so any transparency lets the
+     placeholder text show through them. */
+  background: #1a0d3d;
+  border: 1.5px solid rgba(178,140,255,.75);
+  border-radius: 999px;
+  color: #CDB8FF;
+  font-family: 'Pixelify Sans', monospace;
+  font-size: .78rem;
+  /* Deliberately shorter than the bar so it reads as sitting inside it. */
+  height: 28px; min-height: 28px; line-height: 1;
+  padding: 0 .85rem;
+  white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
 }}
 .stButton > button:hover {{
-  border-color: {ACCENT};
-  color: {ACCENT};
+  border-color: {ACCENT}; color: {ACCENT};
+  background: rgba(255,138,61,.08);
 }}
+
+/* ---------------- phone ----------------
+   Photographing a tray is the whole reason this has to work on a phone, so
+   the desktop tuning above gets pulled in: the bar spans the screen, the
+   pills shrink enough that two still fit beside the "+", and the captain
+   moves to the right-hand end of the bar so she cannot sit under them. */
+@media (max-width: 640px) {{
+  [data-testid="stMainBlockContainer"] {{
+    padding-top: 3rem !important;
+    padding-left: .75rem !important; padding-right: .75rem !important;
+  }}
+  [data-testid="stBottomBlockContainer"] {{
+    padding-left: .5rem !important; padding-right: .5rem !important;
+  }}
+  .bc-mark {{ font-size: .95rem; top: 10px; left: 12px; }}
+
+  .bc-hero {{ min-height: 44vh; }}
+  .bc-hero img {{ max-height: 42vh; max-width: 94vw; }}
+
+  .bc-answer {{
+    padding: .95rem 1rem; border-radius: 18px;
+    font-size: .9rem; margin-bottom: .8rem;
+  }}
+  .bc-answer::after {{ left: 24px; }}
+  .bc-answer h4 {{ font-size: .92rem; }}
+  .bc-answer .macros {{ font-size: .75rem; }}
+
+  /* Captain to the right-hand end, clear of the pills. */
+  .bc-perch {{ bottom: 46px; }}
+  .bc-perch-inner {{
+    padding-left: 0; padding-right: .4rem;
+    justify-content: flex-end; height: 86px;
+  }}
+  .bc-perch img {{ max-height: 82px; max-width: 98px; }}
+  /* A phone's bar is too narrow for the captain AND two pills. The pills do
+     a job; she is decoration, so she stands down while they are showing. */
+  body:has(.bc-cta-anchor) .bc-perch {{ display: none; }}
+
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
+    width: 100%; max-width: 100%;
+    padding-left: 3rem; padding-right: .4rem;
+    bottom: 30px;
+  }}
+  /* Streamlit stacks columns on narrow screens, which would push a pill
+     out of the bar. Keep them inline and size them to fit a phone. */
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+    [data-testid="stHorizontalBlock"] {{
+    flex-wrap: nowrap !important; gap: .3rem !important;
+  }}
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+    [data-testid="stColumn"] {{
+    width: auto !important; flex: 0 0 auto !important;
+    min-width: 0 !important;
+  }}
+  .stButton > button {{
+    font-size: .62rem; height: 24px; min-height: 24px; padding: 0 .45rem;
+  }}
+  [data-testid="stChatInputTextArea"] {{ font-size: .85rem !important; }}
+  [data-testid="stChatInputFileUploadButton"] button::after {{ font-size: 1.5rem; }}
+}}
+
 </style>
 """,
         unsafe_allow_html=True,
     )
 
 
-def avatar(state: str, pose_index: int = 0):
-    """Render the character in the given state, centred."""
+def wordmark() -> None:
+    st.markdown('<div class="bc-mark">🍛 BatchCaptain<em>.AI</em></div>',
+                unsafe_allow_html=True)
+
+
+def hero() -> None:
+    """Landing state: the composed graphic, exactly as exported from Figma."""
+    src = _sprite("hero_composed.png")
+    if not src:
+        return
+    st.markdown(f'<div class="bc-hero"><img src="{src}"/></div>',
+                unsafe_allow_html=True)
+
+
+def perch(state: str, pose_index: int = 0) -> None:
+    """The captain, small, standing on the prompt bar."""
     if state == "answering" and ANSWER_POSES:
-        filename = ANSWER_POSES[pose_index % len(ANSWER_POSES)]
+        name = ANSWER_POSES[pose_index % len(ANSWER_POSES)]
     else:
-        filename = AVATAR.get(state, AVATAR["idle"])
-    path = SPRITES / filename
-    if not path.exists():
+        name = AVATAR.get(state, AVATAR["idle"])
+    # Tight-cropped variant, so the bottom of the image is her feet.
+    src = _sprite(f"perch_{name}") or _sprite(name)
+    if not src:
         return
     st.markdown(
-        f'<div class="bc-avatar" style="text-align:center">'
-        f'<img src="{_data_uri(path)}" width="190"/></div>',
+        f'<div class="bc-perch"><div class="bc-perch-inner">'
+        f'<img src="{src}"/></div></div>',
         unsafe_allow_html=True,
     )
 
 
-def bubble(markdown_html: str) -> None:
-    st.markdown(f'<div class="bc-bubble">{markdown_html}</div>',
+def answer_bubble(html_body: str) -> None:
+    st.markdown(f'<div class="bc-answer">{html_body}</div>',
                 unsafe_allow_html=True)

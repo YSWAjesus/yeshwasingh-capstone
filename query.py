@@ -19,7 +19,7 @@ _NEXT_MEAL = {
 }
 
 
-def _headline(servings) -> str:
+def _headline(servings, when: str = "Today") -> str:
     """One sentence naming what each hall has — only halls with real data."""
     clauses = []
     for serving in servings:
@@ -37,8 +37,8 @@ def _headline(servings) -> str:
     if not clauses:
         return ""
     if len(clauses) == 1:
-        return f"Today {clauses[0]}."
-    return f"Today {', '.join(clauses[:-1])}, and {clauses[-1]}."
+        return f"{when} {clauses[0]}."
+    return f"{when} {', '.join(clauses[:-1])}, and {clauses[-1]}."
 
 
 def _render_serving(serving) -> str:
@@ -51,23 +51,65 @@ def _render_serving(serving) -> str:
         title = serving.hall[0].upper() + serving.hall[1:]  # "the Jain counter"
         lines = [f"**{title}** — {note}"]
 
-    for category, dish in serving.rows:
-        label = f"{category}: {dish}" if category else dish
+    for _category, dish in serving.rows:
         macro = macros.lookup(dish)
         if macro:
-            lines.append(f"- {label} — {macros.format_macros(macro)}")
+            lines.append(f"- {dish} — {macros.format_macros(macro)}")
         else:
-            lines.append(f"- {label} — _no macro estimate yet_")
+            lines.append(f"- {dish} — _no macro estimate yet_")
     return "\n".join(lines)
 
 
-def _suggest_follow_up(menu, weekday, meal_type):
-    """Only offer a meal that actually has data — never a dead end."""
+def _escape(text) -> str:
+    return (str(text).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;"))
+
+
+def _render_serving_html(serving) -> str:
+    if serving.hall is None:
+        title = "Sunday brunch"
+        note = serving.note
+    else:
+        title = serving.hall[0].upper() + serving.hall[1:]
+        note = serving.note
+        if serving.same_as_main:
+            note += ", same as the main line today"
+
+    rows = []
+    for _category, dish in serving.rows:
+        # Just the dish. The menu's row labels ("Gravy Veg", "Dry Veg- jain")
+        # are how the mess organises its grid, not something a hungry student
+        # needs read back to them.
+        label = _escape(dish)
+        macro = macros.lookup(dish)
+        if macro:
+            rows.append(
+                f'<li>{label} <span class="kcal">{macro["calories"]} kcal</span>'
+                f'<br><span class="macros">{macro["protein"]}g protein · '
+                f'{macro["carbs"]}g carbs · {macro["fat"]}g fat</span></li>'
+            )
+        else:
+            rows.append(f'<li>{label}<br>'
+                        f'<span class="none">no macro estimate yet</span></li>')
+    return (f'<h4>{_escape(title)} <span class="macros">— {_escape(note)}'
+            f'</span></h4><ul>{"".join(rows)}</ul>')
+
+
+def _suggest_follow_ups(menu, weekday, meal_type, limit=2):
+    """Offer only meals that actually have data — never a dead end."""
+    day_menu = halls.resolve_day(menu, weekday)
+    found = []
     for candidate in _NEXT_MEAL.get(meal_type, []):
-        day_menu = halls.resolve_day(menu, weekday)
         if halls.servings_for_meal(day_menu, candidate):
-            return candidate
-    return None
+            found.append(candidate)
+        if len(found) == limit:
+            break
+    return found
+
+
+def _suggest_follow_up(menu, weekday, meal_type):
+    found = _suggest_follow_ups(menu, weekday, meal_type, limit=1)
+    return found[0] if found else None
 
 
 def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
@@ -82,16 +124,28 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
     """
     now = now or datetime.now()
 
-    asked = time_logic.meal_type_from_text(user_text)
-    if asked:
-        meal_type = asked
-        weekday = now.strftime("%A")
+    asked_meal = time_logic.meal_type_from_text(user_text)
+    asked_day = time_logic.day_offset_from_text(user_text)
+
+    if asked_meal:
+        meal_type = asked_meal
+        # An explicit day wins; otherwise the meal they named is today's.
+        offset = asked_day if asked_day is not None else 0
         status = None
     else:
         context = time_logic.meal_context(now)
         meal_type = context["meal_type"]
-        status = context["status"]
-        weekday = (now + timedelta(days=context["day_offset"])).strftime("%A")
+        # "what's there to eat tomorrow" keeps the time-of-day sense of the
+        # question but moves the day, so at lunchtime it means tomorrow's lunch.
+        if asked_day is not None:
+            offset = asked_day
+            status = None
+        else:
+            offset = context["day_offset"]
+            status = context["status"]
+
+    target = now + timedelta(days=offset)
+    weekday = target.strftime("%A")
 
     day_menu = halls.resolve_day(menu, weekday)
     servings = halls.servings_for_meal(day_menu, meal_type)
@@ -103,17 +157,21 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
                 "follow_up_label": None, "follow_up_prompt": None,
                 "servings": []}
 
+    when = {0: "today", 1: "tomorrow"}.get(offset, weekday)
     if status == "just_ended":
         opener = f"{meal_type} is just finishing — here's what was on:"
     elif status == "upcoming":
         window = time_logic.window_for(meal_type)
         starts = window[0].strftime("%H:%M") if window else ""
         opener = f"{meal_type} starts at {starts} — here's what's coming:"
+    elif offset:
+        opener = f"Here's {when}'s ({weekday}) {meal_type.lower()}:"
     else:
         opener = f"Here's {weekday}'s {meal_type.lower()}:"
 
     parts = [opener]
-    headline = _headline(servings)
+    headline = _headline(servings, "Tomorrow" if offset == 1
+                         else ("Today" if offset == 0 else f"On {weekday}"))
     if headline:
         parts.append(headline)
     parts.append("\n\n".join(_render_serving(s) for s in servings))
@@ -128,9 +186,30 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
     parts.append("_Taking some of this? The tray tracker totals up just what's "
                  "on your plate._")
 
-    follow_up = _suggest_follow_up(menu, weekday, meal_type)
+    html = [f'<div class="lead">{_escape(opener)}</div>']
+    if headline:
+        html.append(f"<div>{_escape(headline)}</div>")
+    html += [_render_serving_html(s) for s in servings]
+    if missing:
+        noun = "dish isn't" if missing == 1 else "dishes aren't"
+        html.append(f'<div class="none">{missing} {noun} in the macro table '
+                    f'yet — nothing invented for them.</div>')
+
+    follow_ups = _suggest_follow_ups(menu, weekday, meal_type)
+    follow_up = follow_ups[0] if follow_ups else None
     return {
         "reply": "\n\n".join(parts),
+        "reply_html": "".join(html),
+        # Rendered as pills inside the prompt bar. Each is a real action the
+        # app can carry out, so none of them is a dead end. The first is the
+        # next meal that actually has data; the second opens the tray tracker,
+        # which is where totalling macros is meaningful (you tick your own
+        # plate) rather than summing a whole buffet.
+        "follow_up_options": (
+            [{"label": f"What's for {m.lower()}?",
+              "prompt": f"what's for {m.lower()}"} for m in follow_ups[:1]]
+            + [{"label": "Track what I ate", "action": "tray"}]
+        ),
         "meal_type": meal_type,
         "follow_up": follow_up,
         "follow_up_label": f"What's for {follow_up.lower()}?" if follow_up else None,

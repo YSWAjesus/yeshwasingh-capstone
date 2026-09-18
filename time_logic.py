@@ -5,6 +5,7 @@ A generic question ("what's there to eat?") should answer the meal you can
 actually still go and eat, not the one that just closed.
 """
 
+import re
 from datetime import datetime, time
 
 # ---------------------------------------------------------------------------
@@ -76,6 +77,40 @@ MEAL_KEYWORDS = {
     "dinner": "Dinner",
     "supper": "Dinner",
 }
+
+
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+            "Saturday", "Sunday"]
+
+
+def day_offset_from_text(text: str):
+    """Days from today the user is asking about, or None if they didn't say.
+
+    Handles "tomorrow"/"today"/"tonight" and bare weekday names ("on friday").
+    A named weekday resolves to the NEXT one, so asking on Friday about
+    "monday" looks three days forward rather than four days back.
+    """
+    lowered = text.lower()
+
+    # Spelling-tolerant: people type tomorow / tommorow / tommorrow / tmrw.
+    # Listing exact variants missed "tommorow" in real use, so match the shape.
+    # Grouped, so prefixing it below binds to the whole alternation rather
+    # than just its first branch.
+    tomorrow = re.compile(r"(?:\bt(?:o|')?m+o*r+o*w\b|\btmrw?\b|\btmr\b)")
+
+    if re.search(r"day\s+after\s+" + tomorrow.pattern, lowered):
+        return 2
+    if tomorrow.search(lowered):
+        return 1
+    if "today" in lowered or "tonight" in lowered:
+        return 0
+
+    from datetime import datetime as _dt
+    today_index = _dt.now().weekday()
+    for index, name in enumerate(WEEKDAYS):
+        if name.lower() in lowered:
+            return (index - today_index) % 7
+    return None
 
 
 def meal_type_from_text(now_text: str):
