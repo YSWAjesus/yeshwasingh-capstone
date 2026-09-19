@@ -4,6 +4,8 @@ Ask what's for lunch. Track what you actually ate.
 
 **Live:** https://yeshwasingh-capstone-production.up.railway.app — open it on a phone; photographing your tray is half the point.
 
+Build history and honest failure notes: [BUILD_LOG.md](BUILD_LOG.md). Closing reflection: [REFLECTION.md](REFLECTION.md).
+
 Campus mess menus at FLAME are only ever published as a **photo** posted to a
 WhatsApp announcements channel by the batch captains — who, when you ask them
 what's for dinner, usually don't remember either. There is no spreadsheet
