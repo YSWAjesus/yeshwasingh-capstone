@@ -71,8 +71,29 @@ picker. On the deployed HTTPS URL, both work.
 3. That parse is cached on disk keyed by a hash of the image, so a restart
    doesn't re-run a 15–60 second OCR on an unchanged photo.
 
-To point it at a new week, put the new photo in Drive (shared as "anyone with
-the link") and set `DRIVE_FILE_ID` in `menu_data.py` to the new file's ID.
+### Each new week
+
+The app re-downloads the photo every 30 minutes (`ttl=1800` on the cached
+loader), and the parse cache is keyed on the image bytes — so a changed photo
+re-OCRs by itself. What you do depends on how the new menu is posted:
+
+- **Same Drive file, new version** (in Drive: right-click the file →
+  *Manage versions* → *Upload new version*): nothing to do. The new week
+  appears within half an hour.
+- **A new Drive file**: copy its ID out of the share link — the part between
+  `/d/` and `/view` — and set `DRIVE_FILE_ID` to it. It is a **Railway
+  variable**, so change it in the dashboard; no code edit, no redeploy of the
+  app itself. `menu_data.py` only holds the fallback default.
+
+Then check the new week's dishes for macro gaps, since a new menu usually
+brings a few:
+
+    python3 tools/menu_macro_audit.py --json
+
+Anything it lists is missing. Close the gap with the agent
+(`macro-gap-filler`, below), then commit the updated `data/macros.json` and
+redeploy. Until you do, those dishes simply show "no macro estimate yet" —
+the app stays correct, just less complete.
 
 The OCR is not always right first time — roughly one call in four or five comes
 back with a partial grid. `menu_data.parse_menu_image` retries, and rejects any
