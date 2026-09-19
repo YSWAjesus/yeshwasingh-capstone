@@ -115,8 +115,12 @@ def inject_theme() -> None:
 }}
 /* When the CTA pills are on the bar they occupy the same space as the hint,
    so the hint is hidden rather than left to collide with them. */
-body:has(.bc-cta-anchor) [data-testid="stChatInputTextArea"]::placeholder {{
+body:has(.bc-cta-anchor)
+  [data-testid="stChatInputTextArea"]:not(:focus)::placeholder {{
   color: transparent !important;
+}}
+[data-testid="stChatInputTextArea"]::placeholder {{
+  transition: color .18s ease;
 }}
 [data-testid="stChatInputFileUploadButton"] svg {{ display: none !important; }}
 [data-testid="stChatInputFileUploadButton"] button::after {{
@@ -214,6 +218,26 @@ body:has(.bc-cta-anchor) [data-testid="stChatInputTextArea"]::placeholder {{
   padding-left: 8.4rem;                /* clears the "+" and its divider */
   pointer-events: none;
   gap: .4rem !important;
+  /* Animated so focusing the bar doesn't snap them away. Opacity and
+     transform only — both composite on the GPU, so this can't jitter the
+     fixed-position bar the way animating height or bottom would. */
+  transition: opacity .18s ease, transform .18s ease;
+}}
+
+/* Typing is the one moment the pills are in the way: they sit ON the bar, so
+   they'd overlap the caret and the text being typed. Focus the bar and they
+   drop out; click away and they come back. :has() on :focus is why this needs
+   no rerun — Streamlit never re-renders, so there is no flash. */
+body:has([data-testid="stChatInputTextArea"]:focus)
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
+  opacity: 0;
+  transform: translateX(-50%) translateY(5px);
+}}
+/* An invisible pill must not still be clickable. */
+body:has([data-testid="stChatInputTextArea"]:focus)
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+  .stButton > button {{
+  pointer-events: none;
 }}
 [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
   [data-testid="stHorizontalBlock"] {{ gap: .45rem !important; }}
