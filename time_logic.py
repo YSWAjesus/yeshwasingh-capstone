@@ -96,7 +96,22 @@ def day_offset_from_text(text: str):
     # Listing exact variants missed "tommorow" in real use, so match the shape.
     # Grouped, so prefixing it below binds to the whole alternation rather
     # than just its first branch.
-    tomorrow = re.compile(r"(?:\bt(?:o|')?m+o*r+o*w\b|\btmrw?\b|\btmr\b)")
+    #
+    # "toms lunch" used to fall through to None and get answered as today --
+    # the worst kind of wrong, since a confident answer about the wrong day
+    # looks exactly like a right one.
+    #
+    # Note what is deliberately NOT here: bare "tom". Rasoi's Asian counter
+    # can serve Tom Yum soup, and reading that as a day would be a far worse
+    # bug than the one being fixed. "toms" and "tom's" carry no such clash.
+    tomorrow = re.compile(
+        r"\b(?:"
+        r"t(?:o|')?m+o*r+o*w"      # tomorrow, tomorow, tommorow, tmorrow
+        r"|tmrw?|tmw"              # tmr, tmrw, tmw
+        r"|2m(?:orrow|oro|rw)"     # 2mrw, 2moro
+        r"|toms|tom's"             # toms lunch, tom's lunch
+        r")\b"
+    )
 
     if re.search(r"day\s+after\s+" + tomorrow.pattern, lowered):
         return 2

@@ -31,11 +31,14 @@ AVATAR = {
 }
 
 # Cycled so repeated answers don't look identical.
+# response4 is deliberately absent: it is a head and one arm with no lower
+# body, so perched on the bar it reads as a figure lying down rather than
+# standing on it. The file is kept in assets/ rather than deleted, so it can
+# come back if it is ever re-drawn full-length.
 ANSWER_POSES = [
     "avatar_response5_promptbar.png",
     "avatar_response3_promptbar.png",
     "avatar_response2_promptbar.png",
-    "avatar_response4_promptbar.png",
 ]
 
 ACCENT = "#FF8A3D"
