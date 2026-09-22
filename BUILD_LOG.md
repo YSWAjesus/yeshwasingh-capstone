@@ -6,16 +6,58 @@ Running total across every session below, Assessment 1 through deployment.
 
 | | |
 |---|---|
-| **Sessions logged** | 9 |
-| **Total time** | ~16 hr |
-| **Total tokens (approx.)** | ~2.0M |
-| **Commits** | 20 across 5 branches (the last two straight to `main`, deploy fixes) |
-| **Span** | 2026-09-11 → 2026-09-18 |
+| **Sessions logged** | 10 |
+| **Total time** | ~18 hr |
+| **Total tokens (approx.)** | ~2.4M |
+| **Commits** | 25 across 5 branches (the last seven straight to `main`) |
+| **Span** | 2026-09-11 → 2026-09-22 |
 
 Per-session detail follows, newest first. One entry per commit; date, time
 spent, rough tokens used, what shipped.
 
 ---
+
+### 2026-09-22 — New week, schema-constrained OCR, and a meal log
+
+- **Time spent:** ~2 hr
+- **Tokens used (approx.):** ~400k (incl. ~183k in the macro agent)
+- **Shipped:**
+  - **New week ingested end to end with no code change.** The mess photo was
+    replaced in Drive at the same file id; the app re-downloaded it, re-OCR'd
+    it and served 21-27 Sep on its own. That is the ingestion design working
+    as intended.
+  - **Macro gap closed, 129 -> 4.** A near-total menu changeover left most of
+    Tuesday's Rasoi line with no estimate. The gap-filler agent converged
+    129 -> 101 -> 62 -> 4 and grew the table 188 -> 291. Re-validated every
+    record independently afterwards: 0 of 291 failed the sanity gate. The 4
+    left are placeholders ("Beverage of the Day") plus one genuine either/or
+    cell, `Phulka/ Puran Poli` — ~90 kcal of dry wholewheat against a ~300
+    kcal stuffed sweet flatbread, where one number would be wrong for
+    whichever the student takes.
+  - **Response schema on the Gemini calls.** The JSON shape had been
+    described in the prompt and nowhere else, which made it a request rather
+    than a rule. Day and section names are now enums enforced by the API.
+    Confirmed the enum binds by asking for "any day names you like, e.g.
+    Friday" against a Monday/Tuesday enum and getting only Monday/Tuesday.
+  - **Meal log.** Logging a tray now survives a refresh: per-person
+    JSON-lines file, identity a short opaque id in the URL rather than an
+    account, day and Monday-start week totals. Stored on a mounted Railway
+    volume, because a container's own disk is wiped on every deploy.
+- **What broke / what I was careful about:**
+  - A response schema can only constrain fixed field names, and the menu's
+    category labels change weekly. The JSON had to become arrays so the
+    category moved from a KEY the schema cannot describe into a VALUE it can
+    require. Conversion back to the internal dict shape happens in code, so
+    no downstream module changed.
+  - The schema does **not** fix partial reads — a one-day response is
+    entirely valid JSON. Three parses gave 7/7 days each, which is not
+    enough runs to claim the ~1-in-5 rate moved. The >= 5 days gate still
+    does that job.
+  - "What did I eat today" and "what is there to eat today" share nearly
+    every word and have completely different answers, so log questions are
+    routed away from `query.answer` before it can reply with the mess menu.
+  - The week strip is hand-rolled HTML on a CSS grid rather than
+    `st.columns`, which restacks on narrow screens. Checked at 375px.
 
 ### 2026-09-18 — Railway deployment (live)
 

@@ -138,6 +138,31 @@ Run it with `/refresh-macros` in Claude Code. See
 
 ---
 
+## The meal log
+
+Photograph your tray, tick what you actually took, and log it. The app keeps
+a running day total and a Monday-to-Sunday week, matching the mess's own
+menu week.
+
+There are no accounts. A short opaque id lives in the URL — bookmark the page
+and your log comes back; open it in a private window and you are a new
+person. Nothing identifying is stored.
+
+Ask for it in words (`what did I eat today`, `my log`, `calories so far`) or
+open it from the tray panel.
+
+Storage is `BC_LOG_DIR`, one JSON-lines file per person. **Set it to a
+mounted volume in any real deployment** — a container's own filesystem is
+wiped on every deploy. With no volume the app says the log is temporary
+rather than implying otherwise. On Railway:
+
+```bash
+railway volume add --mount-path /data
+railway variables --set "BC_LOG_DIR=/data/logs"
+```
+
+---
+
 ## Tools
 
 ```bash
