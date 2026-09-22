@@ -1,12 +1,54 @@
 {
   "aloo bhaji": {
-    "aliases": [],
+    "aliases": [
+      "batata bhaji",
+      "kanda batata bhaji",
+      "kanda batata chi bhaji"
+    ],
     "calories": 150,
     "carbs": 22,
     "confidence": "medium",
     "fat": 6,
     "protein": 3,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'aloo bhaji' (seed), numbers unchanged. 'Kanda Batata Chi Bhaji' is the Marathi name for the same onion-and-potato bhaji, so it resolves here instead of gaining a near-duplicate record."
+  },
+  "aloo methi": {
+    "aliases": [
+      "aloo methi sabzi",
+      "alu methi",
+      "potato fenugreek sabzi"
+    ],
+    "calories": 150,
+    "carbs": 18,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 100 g dry-sabzi serving: ~70 g potato (97 kcal/100 g boiled) with fenugreek leaves and ~1.5 tsp oil; kept coherent with the table's aloo bhaji (150 kcal, 3 g protein, 22 g carb, 6 g fat), the same potato sabzi with less greens and less oil."
+  },
+  "aloo paratha": {
+    "aliases": [
+      "alu paratha",
+      "potato paratha"
+    ],
+    "calories": 320,
+    "carbs": 45,
+    "confidence": "high",
+    "fat": 12,
+    "protein": 7,
+    "source": "https://www.fatsecret.co.in/calories-nutrition/search?q=Aloo+Paratha (330 kcal, 13.45 g fat, 47.72 g carb, 5.94 g protein per paratha) cross-checked with https://nutriscan.app/calories-nutrition/aloo-paratha (300 kcal, 6.1 g protein, 46 g carb, 11 g fat per paratha)."
+  },
+  "aloo sago": {
+    "aliases": [
+      "aloo sabudana",
+      "potato sago",
+      "sago aloo"
+    ],
+    "calories": 280,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 3,
+    "source": "Derived from the table's sabudana khichdi (300 kcal, 3 g protein, 45 g carb, 12 g fat per 150 g plate): the aloo sago served on the fasting menu is the same sago-and-peanut preparation with cubed potato replacing part of the sabudana, which trims the starch slightly."
   },
   "aloo tomato rassa": {
     "aliases": [],
@@ -28,6 +70,19 @@
     "fat": 6,
     "protein": 5,
     "source": "USDA SR28 via https://www.medindia.net/nutrition-data/restaurant-latino-arroz-con-leche-rice-pudding.htm and https://foodstruct.com/food/restaurant-latino-arrozconlechericepudding (146 kcal, 24.92 g carb, 3.2 g protein, 3.69 g fat per 100 g), taken at a 150 g dessert bowl; coherent with the table's "
+  },
+  "asian fried dumplings": {
+    "aliases": [
+      "fried dumplings",
+      "fried momos",
+      "veg fried dumplings"
+    ],
+    "calories": 220,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 5,
+    "source": "Ingredient-level reconstruction of 3 pan/deep-fried vegetable dumplings (~30 g each: maida wrapper plus cabbage-carrot filling, ~1.5 tsp oil absorbed); cross-checked against https://nutriscan.app/calories-nutrition/samosa (spring roll 150 kcal, 4 g protein, 22 g carb, 6 g fat per serving) and the ta"
   },
   "assorted greens salad": {
     "aliases": [
@@ -67,6 +122,18 @@
     "protein": 10,
     "source": "https://www.tarladalal.com/calories-for-paneer-pulao-quick-paneer-pulao-recipe-1747 (522 kcal per 275 g serving, i.e. about 190 kcal per 100 g) and https://clearcals.com/recipes/paneer-peas-pulao (109.7 kcal per 100 g; 6.1 g protein, 35.1 g carb, 7.5 g fat per medium cup), averaged and taken at the "
   },
+  "balushahi": {
+    "aliases": [
+      "badusha",
+      "balushai"
+    ],
+    "calories": 200,
+    "carbs": 28,
+    "confidence": "low",
+    "fat": 9,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction of one ~45 g piece: maida-and-ghee dough deep-fried and soaked in sugar syrup, modelled on the table's own gulab jamun (280 kcal, 3 g protein, 45 g carb, 10 g fat) and jalebi (300 kcal) which are the same fried-then-syruped family but carry more syrup; https://nutrisc"
+  },
   "banana": {
     "aliases": [],
     "calories": 105,
@@ -75,6 +142,19 @@
     "fat": 0,
     "protein": 1,
     "source": "seed"
+  },
+  "banana chi bhaji": {
+    "aliases": [
+      "banana bhaji",
+      "kelyachi bhaji",
+      "raw banana bhaji"
+    ],
+    "calories": 150,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 100 g dry-sabzi serving: raw banana/plantain (~120 kcal, 31 g carb per 100 g raw) sauteed with a coconut-and-mustard Maharashtrian tempering and ~1 tsp oil; kept coherent with the table's banana tomato rassa (140 kcal) and dum banana (180 kcal)."
   },
   "banana custard": {
     "aliases": [
@@ -86,6 +166,18 @@
     "fat": 7,
     "protein": 4,
     "source": "Existing seed record for 'banana custard', numbers unchanged. Menu spelling 'Banana Custurd' is an OCR typo of the same dessert; name resolution only, no new nutrition research."
+  },
+  "banana methi": {
+    "aliases": [
+      "kela methi",
+      "raw banana methi sabzi"
+    ],
+    "calories": 140,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 100 g dry-sabzi serving: raw banana (~120 kcal, 31 g carb per 100 g) cooked with fenugreek leaves and ~1 tsp oil; the greens displace some banana, so it sits just below the table's banana tomato rassa (140 kcal) and the banana chi bhaji proposed in the sa"
   },
   "banana tomato rassa": {
     "aliases": [],
@@ -120,6 +212,55 @@
     "protein": 8,
     "source": "https://www.fatsecret.co.in/calories-nutrition/search?q=Batata+Vada (1 piece: 125 kcal, 5.39 g fat, 15.45 g carb, 4.25 g protein) doubled for the 2-piece mess serving; cross-checked against https://www.mynetdiary.com/food/calories-in-batata-vada-serving-50145563-0.html (147 kcal per piece) and kept "
   },
+  "beetroot juice": {
+    "aliases": [
+      "beet juice",
+      "beetroot jusice"
+    ],
+    "calories": 80,
+    "carbs": 18,
+    "confidence": "high",
+    "fat": 0,
+    "protein": 2,
+    "source": "https://www.fatsecret.co.in/calories-nutrition/search?q=Beetroot+Juice (39 kcal, 9.0 g carb, 1.08 g protein per 100 ml) cross-checked with https://www.medicalnewstoday.com/articles/324898 (62 kcal, 1.79 g protein, 14.7 g carb per 248 g cup), taken at a 200 ml mess glass."
+  },
+  "beetroot peanut salad": {
+    "aliases": [
+      "beet peanut salad",
+      "beetroot koshimbir"
+    ],
+    "calories": 110,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: ~80 g grated beetroot (43 kcal, 1.6 g protein, 9.6 g carb per 100 g per https://www.healthline.com/nutrition/foods/beetroot) with ~10 g crushed roasted peanuts and a lemon-coconut dressing; kept coherent with the table's carrot beet s"
+  },
+  "beetroot soup": {
+    "aliases": [
+      "beet soup",
+      "borscht style beetroot soup"
+    ],
+    "calories": 90,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: ~150 g beetroot puree (43 kcal, 1.6 g protein, 9.6 g carb per 100 g per https://www.healthline.com/nutrition/foods/beetroot) with stock and ~1 tsp butter; kept coherent with the table's roasted vegetable soup (90 kcal)."
+  },
+  "besan laddoo": {
+    "aliases": [
+      "besan ke laddu",
+      "besan laddu",
+      "besan ladoo"
+    ],
+    "calories": 165,
+    "carbs": 20,
+    "confidence": "high",
+    "fat": 8,
+    "protein": 4,
+    "source": "https://nutriscan.app/calories-nutrition/ladoo (170 kcal per 35 g besan ladoo; homemade besan 140-170 kcal, 4-5 g protein per piece) and https://www.eatthismuch.com/calories/besan-ladoo-2504014 (Haldiram's 160 kcal per piece), at one ladoo as served."
+  },
   "black chana masala": {
     "aliases": [],
     "calories": 210,
@@ -146,6 +287,18 @@
     "fat": 8,
     "protein": 4,
     "source": "seed"
+  },
+  "bread pakoda": {
+    "aliases": [
+      "bread bhajiya",
+      "bread pakora"
+    ],
+    "calories": 250,
+    "carbs": 30,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 6,
+    "source": "Ingredient-level reconstruction: 2 bread slices (40 g each, ~80 kcal per slice per the table's white bread record) dipped in besan batter and deep-fried, absorbing ~2 tsp oil; cross-checked against https://nutriscan.app/calories-nutrition/samosa (pakora 240 kcal, 5 g protein, 28 g carb, 11 g fat per"
   },
   "bread sticks": {
     "aliases": [
@@ -188,13 +341,28 @@
     "source": "seed"
   },
   "butter milk": {
-    "aliases": [],
+    "aliases": [
+      "buttermilk",
+      "chaas"
+    ],
     "calories": 40,
     "carbs": 4,
     "confidence": "medium",
     "fat": 1,
     "protein": 2,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'butter milk' (seed), numbers unchanged. Menu name 'Buttermilk' is the same drink spelled as one word; exact-match lookup has no fuzzy fallback, so it is added as an alias."
+  },
+  "cabbage carrot salad": {
+    "aliases": [
+      "cabbage and carrot salad",
+      "carrot cabbage salad"
+    ],
+    "calories": 45,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 1,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: ~60 g raw cabbage (25 kcal/100 g) + ~40 g raw carrot (41 kcal/100 g) + a light lemon/oil seasoning, kept coherent with the table's existing carrot beet salad (45 kcal) and spicy tangy cabbage salad (40 kcal)."
   },
   "cabbage masala": {
     "aliases": [
@@ -226,6 +394,42 @@
     "protein": 1,
     "source": "seed"
   },
+  "carrot ginger soup": {
+    "aliases": [
+      "carrot and ginger soup",
+      "ginger carrot soup"
+    ],
+    "calories": 100,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: ~150 g carrot puree (41 kcal, 0.9 g protein, 9.6 g carb per 100 g) with ginger, stock and ~1 tsp butter/cream; kept coherent with the table's roasted vegetable soup (90 kcal) and green peas chowder (120 kcal)."
+  },
+  "carrot juice": {
+    "aliases": [
+      "fresh carrot juice",
+      "gajar juice"
+    ],
+    "calories": 80,
+    "carbs": 18,
+    "confidence": "high",
+    "fat": 0,
+    "protein": 2,
+    "source": "https://www.fatsecret.co.in/calories-nutrition/search?q=Beetroot+Juice (same results page lists carrot juice at 94 kcal, 0.35 g fat, 21.92 g carb, 2.24 g protein per cup / 40 kcal per 100 ml), taken at the 200 ml mess glass and kept consistent with the beetroot juice record added in the same pass."
+  },
+  "chana dal tadka": {
+    "aliases": [
+      "chana dal",
+      "chana dal fry"
+    ],
+    "calories": 200,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 10,
+    "source": "https://nutriscan.app/calories-nutrition/moong-dal (comparison table: chana dal 164 kcal, 8.5 g protein, 27 g carb, 2.5 g fat per 100 g cooked) scaled to the house 150 g katori with a ~1 tsp ghee tadka; chana dal is the densest of the common dals, which is why this sits above the table's dal tadka ("
+  },
   "chana dal wada": {
     "aliases": [
       "chatpata dal wada"
@@ -246,6 +450,32 @@
     "protein": 8,
     "source": "seed"
   },
+  "chawali home style": {
+    "aliases": [
+      "black eyed beans home style",
+      "chawli home style",
+      "chawli usal"
+    ],
+    "calories": 180,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 9,
+    "source": "https://shwetainthekitchen.com/lobhia-chawli-chi-usal-black-eyed-peas-curry (141 kcal per serving) and https://eastindianrecipes.net/black-eyed-peas-recipe-indian-curry (297 kcal, 45 g carb, 10 g protein per large serving), renormalised onto the house 150 g katori and kept coherent with the table's "
+  },
+  "cheese & herb croquette": {
+    "aliases": [
+      "cheese and herb croquette",
+      "cheese herb croquettes",
+      "herb cheese croquette"
+    ],
+    "calories": 240,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 7,
+    "source": "Derived from the table's cheesy vegetable arancini (250 kcal, 8 g protein, 28 g carb, 11 g fat) and corn cheese ball (210 kcal) - the same breadcrumbed, deep-fried cheese-and-starch item; ~2 croquettes per mess portion."
+  },
   "cheesy vegetable arancini": {
     "aliases": [
       "arancini",
@@ -259,14 +489,30 @@
     "protein": 8,
     "source": "https://nutriscan.app/calories-nutrition/arancini (1 ball, 80 g: 250 kcal, 8 g protein, 28 g carb, 12 g fat) cross-checked against https://www.mynetdiary.com/food/calories-in-arancini-rice-balls-by-pizzaville-balls-18694949-0.html (2 balls: 210 kcal, 28 g carb, 8 g fat, 5 g protein) and https://www."
   },
+  "chili basil fried rice": {
+    "aliases": [
+      "chili basil rice",
+      "chilli basil fried rice",
+      "thai basil fried rice"
+    ],
+    "calories": 280,
+    "carbs": 44,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 6,
+    "source": "Derived from the table's vegetable fried rice (260 kcal, 5 g protein, 46 g carb, 7 g fat per 150 g) with the extra oil and soy-chilli-basil sauce of the Thai-style preparation; cross-checked against the table's spicy chilli garlic noodles (340 kcal) and vegetable garlic fried rice (260 kcal)."
+  },
   "chilka wali green moong": {
-    "aliases": [],
+    "aliases": [
+      "chilka moong fry",
+      "green moong chilka"
+    ],
     "calories": 180,
     "carbs": 24,
     "confidence": "medium",
     "fat": 5,
     "protein": 10,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'chilka wali green moong' (seed), numbers unchanged. Menu name 'Chilka Moong Fry' is the same skin-on green moong dal with a tadka, so it resolves here instead of gaining a near-duplicate entry."
   },
   "chilly bhaji": {
     "aliases": [],
@@ -276,6 +522,19 @@
     "fat": 12,
     "protein": 3,
     "source": "seed"
+  },
+  "chilly pickle": {
+    "aliases": [
+      "chilli pickle",
+      "green chilli pickle",
+      "mirchi ka achar"
+    ],
+    "calories": 30,
+    "carbs": 2,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 0,
+    "source": "Derived from the table's own mixed pickle record (25 kcal, 0 g protein, 3 g carb, 2 g fat per 15 g tbsp): a stuffed green-chilli pickle carries the same oil-and-spice load with marginally less sugar/carb from fruit. Kept on the house 1 tbsp = 15 g condiment basis."
   },
   "chinese samosa": {
     "aliases": [],
@@ -361,6 +620,18 @@
     "protein": 2,
     "source": "seed"
   },
+  "coffee cinnamon pastry": {
+    "aliases": [
+      "cinnamon coffee pastry",
+      "coffee pastry"
+    ],
+    "calories": 320,
+    "carbs": 38,
+    "confidence": "low",
+    "fat": 17,
+    "protein": 4,
+    "source": "Derived from the table's own slice cake (250 kcal, 3 g protein, 36 g carb, 10 g fat) plus the buttercream layer that makes a pastry rather than a plain tea-cake slice; this is a named pastry on the menu, not the 'Pastry of the Day' placeholder."
+  },
   "coffee/ bournvita": {
     "aliases": [],
     "calories": 110,
@@ -369,6 +640,31 @@
     "fat": 3,
     "protein": 3,
     "source": "seed"
+  },
+  "cookie crumble mousse": {
+    "aliases": [
+      "biscuit crumble mousse",
+      "cookie crumble mousse cup"
+    ],
+    "calories": 280,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 17,
+    "protein": 4,
+    "source": "Derived from the table's coconut and white chocolate mousse (240 kcal, 3 g protein, 20 g carb, 16 g fat per cup) plus a ~20 g biscuit-crumble layer (~90 kcal, mostly carb and fat); same dessert-cup serving basis."
+  },
+  "coriander rice": {
+    "aliases": [
+      "cilantro rice",
+      "coriander pulao",
+      "kothamalli sadam"
+    ],
+    "calories": 250,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 5,
+    "source": "Ingredient-level reconstruction on the house 150 g cooked-rice serving, using the table's own plain rice (200 kcal, 4 g protein, 44 g carb) plus a coriander-coconut-green-chilli paste and ~1.5 tsp oil; cross-checked against the table's lemon pepper rice (245 kcal) and basil and oregano rice (250 kca"
   },
   "corn cheese ball": {
     "aliases": [],
@@ -379,6 +675,18 @@
     "protein": 5,
     "source": "seed"
   },
+  "corn tomato salad": {
+    "aliases": [
+      "corn and tomato salad",
+      "sweet corn tomato salad"
+    ],
+    "calories": 90,
+    "carbs": 16,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: ~60 g boiled sweet corn (86 kcal, 3.2 g protein, 19 g carb per 100 g) with tomato, onion, coriander and a lemon dressing; kept coherent with the table's kachumber salad (35 kcal), which has no corn."
+  },
   "cornflakes": {
     "aliases": [],
     "calories": 120,
@@ -387,6 +695,32 @@
     "fat": 1,
     "protein": 2,
     "source": "seed"
+  },
+  "cottage cheese and exotic veggies in ranchero sauce": {
+    "aliases": [
+      "cottage cheese and exotic vegetables in ranchero sauce",
+      "cottage cheese in ranchero sauce",
+      "paneer ranchero"
+    ],
+    "calories": 260,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 17,
+    "protein": 13,
+    "source": "Ingredient-level reconstruction at the house 150 g gravy serving: ~50 g paneer (321 kcal, 25 g protein, 25 g fat per 100 g per https://www.starhealth.in/answers/how-many-calories-are-there-in-paneer) with peppers, zucchini and babycorn in a tomato-chilli ranchero sauce with ~1.5 tsp oil; kept cohere"
+  },
+  "crunchy slaw with soy ginger dressing": {
+    "aliases": [
+      "asian slaw",
+      "crunchy slaw",
+      "soy ginger slaw"
+    ],
+    "calories": 70,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: shredded cabbage, carrot and capsicum (~30 kcal) with a soy-ginger-sesame-oil dressing (~1 tsp oil plus soy and a little sugar); kept coherent with the table's spicy tangy cabbage salad (40 kcal), which is dressed without oil."
   },
   "cucumber juice": {
     "aliases": [
@@ -399,6 +733,43 @@
     "protein": 1,
     "source": "Existing seed record for 'cucumber juice', numbers unchanged. Menu spelling 'Cucumbar Juice' is an OCR typo of the same drink; name resolution only, no new nutrition research."
   },
+  "cucumber peanut koshimbir": {
+    "aliases": [
+      "cucumber koshimbir",
+      "kakdi koshimbir",
+      "khamang kakdi"
+    ],
+    "calories": 90,
+    "carbs": 7,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: ~80 g cucumber (15 kcal/100 g) with ~12 g crushed roasted peanuts (~70 kcal, 3 g protein, 6 g fat), lemon and coriander - the peanut is almost the whole calorie content. Kept coherent with the table's kachumber salad (35 kcal), the sa"
+  },
+  "cucumber sandwich": {
+    "aliases": [
+      "cucumber sandwiches",
+      "cucumber sandwitch"
+    ],
+    "calories": 200,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 5,
+    "source": "Ingredient-level reconstruction: 2 slices of bread (80 kcal, 2-3 g protein, 15 g carb each per the table's white bread record) with butter/spread (~1 tsp) and sliced cucumber; kept below the table's bombay sandwich (280 kcal), which adds potato, chutney and more filling."
+  },
+  "cumin fried chickpea cakes": {
+    "aliases": [
+      "chickpea cakes",
+      "cumin chickpea cakes"
+    ],
+    "calories": 265,
+    "carbs": 25,
+    "confidence": "medium",
+    "fat": 14,
+    "protein": 11,
+    "source": "Modelled on falafel, its nearest analogue: https://www.healthline.com/nutrition/is-falafel-healthy (USDA: 333 kcal, 13.3 g protein, 31.8 g carb, 17.8 g fat per 100 g of fried chickpea patties) and https://nishnushnyc.com/2021/12/31/falafel-nutrition-facts-faqs (221 kcal, 10.6 g protein, 22.1 g carb,"
+  },
   "curd": {
     "aliases": [],
     "calories": 60,
@@ -407,6 +778,19 @@
     "fat": 3,
     "protein": 3,
     "source": "seed"
+  },
+  "cut guava": {
+    "aliases": [
+      "cut guava plate",
+      "guava",
+      "peru"
+    ],
+    "calories": 70,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 2,
+    "source": "Guava at 68 kcal, 2.6 g protein, 14.3 g carb, 1 g fat per 100 g (USDA figures reproduced on https://www.healthline.com/nutrition/foods/beetroot style fruit pages), taken at a ~100 g plate of cut fruit and kept consistent with the table's cut papaya (55 kcal) and mix cut fruit (70 kcal)."
   },
   "cut papaya": {
     "aliases": [],
@@ -426,6 +810,19 @@
     "protein": 6,
     "source": "seed"
   },
+  "dal": {
+    "aliases": [
+      "daal",
+      "plain dal",
+      "simple dal"
+    ],
+    "calories": 150,
+    "carbs": 18,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 8,
+    "source": "Ingredient-level reconstruction at the house 150 g katori for plain everyday dal (~40 g dry toor/moong cooked with turmeric and a light tadka, lentils at ~116-130 kcal per 100 g cooked per https://nutriscan.app/calories-nutrition/moong-dal), set slightly below the table's dal tadka (170 kcal) becaus"
+  },
   "dal adraki": {
     "aliases": [],
     "calories": 170,
@@ -434,6 +831,42 @@
     "fat": 5,
     "protein": 9,
     "source": "seed"
+  },
+  "dal amritsari": {
+    "aliases": [
+      "amritsari dal",
+      "langarwali dal"
+    ],
+    "calories": 190,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 9,
+    "source": "Derived from the cited dal makhani figure (https://www.nutritionvalue.org/Dal_makhani_by_MOTHER_INDIA_387925_nutritional_value.html, 210 kcal / 9 g protein / 21 g carb / 10 g fat per 150 g) minus the cream finish: Amritsari dal is whole urad with ghee and tomato but no malai. Kept coherent with the "
+  },
+  "dal amti": {
+    "aliases": [
+      "amti",
+      "maharashtrian amti",
+      "toor dal amti"
+    ],
+    "calories": 160,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 8,
+    "source": "Ingredient-level reconstruction at the house 150 g katori: Maharashtrian toor dal amti - thinner than a north-Indian dal, with goda masala, a little jaggery and tamarind and ~1 tsp oil. Anchored on the table's own dal waran (160 kcal), the plainer sibling of the same Maharashtrian pair."
+  },
+  "dal banjara": {
+    "aliases": [
+      "banjara dal"
+    ],
+    "calories": 190,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 9,
+    "source": "Ingredient-level reconstruction at the house 150 g katori: ~45 g dry chana dal and black urad (chana dal 164 kcal/100 g cooked basis per https://nutriscan.app/calories-nutrition/moong-dal comparison table) plus a ghee-onion-tomato tadka; kept coherent with the table's dal dhaba (190 kcal) and dal bu"
   },
   "dal bukhara": {
     "aliases": [
@@ -458,14 +891,17 @@
   },
   "dal fry": {
     "aliases": [
-      "mix dal fry"
+      "arhar dal fry",
+      "mix dal fry",
+      "toor dal fry",
+      "tur dal fry"
     ],
     "calories": 180,
     "carbs": 21,
     "confidence": "medium",
     "fat": 6,
     "protein": 9,
-    "source": "Existing seed record for 'dal fry', numbers unchanged. Menu name 'Mix Dal Fry' is the same preparation made with mixed lentils rather than one; lentil varieties differ negligibly in macros, so mapped as nearest-analogue alias. No new nutrition research."
+    "source": "alias-only proposal: existing seed record for 'dal fry', numbers unchanged. 'Mix Dal Fry' (already mapped) and 'Toor Dal Fry' are the same preparation made with one lentil or several; lentil varieties differ negligibly in macros at a 150 g katori, so both resolve here."
   },
   "dal kich": {
     "aliases": [],
@@ -476,6 +912,57 @@
     "protein": 8,
     "source": "seed"
   },
+  "dal makhani": {
+    "aliases": [
+      "daal makhani",
+      "dal maharani",
+      "maa ki dal"
+    ],
+    "calories": 210,
+    "carbs": 21,
+    "confidence": "high",
+    "fat": 10,
+    "protein": 9,
+    "source": "https://www.nutritionvalue.org/Dal_makhani_by_MOTHER_INDIA_387925_nutritional_value.html (210 kcal, 9 g protein, 21 g carb, 10 g fat per 150 g serving - exactly the house katori) cross-checked with https://www.tarladalal.com/calories-for-low-calorie-dal-makhani-3570 (100 kcal for the deliberately lo"
+  },
+  "dal pakwan": {
+    "aliases": [
+      "dal pakwaan",
+      "sindhi dal pakwan"
+    ],
+    "calories": 420,
+    "carbs": 48,
+    "confidence": "medium",
+    "fat": 20,
+    "protein": 12,
+    "source": "Ingredient-level reconstruction of the composite Sindhi breakfast plate: 2 deep-fried maida pakwan discs (~35 g each, modelled on the table's poori bhaji and moong dal kachori fried-dough figures) plus a 150 g katori of chana dal (chana dal at 164 kcal/100 g cooked per https://nutriscan.app/calories"
+  },
+  "dal palak": {
+    "aliases": [
+      "dal palak spinach",
+      "palak dal",
+      "spinach dal"
+    ],
+    "calories": 160,
+    "carbs": 18,
+    "confidence": "high",
+    "fat": 5,
+    "protein": 9,
+    "source": "https://www.tarladalal.com/calories-for-palak-toovar-dal--calcium-rich-recipe-4804 (119 kcal, 7.1 g protein, 17.2 g carb, 2.5 g fat per serving) scaled to the house 150 g katori with a normal mess tadka (~1 tsp oil), cross-checked against Tarla Dalal's palak masoor dal (85 kcal per low-fat serving)."
+  },
+  "dal panchmel": {
+    "aliases": [
+      "pancharatna dal",
+      "panchmel dal",
+      "panchratna dal"
+    ],
+    "calories": 190,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 10,
+    "source": "https://www.tarladalal.com/calories-for-trevti-dal--gujarati-recipe-615 (186 kcal, 7.3 g protein, 19.9 g carb, 8.6 g fat per serving of a multi-lentil dal) taken at the house 150 g katori, with protein nudged up and fat down for the five-lentil Rajasthani mix (more chana/urad, ghee tadka rather than"
+  },
   "dal rasam": {
     "aliases": [],
     "calories": 90,
@@ -484,6 +971,18 @@
     "fat": 3,
     "protein": 4,
     "source": "seed"
+  },
+  "dal shorba": {
+    "aliases": [
+      "daal shorba",
+      "lentil shorba"
+    ],
+    "calories": 110,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 6,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: a thin lentil broth of ~25 g dry masoor/toor (116-130 kcal per 100 g cooked per https://nutriscan.app/calories-nutrition/moong-dal) with a light ghee tempering; kept coherent with the table's sabz shorba (90 kcal) and dal rasam (90 kcal)"
   },
   "dal tadka": {
     "aliases": [],
@@ -504,22 +1003,30 @@
     "source": "seed"
   },
   "daliya upma": {
-    "aliases": [],
+    "aliases": [
+      "broken wheat upma",
+      "dalia upma",
+      "lapsi upma"
+    ],
     "calories": 210,
     "carbs": 38,
     "confidence": "medium",
     "fat": 5,
     "protein": 6,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'daliya upma' (seed), numbers unchanged. 'Lapsi Upma' is the Gujarati/Marathi name for the same savoury broken-wheat (lapsi/daliya) upma, so it resolves here rather than gaining a near-duplicate record."
   },
   "dhokla": {
-    "aliases": [],
+    "aliases": [
+      "besan dhokla",
+      "khaman",
+      "khaman dhokla"
+    ],
     "calories": 160,
     "carbs": 24,
     "confidence": "medium",
     "fat": 5,
     "protein": 5,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'dhokla' (seed), numbers unchanged. 'Khaman' is the Gujarati name for exactly this besan dhokla (https://www.tarladalal.com/calories-for-khaman-dhokla-quick-microwave-khaman-dhokla-2753 gives 73 kcal per piece, i.e. ~2 pieces per mess serving), so it is"
   },
   "double dal tadka": {
     "aliases": [],
@@ -557,6 +1064,19 @@
     "protein": 2,
     "source": "seed"
   },
+  "exotic vegetable briami": {
+    "aliases": [
+      "briam",
+      "briami",
+      "vegetable briami"
+    ],
+    "calories": 200,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 4,
+    "source": "https://souvlakiforthesoul.com/briam-greek-roasted-vegetables (326 kcal, 6 g protein, 37 g carb, 19 g fat per person) and https://realgreekrecipes.com/briami (532 kcal, 13 g protein, 80 g carb, 22 g fat per large serving), scaled to the house 150 g sabzi-sized mess portion of olive-oil roasted veget"
+  },
   "exotic veggies alfredo": {
     "aliases": [
       "exotic vegetables alfredo",
@@ -571,13 +1091,18 @@
     "source": "Ingredient-level reconstruction: 120 g mixed exotic vegetables (zucchini, bell pepper, babycorn, carrot, french beans) plus 60 ml alfredo sauce, using the per-ingredient alfredo sauce figures published at https://www.arise-app.com/dish/Penne-Alfredo (alfredo sauce, cream and cheese based: 480 kcal, "
   },
   "farshan / chop onion": {
-    "aliases": [],
+    "aliases": [
+      "sev / chop onion",
+      "sev chopped onion",
+      "sev/ chop onion",
+      "sev/ choponion"
+    ],
     "calories": 90,
     "carbs": 12,
     "confidence": "medium",
     "fat": 4,
     "protein": 2,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'farshan / chop onion' (seed), numbers unchanged. The menu cell 'Sev/ Choponion' is the same misal/poha topping portion - fried farsan (sev) plus chopped onion - written with the OCR running 'chop onion' together."
   },
   "french fried": {
     "aliases": [],
@@ -601,8 +1126,22 @@
     "protein": 8,
     "source": "https://www.arise-app.com/dish/Stir-fried-Noodles-with-Vegetables (117 kcal, 20.3 g carb, 3.1 g protein, 2.7 g fat per 100 g) scaled to a 200 g mess plate, with the higher oil load typical of Indo-Chinese mess cooking; kept coherent with the table's existing hakka noodles entry (320 kcal)."
   },
+  "fruit custard": {
+    "aliases": [
+      "fruit custurd",
+      "mixed fruit custard"
+    ],
+    "calories": 180,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 4,
+    "source": "Derived from the table's own banana custard record (200 kcal, 4 g protein, 30 g carb, 7 g fat per bowl), which is the same milk-custard dessert; the mixed-fruit version carries a little more water-rich fruit and slightly less banana, so it sits marginally lower."
+  },
   "fruit juice": {
     "aliases": [
+      "fresh fruit juice",
+      "fresh juice",
       "mix fruit juice"
     ],
     "calories": 90,
@@ -610,7 +1149,20 @@
     "confidence": "medium",
     "fat": 0,
     "protein": 1,
-    "source": "Existing seed record for 'fruit juice', numbers unchanged. Menu name 'Mix Fruit Juice' is the same beverage (mixed-fruit juice) under a longer name; nearest-analogue name resolution, no new nutrition research."
+    "source": "alias-only proposal: existing table record for 'fruit juice', numbers unchanged. Menu names 'Mix Fruit Juice' (already mapped) and 'Fresh Juice' are the same served beverage - the day's fruit juice - so both resolve to this record instead of new entries."
+  },
+  "fry papad": {
+    "aliases": [
+      "fried papad",
+      "masala fry papad",
+      "papad fry"
+    ],
+    "calories": 65,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 3,
+    "source": "Derived from the table's own roasted papad record (35 kcal, 2 g protein, 6 g carb, 0 g fat per piece) plus the ~3 g of oil a papad absorbs when deep-fried rather than flame-roasted."
   },
   "fryums": {
     "aliases": [],
@@ -620,6 +1172,31 @@
     "fat": 6,
     "protein": 1,
     "source": "seed"
+  },
+  "garlic bread": {
+    "aliases": [
+      "garlic bread slices",
+      "garlic breads"
+    ],
+    "calories": 300,
+    "carbs": 36,
+    "confidence": "high",
+    "fat": 14,
+    "protein": 8,
+    "source": "https://www.eatthismuch.com/calories/garlic-bread-498037 (151 kcal, 4 g protein, 18 g carb, 7 g fat per 43 g pre-sliced piece) cross-checked with https://nutrifox.com/nutrition/garlic-bread-frozen (151 kcal per 43 g slice), doubled for the two-slice portion the mess serves."
+  },
+  "garlic chutney": {
+    "aliases": [
+      "dry garlic chutney",
+      "lasun chutney",
+      "lehsun chutney"
+    ],
+    "calories": 60,
+    "carbs": 5,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction on the house 1 tbsp = 15 g chutney basis: dry lasun chutney is garlic, dry coconut, roasted peanut/sesame and red chilli powder with a little oil - far denser than the table's coriander-based green chutney (13 kcal) and closer to its coconut chutney (90 kcal per large"
   },
   "garlic dal tadka": {
     "aliases": [],
@@ -652,18 +1229,36 @@
     "protein": 5,
     "source": "seed"
   },
+  "greek black eyed peas and veggies salad": {
+    "aliases": [
+      "black eyed peas and veggies salad",
+      "greek black eyed peas salad"
+    ],
+    "calories": 190,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 8,
+    "source": "Ingredient-level reconstruction at the house 150 g salad-with-pulses serving: ~90 g boiled black-eyed peas (116 kcal/100 g cooked) + ~50 g raw vegetables + ~1.5 tsp olive oil dressing; anchored on black-eyed-pea figures from https://shwetainthekitchen.com/lobhia-chawli-chi-usal-black-eyed-peas-curry"
+  },
   "green & sweet chutney": {
-    "aliases": [],
+    "aliases": [
+      "green & sweet chutneys",
+      "green / sweet chutney",
+      "green and sweet chutney",
+      "green/ sweet chutney"
+    ],
     "calories": 40,
     "carbs": 9,
     "confidence": "medium",
     "fat": 0,
     "protein": 1,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'green & sweet chutney' (seed), numbers unchanged. The menu cell 'Green / Sweet Chutney' is the same pair of chaat chutneys served together, written with a slash instead of an ampersand, so it is added as an alias rather than duplicated."
   },
   "green chutney": {
     "aliases": [
       "coriander chutney",
+      "mint chutney",
       "mint coriander chutney",
       "pudina chutney"
     ],
@@ -672,7 +1267,7 @@
     "confidence": "high",
     "fat": 0,
     "protein": 0,
-    "source": "https://nutritionsource.hsph.harvard.edu/green-chutney (23 kcal / 6 g carb per 2 tbsp) cross-checked against IFCT-derived mint-coriander chutney at https://www.anuvaad.org.in/nutrition-fact/mint-and-coriander-chutney-pudinay-aur-dhaniye-ki-chutney (102.6 kcal/100 g). Scaled to the house 1 tbsp = 15 "
+    "source": "alias-only proposal: existing table record for 'green chutney' (https://nutritionsource.hsph.harvard.edu/green-chutney, cross-checked against https://www.anuvaad.org.in/nutrition-fact/mint-and-coriander-chutney-pudinay-aur-dhaniye-ki-chutney), numbers unchanged. Menu name 'Mint Chutney' is the same "
   },
   "green peas chowder": {
     "aliases": [],
@@ -692,6 +1287,18 @@
     "protein": 1,
     "source": "seed"
   },
+  "gujarati dal": {
+    "aliases": [
+      "gujarati toor dal",
+      "gujrati dal"
+    ],
+    "calories": 170,
+    "carbs": 22,
+    "confidence": "high",
+    "fat": 6,
+    "protein": 7,
+    "source": "https://www.tarladalal.com/calories-for-trevti-dal--gujarati-recipe-615 (186 kcal, 7.3 g protein, 19.9 g carb, 8.6 g fat per Gujarati dal serving), taken at the house 150 g katori; the jaggery and kokum push carbs up and protein slightly down relative to a plain toor dal."
+  },
   "gulab jamun": {
     "aliases": [],
     "calories": 280,
@@ -709,6 +1316,19 @@
     "fat": 10,
     "protein": 7,
     "source": "seed"
+  },
+  "hara bhara kabab": {
+    "aliases": [
+      "hara bhara kabab (2 pcs)",
+      "hara bhara kebab",
+      "harabhara kabab"
+    ],
+    "calories": 240,
+    "carbs": 24,
+    "confidence": "high",
+    "fat": 12,
+    "protein": 8,
+    "source": "https://www.tarladalal.com/calories-for-hara-bhara-kabab-veg-hara-bhara-kebab-32747 (118 kcal, 3.8 g protein, 12.2 g carb, 6.0 g fat per kebab), doubled for the two-kebab portion the mess plates."
   },
   "hot & cold milk": {
     "aliases": [],
@@ -748,6 +1368,32 @@
     "protein": 4,
     "source": "seed"
   },
+  "imli chutney": {
+    "aliases": [
+      "khajur imli chutney",
+      "sweet chutney",
+      "tamarind chutney"
+    ],
+    "calories": 40,
+    "carbs": 10,
+    "confidence": "high",
+    "fat": 0,
+    "protein": 0,
+    "source": "https://www.shanfoods.com/product/accompaniments/chutneys/tamarind-chutney (40 kcal per 15 g serving) cross-checked with https://www.kimecopak.ca/blogs/cuisine/chutney-calories (sweetened tamarind/date chutney 40-60 kcal per tablespoon), at the house 1 tbsp = 15 g chutney serving."
+  },
+  "jalapeno potato bites": {
+    "aliases": [
+      "jalapeno bites",
+      "jalapeno cheese potato bites",
+      "potato jalapeno bites"
+    ],
+    "calories": 220,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 4,
+    "source": "Derived from the table's own potato 65 (220 kcal, 3 g protein, 28 g carb, 11 g fat) and corn cheese ball (210 kcal) records - the same crumb-coated, deep-fried potato-and-cheese bite with jalapeno in the filling; ~4 pieces per mess portion."
+  },
   "jalebi": {
     "aliases": [],
     "calories": 300,
@@ -786,6 +1432,19 @@
     "protein": 4,
     "source": "seed"
   },
+  "kacchi dabeli": {
+    "aliases": [
+      "dabeli",
+      "kachhi dabeli",
+      "kutchi dabeli"
+    ],
+    "calories": 260,
+    "carbs": 38,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 6,
+    "source": "Ingredient-level reconstruction: 1 pav (130 kcal, 4 g protein, 24 g carb per the table's own pav record) filled with ~60 g spiced potato dabeli masala, butter-toasted, and topped with sev, pomegranate and peanuts; kept coherent with the table's misal pav (312 kcal) and bombay sandwich (280 kcal)."
+  },
   "kachumber salad": {
     "aliases": [
       "cucumber tomato onion salad",
@@ -798,6 +1457,19 @@
     "fat": 0,
     "protein": 1,
     "source": "https://www.indianhealthyrecipes.com/kachumber (28 kcal, 7 g carb, 1 g protein, 1 g fat per serving) and https://www.tarladalal.com/calories/kachumber-salad (27 kcal, 5.5 g carb, 0.8 g protein, 0.16 g fat per serving), taken at the house 100 g salad serving. Roasted cumin adds no meaningful macros."
+  },
+  "karela masala": {
+    "aliases": [
+      "bitter gourd masala",
+      "karela fry",
+      "karela sabzi"
+    ],
+    "calories": 120,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 100 g dry-sabzi serving: bitter gourd is only ~17 kcal per 100 g, so the calories come from the ~1.5 tsp oil, besan/onion masala and a little jaggery; kept coherent with the table's turai masala (130 kcal) and parwal masala (140 kcal), the same gourd-sabz"
   },
   "kashmiri pulao": {
     "aliases": [],
@@ -816,6 +1488,32 @@
     "fat": 1,
     "protein": 1,
     "source": "seed"
+  },
+  "kosambari salad": {
+    "aliases": [
+      "kosambari",
+      "kosumalli",
+      "moong dal kosambari"
+    ],
+    "calories": 100,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 5,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: ~30 g soaked moong dal (~110 kcal dry-weight basis; 120 kcal, 7 g protein, 19 g carb per 100 g cooked per https://nutriscan.app/calories-nutrition/moong-dal) with cucumber, grated coconut, lemon and a small mustard tempering."
+  },
+  "kothimbir vadi": {
+    "aliases": [
+      "coriander vadi",
+      "kothimbir vade",
+      "kothimbir wadi"
+    ],
+    "calories": 160,
+    "carbs": 18,
+    "confidence": "high",
+    "fat": 7,
+    "protein": 6,
+    "source": "https://www.fatsecret.co.in/calories-nutrition/search?q=Kothimbir+Vadi (45 kcal, 1.12 g fat, 7.16 g carb, 2.06 g protein per piece; 135 kcal per 3-piece serving) adjusted upward for the shallow-frying the mess does after steaming, cross-checked with https://profusioncurry.com/kothimbir-wadi-cilantro"
   },
   "kulcha": {
     "aliases": [
@@ -859,14 +1557,55 @@
     "protein": 2,
     "source": "https://www.vegrecipesofindia.com/lauki-ki-sabji-recipe (118 kcal, 11 g carb, 1 g protein, 7 g fat per serving) cross-checked against https://www.fatsecret.co.in/calories-nutrition/search?q=Lauki+Sabzi (61 kcal per 100 g). Taken at the house 150 g katori; coherent with the table's lauki do pyaza."
   },
+  "lauki shorba": {
+    "aliases": [
+      "bottle gourd shorba",
+      "dudhi shorba",
+      "lauki soup"
+    ],
+    "calories": 70,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: bottle gourd is ~14 kcal per 100 g, so the calories come almost entirely from the ~1 tsp ghee tempering and a spoon of besan/cream thickening; kept below the table's sabz shorba (90 kcal), which carries denser vegetables."
+  },
   "lemon / sev": {
-    "aliases": [],
+    "aliases": [
+      "sev / lemon",
+      "sev lemon",
+      "sev/ lemon"
+    ],
     "calories": 90,
     "carbs": 12,
     "confidence": "medium",
     "fat": 4,
     "protein": 2,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'lemon / sev' (seed), numbers unchanged. The menu cell 'Sev/ Lemon' is the identical accompaniment pair (a wedge of lemon plus a spoon of sev on misal/poha) with the two names in the other order."
+  },
+  "lemon coriander soup": {
+    "aliases": [
+      "lemon and coriander soup",
+      "lemon corriander soup"
+    ],
+    "calories": 60,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 2,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: a clear vegetable stock with shredded carrot/cabbage, coriander, lemon juice and ~1 tsp cornflour thickening - one of the lightest soups on the menu; kept coherent with the table's manchow soup (100 kcal) and dal rasam (90 kcal), both of"
+  },
+  "lemon herb rice": {
+    "aliases": [
+      "herbed lemon rice",
+      "lemon herbed rice"
+    ],
+    "calories": 250,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 5,
+    "source": "Ingredient-level reconstruction on the house 150 g cooked-rice serving, using the table's own plain rice (200 kcal / 150 g) plus ~1.5 tsp butter/oil, lemon juice and herbs; cross-checked against the table's lemon pepper rice (245 kcal), itself sourced from https://www.tarladalal.com/calories/lemon-r"
   },
   "lemon juice": {
     "aliases": [],
@@ -897,6 +1636,19 @@
     "fat": 13,
     "protein": 8,
     "source": "seed"
+  },
+  "makhani gravy malai kofta": {
+    "aliases": [
+      "malai kofta",
+      "malai kofta in makhani gravy",
+      "malai kofta makhani"
+    ],
+    "calories": 320,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 20,
+    "protein": 11,
+    "source": "https://nutriscan.app/calories-nutrition/malai-kofta (280 kcal, 12 g protein, 18 g fat per 150 g serving of 2 koftas with gravy) adjusted upward for the richer butter-cream makhani gravy, cross-checked against https://www.vegrecipesofindia.com/veg-kofta-curry-recipe (526 kcal per restaurant serving)"
   },
   "malpua": {
     "aliases": [],
@@ -974,6 +1726,45 @@
     "protein": 5,
     "source": "seed"
   },
+  "masoor dal": {
+    "aliases": [
+      "masoor dal tadka",
+      "masur dal",
+      "red lentil dal"
+    ],
+    "calories": 160,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 9,
+    "source": "https://nutriscan.app/calories-nutrition/moong-dal (comparison table: masoor dal 116 kcal, 9 g protein, 20 g carb, 0.4 g fat per 100 g cooked) scaled to the house 150 g katori with a ~1 tsp oil tadka; kept coherent with the table's dal tadka (170 kcal)."
+  },
+  "masoor masala": {
+    "aliases": [
+      "akkha masoor",
+      "masoor usal",
+      "whole masoor masala"
+    ],
+    "calories": 180,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 10,
+    "source": "Ingredient-level reconstruction at the house 150 g katori: ~45 g dry whole masoor (116 kcal, 9 g protein, 20 g carb per 100 g cooked per https://nutriscan.app/calories-nutrition/moong-dal comparison table) with an onion-tomato masala and ~1 tsp oil; kept coherent with the table's chilka wali green m"
+  },
+  "matar curry": {
+    "aliases": [
+      "green peas curry",
+      "matar masala",
+      "mutter curry"
+    ],
+    "calories": 180,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 6,
+    "source": "Ingredient-level reconstruction at the house 150 g katori: ~90 g green peas (81 kcal, 5.4 g protein, 14.5 g carb per 100 g) in onion-tomato gravy with ~1.5 tsp oil; cross-checked against https://www.slurrp.com/recipes/sprouted-green-peas-masala-1611333765 (323 kcal, 13 g protein, 57 g carb, 10 g fat"
+  },
   "matki sambar": {
     "aliases": [],
     "calories": 130,
@@ -1001,6 +1792,19 @@
     "protein": 9,
     "source": "seed"
   },
+  "mediterranean vegetable & lentil salad": {
+    "aliases": [
+      "lentil salad",
+      "mediterranean lentil salad",
+      "mediterranean vegetable and lentil salad"
+    ],
+    "calories": 170,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 7,
+    "source": "Ingredient-level reconstruction at the house 150 g pulse-salad serving: ~80 g boiled brown lentils (116 kcal, 9 g protein, 20 g carb per 100 g cooked per https://nutriscan.app/calories-nutrition/moong-dal comparison table) with cucumber, tomato, olives and an olive-oil-lemon dressing; kept coherent "
+  },
   "medu wada": {
     "aliases": [],
     "calories": 180,
@@ -1009,6 +1813,31 @@
     "fat": 9,
     "protein": 5,
     "source": "seed"
+  },
+  "methi thepla": {
+    "aliases": [
+      "methi na thepla",
+      "methi thepla (1 pc)",
+      "thepla"
+    ],
+    "calories": 120,
+    "carbs": 16,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction on the house 40 g flatbread serving: wholewheat dough with fenugreek leaves, curd and ~1 tsp oil on the tava - i.e. the table's phulka (90 kcal, 3 g protein, 18 g carb, 1 g fat) plus the oil and besan a thepla carries. Cross-checked against https://www.tarladalal.com/"
+  },
+  "mexican greens salad": {
+    "aliases": [
+      "mexican green salad",
+      "mexican salad"
+    ],
+    "calories": 80,
+    "carbs": 8,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: lettuce and mixed greens with peppers, corn kernels, jalapeno and a lime-oil dressing (~1 tsp oil); kept coherent with the table's assorted greens salad (22 kcal, undressed) and tossed salad (40 kcal)."
   },
   "mili juli veg": {
     "aliases": [],
@@ -1037,6 +1866,19 @@
     "protein": 3,
     "source": "seed"
   },
+  "mirchi wada": {
+    "aliases": [
+      "mirch vada",
+      "mirchi bada",
+      "mirchi vada"
+    ],
+    "calories": 250,
+    "carbs": 26,
+    "confidence": "medium",
+    "fat": 13,
+    "protein": 6,
+    "source": "Derived from the table's own chilly bhaji (210 kcal, 3 g protein, 22 g carb, 12 g fat) plus the spiced-potato stuffing that distinguishes the Rajasthani mirchi vada; cross-checked against https://nutriscan.app/calories-nutrition/samosa (pakora family 240 kcal per serving)."
+  },
   "misal pav": {
     "aliases": [
       "misal pao",
@@ -1059,13 +1901,16 @@
     "source": "seed"
   },
   "mix cut fruit": {
-    "aliases": [],
+    "aliases": [
+      "cut fruit",
+      "cut fruits"
+    ],
     "calories": 70,
     "carbs": 17,
     "confidence": "medium",
     "fat": 0,
     "protein": 1,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'mix cut fruit' (seed), numbers unchanged. Menu name 'Cut Fruit' is the same plate of chopped seasonal fruit under a shorter name, so it is added as an alias rather than duplicated."
   },
   "mix salad": {
     "aliases": [],
@@ -1075,6 +1920,19 @@
     "fat": 1,
     "protein": 1,
     "source": "seed"
+  },
+  "mix sprouts masala": {
+    "aliases": [
+      "mix sprout masala",
+      "mixed sprouts masala",
+      "sprouts masala"
+    ],
+    "calories": 170,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 4,
+    "protein": 10,
+    "source": "Ingredient-level reconstruction at the house 150 g katori of mixed sprouted pulses (moong/matki/chana sprouts ~100 kcal, 7 g protein, 18 g carb per 100 g) in onion-tomato masala with ~1 tsp oil; kept coherent with the table's matki sprouts dry (150 kcal) and matki sample (180 kcal)."
   },
   "mix veg baby samosa": {
     "aliases": [
@@ -1097,6 +1955,19 @@
     "fat": 11,
     "protein": 5,
     "source": "seed"
+  },
+  "mix veg kolhapuri": {
+    "aliases": [
+      "mixed veg kolhapuri",
+      "veg kolhapuri",
+      "vegetable kolhapuri"
+    ],
+    "calories": 200,
+    "carbs": 18,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 5,
+    "source": "Ingredient-level reconstruction at the house 150 g katori: mixed vegetables in a dry-coconut-and-chilli kolhapuri masala with ~2 tsp oil, anchored on the recipe composition at https://www.vegrecipesofindia.com/paneer-kolhapuri-recipe and kept coherent with the table's mix veg handi (180 kcal) and mi"
   },
   "mix veg pakoda": {
     "aliases": [],
@@ -1166,6 +2037,19 @@
     "protein": 1,
     "source": "seed"
   },
+  "modak": {
+    "aliases": [
+      "modak (2 pcs)",
+      "steamed modak",
+      "ukadiche modak"
+    ],
+    "calories": 260,
+    "carbs": 48,
+    "confidence": "high",
+    "fat": 6,
+    "protein": 4,
+    "source": "https://nutriscan.app/calories-nutrition/modak (160 kcal, 2.5 g protein, 32 g carb, 2 g fat per 40 g steamed modak) and https://ministryofcurry.com/ukadiche-modak-sweet-rice-dumplings (125 kcal, 22 g carb, 3 g fat per modak), taken at the 2-piece portion with the customary drizzle of ghee."
+  },
   "moong dal halwa": {
     "aliases": [],
     "calories": 320,
@@ -1184,6 +2068,18 @@
     "protein": 5,
     "source": "seed"
   },
+  "moong dal pakoda": {
+    "aliases": [
+      "moong dal bhajiya",
+      "moong dal pakora"
+    ],
+    "calories": 250,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 13,
+    "protein": 8,
+    "source": "https://www.tarladalal.com/calories-for-moong-dal-pakoda-moong-dal-bhajiya-33399 (445 kcal, 12.3 g protein, 30 g carb, 30.6 g fat per generous serving) and https://www.nutribit.app/food/66a249c17afeac78219296b4 (240 kcal, 12 g protein, 30 g carb, 12 g fat per serving), taken at the ~70 g mess plate "
+  },
   "moong home style": {
     "aliases": [],
     "calories": 170,
@@ -1192,6 +2088,18 @@
     "fat": 5,
     "protein": 9,
     "source": "seed"
+  },
+  "moong shorba": {
+    "aliases": [
+      "moong dal shorba",
+      "mung shorba"
+    ],
+    "calories": 110,
+    "carbs": 15,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 6,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: ~25 g dry moong dal (120 kcal, 7 g protein, 19 g carb per 100 g cooked per https://nutriscan.app/calories-nutrition/moong-dal) simmered to a broth with a light tempering; kept coherent with the table's sabz shorba (90 kcal)."
   },
   "motichoor ladoo": {
     "aliases": [
@@ -1204,14 +2112,68 @@
     "protein": 3,
     "source": "Existing seed record for 'motichoor ladoo', numbers unchanged. Menu spelling 'Motichur Ladoo' is an OCR/transliteration variant of the same sweet; name resolution only, no new nutrition research."
   },
+  "mulligatawny soup": {
+    "aliases": [
+      "mulligatawny",
+      "veg mulligatawny soup"
+    ],
+    "calories": 130,
+    "carbs": 16,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 4,
+    "source": "https://www.fatsecret.co.in/calories-nutrition/generic/mulligatawny-soup?portionid=11537478&portionamount=100.000 (97 kcal, 3.97 g protein, 7.39 g carb, 5.84 g fat per 100 g) and https://ketogenic.com/foods/zoup-mulligatawny-soup (100 kcal, 6 g protein, 14 g carb, 2.5 g fat per cup), taken at the ho"
+  },
+  "mysore bonda": {
+    "aliases": [
+      "maida bonda",
+      "mysore bajji",
+      "mysore bonda (2 pcs)"
+    ],
+    "calories": 200,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 4,
+    "source": "Ingredient-level reconstruction of 2 deep-fried maida-and-curd bondas (~35 g each), anchored on the table's punugulu (210 kcal, 4 g protein, 26 g carb, 10 g fat), which is the same fried South Indian batter-ball snack."
+  },
+  "nachos with salsa": {
+    "aliases": [
+      "nachos",
+      "nachos and salsa",
+      "nachos with salsa dip"
+    ],
+    "calories": 300,
+    "carbs": 34,
+    "confidence": "medium",
+    "fat": 15,
+    "protein": 6,
+    "source": "Ingredient-level reconstruction: ~50 g tortilla chips (~490 kcal, 7 g protein, 63 g carb, 24 g fat per 100 g) with ~60 g tomato salsa (~30 kcal); kept coherent with the table's french fried (260 kcal) and fryums (120 kcal), the same fried-starch snack family."
+  },
+  "navratan korma": {
+    "aliases": [
+      "navratna korma",
+      "veg navratan korma"
+    ],
+    "calories": 250,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 15,
+    "protein": 8,
+    "source": "https://hitungkalori.com/in/calories/navratan-korma (190 kcal, 6 g protein, 14 g carb, 9 g fat per 100 g) and https://www.mynetdiary.com/food/calories-in-navratan-korma-by-vimal-pouch-30242802-0.html (154 kcal, 2 g protein, 13 g carb, 10.7 g fat per 100 g), averaged and taken at the house 150 g kato"
+  },
   "onion lachha salad": {
-    "aliases": [],
+    "aliases": [
+      "laccha salad",
+      "lachha onion salad",
+      "tandoori laccha salad"
+    ],
     "calories": 40,
     "carbs": 8,
     "confidence": "medium",
     "fat": 0,
     "protein": 1,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'onion lachha salad' (seed), numbers unchanged. 'Tandoori Laccha Salad' is the same sliced-onion laccha salad with chaat/tandoori masala and lemon, served alongside the tandoori counter, so it is mapped as an alias rather than duplicated."
   },
   "onion rice": {
     "aliases": [],
@@ -1240,6 +2202,18 @@
     "protein": 4,
     "source": "seed"
   },
+  "paneer butter masala": {
+    "aliases": [
+      "butter paneer masala",
+      "paneer makhani"
+    ],
+    "calories": 300,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 22,
+    "protein": 12,
+    "source": "https://www.mynetdiary.com/food/calories-in-paneer-butter-masala-by-homemade-cup-19496692-0.html (389 kcal, 12 g protein, 29 g carb, 27 g fat per ~240 g cup) and https://www.tarladalal.com/calories-for-paneer-butter-masala-38973 (635 kcal, 20.4 g protein, 29.5 g carb, 48.2 g fat per restaurant servi"
+  },
   "paneer kadai": {
     "aliases": [
       "kadai paneer",
@@ -1251,6 +2225,17 @@
     "fat": 18,
     "protein": 12,
     "source": "https://clearcals.com/recipes/kadai-paneer (122.5 kcal per 100 g; 4.5 g protein, 6.2 g carb, 9.6 g fat per small cup) and https://hitungkalori.com/in/calories/kadai-paneer-jalfrezi (215 kcal, 11 g protein, 9.5 g carb, 14 g fat per 100 g), averaged and scaled to the house 150 g katori; cross-checked "
+  },
+  "paneer kolhapuri": {
+    "aliases": [
+      "kolhapuri paneer"
+    ],
+    "calories": 280,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 20,
+    "protein": 12,
+    "source": "Reconstructed at the house 150 g katori from https://www.vegrecipesofindia.com/paneer-kolhapuri-recipe (paneer + dry-coconut kolhapuri masala + oil) using paneer at 321 kcal, 25 g protein, 25 g fat per 100 g (https://www.starhealth.in/answers/how-many-calories-are-there-in-paneer); kept coherent wit"
   },
   "paneer mutter": {
     "aliases": [],
@@ -1269,6 +2254,19 @@
     "fat": 12,
     "protein": 5,
     "source": "seed"
+  },
+  "parsley butter croutons": {
+    "aliases": [
+      "butter croutons",
+      "croutons",
+      "parsley croutons"
+    ],
+    "calories": 100,
+    "carbs": 12,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 2,
+    "source": "Ingredient-level reconstruction of a soup-side crouton portion: ~20 g bread cubes (265 kcal/100 g) tossed in ~1 tsp butter with parsley; cross-checked against the table's garlic herb crostini (150 kcal) and bread sticks (120 kcal), which are the same bread-plus-fat family."
   },
   "parwal masala": {
     "aliases": [],
@@ -1313,13 +2311,55 @@
     "source": "https://nutriscan.app/calories-nutrition/pav-bhaji (400 kcal, 10 g protein, 52 g carb, 18 g fat per plate) cross-checked against https://www.tarladalal.com/calories/pav-bhaji (478 kcal for 2 ladi pav plus bhaji with 1 tbsp butter each). Mess plate assumed lighter on butter than the tarladalal recipe"
   },
   "peanut chana chat": {
-    "aliases": [],
+    "aliases": [
+      "chana peanut chaat",
+      "peanut chana chaat"
+    ],
     "calories": 230,
     "carbs": 22,
     "confidence": "medium",
     "fat": 12,
     "protein": 9,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'peanut chana chat' (seed), numbers unchanged. Menu spelling 'Peanut Chana Chaat' is the same dish with the common 'chaat' spelling, so it is added as an alias."
+  },
+  "peanut poha": {
+    "aliases": [
+      "kanda poha with peanuts",
+      "poha with peanuts",
+      "shengdana poha"
+    ],
+    "calories": 280,
+    "carbs": 40,
+    "confidence": "medium",
+    "fat": 10,
+    "protein": 6,
+    "source": "Derived from the table's masala poha (250 kcal, 5 g protein, 40 g carb, 8 g fat per plate) plus the ~10 g of roasted peanuts the peanut version carries (~57 kcal, 2.6 g protein, 5 g fat)."
+  },
+  "penne alla rosa": {
+    "aliases": [
+      "penne alla rosa pasta",
+      "penne in pink sauce",
+      "pink sauce pasta"
+    ],
+    "calories": 400,
+    "carbs": 60,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 12,
+    "source": "https://bitekit.app/tools/pasta-calorie-calculator (200 g cooked white pasta = 316 kcal, 11.6 g protein, 61.8 g carb, 1.8 g fat; cream sauces add ~190 kcal per 100 g, tomato ~70) applied to a ~180 g cooked-pasta mess portion with ~80 g of rosa (tomato-cream) sauce; cross-checked against https://www."
+  },
+  "penne in cheesy harissa sauce": {
+    "aliases": [
+      "cheesy harissa penne",
+      "harissa pasta",
+      "penne harissa"
+    ],
+    "calories": 430,
+    "carbs": 58,
+    "confidence": "medium",
+    "fat": 15,
+    "protein": 14,
+    "source": "https://bitekit.app/tools/pasta-calorie-calculator (200 g cooked pasta = 316 kcal, 11.6 g protein, 61.8 g carb; cheese/cream sauces add ~190 kcal per 100 g) applied to a ~180 g cooked-pasta portion with a cheese-and-harissa sauce; sits above the penne alla rosa proposed in the same pass because of t"
   },
   "phulka": {
     "aliases": [],
@@ -1375,6 +2415,18 @@
     "protein": 3,
     "source": "seed"
   },
+  "pumpkin soup": {
+    "aliases": [
+      "cream of pumpkin soup",
+      "kaddu soup"
+    ],
+    "calories": 120,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: ~180 g pumpkin puree (26 kcal, 1 g protein, 6.5 g carb per 100 g) with stock, a splash of milk/cream and ~1 tsp butter; kept coherent with the table's veg chowder soup (120 kcal) and green peas chowder (120 kcal), the same creamy-soup fa"
+  },
   "punjabi chole": {
     "aliases": [],
     "calories": 280,
@@ -1383,6 +2435,30 @@
     "fat": 10,
     "protein": 11,
     "source": "seed"
+  },
+  "punjabi dum aloo": {
+    "aliases": [
+      "dum aloo",
+      "dum aloo punjabi"
+    ],
+    "calories": 240,
+    "carbs": 28,
+    "confidence": "high",
+    "fat": 12,
+    "protein": 4,
+    "source": "https://www.tarladalal.com/calories-for-dum-aloo-popular-restaurant-style-punjabi-dum-aloo-recipe-33534 (330 kcal, 6.0 g protein, 46.8 g carb, 13.3 g fat per restaurant serving), scaled down to the house 150 g katori and cross-checked against the table's dum aloo banarasi (240 kcal), sourced from ht"
+  },
+  "punjabi kachori": {
+    "aliases": [
+      "kachori",
+      "khasta kachori"
+    ],
+    "calories": 280,
+    "carbs": 33,
+    "confidence": "medium",
+    "fat": 13,
+    "protein": 6,
+    "source": "https://nutriscan.app/calories-nutrition/samosa (comparison table: kachori 280 kcal, 6 g protein, 35 g carb, 13 g fat per deep-fried piece), cross-checked against the table's own moong dal kachori (230 kcal) - the Punjabi version is larger and dal-stuffed."
   },
   "punugulu": {
     "aliases": [],
@@ -1401,6 +2477,18 @@
     "fat": 9,
     "protein": 8,
     "source": "seed"
+  },
+  "rajma makhani": {
+    "aliases": [
+      "makhani rajma",
+      "rajma makhanwala"
+    ],
+    "calories": 260,
+    "carbs": 28,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 11,
+    "source": "Derived from the table's own rajma masala (210 kcal, 11 g protein, 30 g carb, 5 g fat per 150 g katori) plus the butter-and-cream makhani finish (~2 tsp butter/cream), cross-checked against the dal makhani composition at https://www.tarladalal.com/calories-for-low-calorie-dal-makhani-3570 and the ta"
   },
   "rajma masala": {
     "aliases": [],
@@ -1462,23 +2550,69 @@
     "protein": 3,
     "source": "seed"
   },
+  "roasted veggies": {
+    "aliases": [
+      "oven roasted vegetables",
+      "oven roasted veggies",
+      "oven roasted veggies (2 types of zucchini, 3 types of bell pepper, pok choy, babycorn, carrot, red and white cabbage)",
+      "roasted vegetables"
+    ],
+    "calories": 140,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 100 g dry-sabzi serving: mixed non-starchy vegetables (zucchini, bell peppers, babycorn, carrot, cabbage, pok choy; ~30-40 kcal per 100 g raw) tossed in ~1.5 tsp oil and oven-roasted. Cross-checked against https://souvlakiforthesoul.com/briam-greek-roaste"
+  },
   "sabudana khichdi": {
-    "aliases": [],
+    "aliases": [
+      "sabudana khichadi",
+      "sabudana kichadi",
+      "sago khichdi"
+    ],
     "calories": 300,
     "carbs": 45,
     "confidence": "medium",
     "fat": 12,
     "protein": 3,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'sabudana khichdi' (seed), numbers unchanged. Menu spelling 'Sabudana Kichadi' is an OCR/transliteration variant of the same dish."
+  },
+  "sabudana papad": {
+    "aliases": [
+      "sabudana khichiya",
+      "sabudana papadi",
+      "sago papad"
+    ],
+    "calories": 60,
+    "carbs": 9,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 0,
+    "source": "Ingredient-level reconstruction: a sago papad is ~12 g of dried sabudana starch (~350 kcal/100 g dry) that puffs up in hot oil and carries ~2-3 g of it; kept coherent with the table's fryums (120 kcal) which are a larger portion of the same fried-starch family."
+  },
+  "sabudana wada": {
+    "aliases": [
+      "sabudana vada",
+      "sago vada"
+    ],
+    "calories": 200,
+    "carbs": 28,
+    "confidence": "high",
+    "fat": 9,
+    "protein": 3,
+    "source": "https://www.fatsecret.co.in/calories-nutrition/search?q=Kothimbir+Vadi (same results page: sabudana vada 99 kcal, 4.49 g fat, 13.79 g carb per piece), doubled for the two-piece mess portion; coherent with the table's sabudana khichdi (300 kcal per 150 g plate)."
   },
   "sabz shorba": {
-    "aliases": [],
+    "aliases": [
+      "veg shorba",
+      "vegetable shorba"
+    ],
     "calories": 90,
     "carbs": 13,
     "confidence": "medium",
     "fat": 3,
     "protein": 3,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'sabz shorba' (seed), numbers unchanged. 'Vegetable Shorba' is the literal English of sabz shorba - the same soup - so it is added as an alias."
   },
   "sambar": {
     "aliases": [],
@@ -1489,6 +2623,19 @@
     "protein": 6,
     "source": "seed"
   },
+  "samosa": {
+    "aliases": [
+      "aloo samosa",
+      "punjabi samosa",
+      "veg samosa"
+    ],
+    "calories": 250,
+    "carbs": 30,
+    "confidence": "high",
+    "fat": 12,
+    "protein": 5,
+    "source": "https://nutriscan.app/calories-nutrition/samosa (262 kcal, 5 g protein, 38 g carb, 10 g fat per 100 g medium samosa) and https://maxprotein.in/blogs/calories/samosa-calories-nutrition-and-health-benefits (vegetable samosa ~200 kcal, 2.6 g protein, 17.4 g carb, 13.4 g fat per 50 g piece), taken at on"
+  },
   "schezwan sauce": {
     "aliases": [],
     "calories": 25,
@@ -1497,6 +2644,48 @@
     "fat": 0,
     "protein": 0,
     "source": "seed"
+  },
+  "semolina cardamom pudding": {
+    "aliases": [
+      "rava kheer",
+      "semolina kheer",
+      "semolina pudding",
+      "sooji kheer",
+      "suji kheer"
+    ],
+    "calories": 230,
+    "carbs": 34,
+    "confidence": "high",
+    "fat": 8,
+    "protein": 6,
+    "source": "https://www.anuvaad.org.in/nutrition-fact/semolina-kheer-suji-rava-kheer (260.87 kcal, 7.9 g protein, 36.6 g carb, 9.69 g fat per serving) cross-checked with https://www.hindustantimes.com/lifestyle/recipe/healthy-rava-kheer-recipe-with-simple-ingredients-for-a-light-dessert-and-balanced-nutrition-1"
+  },
+  "sev khamani": {
+    "aliases": [
+      "khamani",
+      "sev khamni",
+      "surti sev khamani"
+    ],
+    "calories": 200,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 7,
+    "source": "Derived from the table's dhokla record (160 kcal per ~100 g) crumbled and tempered with oil, mustard and sugar, then topped with ~15 g nylon sev (the table's farshan record puts sev at ~90 kcal per topping portion); https://www.tarladalal.com/calories-for-khaman-dhokla-quick-microwave-khaman-dhokla-"
+  },
+  "sevai kheer": {
+    "aliases": [
+      "semiya payasam",
+      "sevaiya kheer",
+      "seviyan kheer",
+      "vermicelli kheer"
+    ],
+    "calories": 220,
+    "carbs": 34,
+    "confidence": "medium",
+    "fat": 7,
+    "protein": 5,
+    "source": "https://clearcals.com/recipes/vermicelli-kheer (272 kcal, 5.6 g protein, 35.9 g carb, 11.8 g fat per 100 g small cup) and https://www.carbmanager.com/food-detail/md:99df87f5b39656134f66661e000ed012/seviyan-kheer-vermicelli-payasam (120 kcal, 1.4 g protein, 26 g carb, 1 g fat per packaged serving), r"
   },
   "shahi tukda": {
     "aliases": [],
@@ -1519,13 +2708,30 @@
     "source": "Existing seed record for 'sheer khurma', numbers unchanged. Menu spelling 'Sheer Kurma' is an OCR/transliteration variant of the same dessert; name resolution only, no new nutrition research."
   },
   "slice cake": {
-    "aliases": [],
+    "aliases": [
+      "cake slice",
+      "honey slice cake"
+    ],
     "calories": 250,
     "carbs": 36,
     "confidence": "medium",
     "fat": 10,
     "protein": 3,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'slice cake' (seed), numbers unchanged. Menu name 'Honey Slice Cake' is the same tea-cake slice with a honey flavouring rather than a different preparation, so it is added as an alias instead of a near-duplicate record."
+  },
+  "sooji kesari": {
+    "aliases": [
+      "kesari bath",
+      "rava kesari",
+      "sheera",
+      "sooji halwa"
+    ],
+    "calories": 250,
+    "carbs": 38,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 4,
+    "source": "Ingredient-level reconstruction at the house 80 g sweet serving: roasted semolina cooked with sugar and ghee (kesari bath is roughly equal parts rava and sugar with generous ghee), cross-checked against the table's dry fruit sheera barfi (300 kcal) and against the semolina pudding figures at https:/"
   },
   "soya bean and capsicum chettinad": {
     "aliases": [
@@ -1578,6 +2784,19 @@
     "protein": 1,
     "source": "https://tools.myfooddata.com/recipe-nutrition-calculator/787832/wt1/1 (cabbage salad / coleslaw with a fat-free dressing: 90 kcal, 18.6 g carb, 2.2 g protein, 1.6 g fat per 219 g, i.e. 41 kcal per 100 g) cross-checked against https://nutriscan.app/calories-nutrition/raw-cabbage-slaw (25 kcal per 100"
   },
+  "sprouted moong salad": {
+    "aliases": [
+      "moong sprouts salad",
+      "sprout salad",
+      "sprouted moong chaat"
+    ],
+    "calories": 90,
+    "carbs": 13,
+    "confidence": "medium",
+    "fat": 1,
+    "protein": 6,
+    "source": "Ingredient-level reconstruction at the house 100 g salad serving: raw/steamed moong sprouts are ~30 kcal per 100 g fresh but ~100 kcal per 100 g when drained and mixed with onion, tomato and lemon; anchored on moong dal figures from https://nutriscan.app/calories-nutrition/moong-dal and kept below t"
+  },
   "steam rice": {
     "aliases": [],
     "calories": 200,
@@ -1596,6 +2815,19 @@
     "protein": 4,
     "source": "seed"
   },
+  "subway sandwich": {
+    "aliases": [
+      "6 inch subway sandwich",
+      "subway sub",
+      "veg subway sandwich"
+    ],
+    "calories": 300,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 9,
+    "protein": 11,
+    "source": "https://fastfoodnutrition.org/subway/veggie-delite/6 (6-inch Veggie Delite: 200 kcal, 8 g protein, 39 g carb, 2 g fat per 162 g) and https://www.getmistapp.com/subway-nutrition-calculator/6-inch-veggie-delite (305 kcal, 14 g protein, 43 g carb, 9 g fat), taking the mess counter's version as a 6-inch"
+  },
   "surti khawsa": {
     "aliases": [
       "khavsa",
@@ -1611,13 +2843,29 @@
     "source": "Surti khawsa identified as the Surat version of Burmese khow suey via https://ribbonstopastas.com/khavsa-khow-suey-surat-street-food; macros from https://cinnamonsnail.com/burmese-khao-suey-curried-noodles-from-myanmar-vegan-khow-suey (579 kcal, 61 g carb, 15 g protein, 33 g fat per restaurant servi"
   },
   "sweet corn veg soup": {
-    "aliases": [],
+    "aliases": [
+      "sweet corn soup",
+      "sweetcorn soup"
+    ],
     "calories": 90,
     "carbs": 15,
     "confidence": "medium",
     "fat": 2,
     "protein": 3,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'sweet corn veg soup' (seed), numbers unchanged. Menu name 'Sweet Corn Soup' is the same mess soup under a shorter name, added as an alias rather than a near-duplicate record."
+  },
+  "sweet lassi": {
+    "aliases": [
+      "lassi",
+      "meethi lassi",
+      "sweet lassi glass"
+    ],
+    "calories": 160,
+    "carbs": 29,
+    "confidence": "high",
+    "fat": 3,
+    "protein": 6,
+    "source": "https://www.anuvaad.org.in/nutrition-fact/sweet-lassi-meethi-lassi (IFCT-derived: 157.8 kcal, 5.7 g protein, 28.8 g carb, 3 g fat per serving) cross-checked with https://www.arise-app.com/dish/Sweet-Lassi (152 kcal, 6 g protein, 21 g carb, 5 g fat per serving)."
   },
   "taak": {
     "aliases": [],
@@ -1673,14 +2921,55 @@
     "protein": 6,
     "source": "seed"
   },
+  "tofu and exotic vegetables in black bean sauce": {
+    "aliases": [
+      "tofu and exotic veggies in black bean sauce",
+      "tofu black bean",
+      "tofu in black bean sauce"
+    ],
+    "calories": 200,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 11,
+    "protein": 10,
+    "source": "Derived from the table's own mapo tofu with vegetables record (185 kcal, 8 g protein, 8 g carb, 14 g fat per 150 g) - the same tofu-and-exotic-vegetable stir-fry with a black-bean sauce, which carries more carb from the fermented-bean-and-cornflour sauce and slightly less oil."
+  },
+  "tomato basil soup": {
+    "aliases": [
+      "cream of tomato basil soup",
+      "tomato and basil soup"
+    ],
+    "calories": 110,
+    "carbs": 14,
+    "confidence": "medium",
+    "fat": 5,
+    "protein": 2,
+    "source": "https://www.tarladalal.com/calories-for-tomato-shorba---desi-khana-1455 (133 kcal, 1.5 g protein, 12.3 g carb per serving of the Indian tomato shorba) adapted to the continental cream-of-tomato-with-basil version at the house 200 ml bowl: a little more carb from the tomato puree and sugar, a little "
+  },
+  "tomato bhat": {
+    "aliases": [
+      "thakkali sadam",
+      "tomato bath",
+      "tomato rice"
+    ],
+    "calories": 245,
+    "carbs": 42,
+    "confidence": "medium",
+    "fat": 6,
+    "protein": 5,
+    "source": "Ingredient-level reconstruction on the house 150 g cooked-rice serving: rice cooked with tomato, onion and goda/garam masala in ~1.5 tsp oil, anchored on the table's own masala bhat (240 kcal, 5 g protein, 42 g carb, 6 g fat), the same Maharashtrian masala-rice preparation."
+  },
   "tomato chutney": {
-    "aliases": [],
+    "aliases": [
+      "tamatar chutney",
+      "tomato chutney/"
+    ],
     "calories": 60,
     "carbs": 10,
     "confidence": "medium",
     "fat": 2,
     "protein": 1,
-    "source": "seed"
+    "source": "alias-only proposal: existing table record for 'tomato chutney' (seed), numbers unchanged. The menu cell 'Tomato Chutney/' carries a stray trailing slash from the OCR and names no second dish, so it is mapped as an alias rather than becoming a near-duplicate entry."
   },
   "tomato ketchup": {
     "aliases": [],
@@ -1690,6 +2979,17 @@
     "fat": 0,
     "protein": 0,
     "source": "seed"
+  },
+  "tomato shorba": {
+    "aliases": [
+      "tamatar shorba"
+    ],
+    "calories": 110,
+    "carbs": 12,
+    "confidence": "high",
+    "fat": 6,
+    "protein": 2,
+    "source": "https://www.tarladalal.com/calories-for-tomato-shorba---desi-khana-1455 (133 kcal, 1.5 g protein, 12.3 g carb per serving; the balance is fat from the coconut milk and tempering), taken at the house 200 ml mess bowl."
   },
   "tossed salad": {
     "aliases": [],
@@ -1744,6 +3044,19 @@
     "protein": 5,
     "source": "Blend of https://www.arise-app.com/dish/Vegetable-Stew (68 kcal per 100 g) and https://www.arise-app.com/dish/Chickpea-Stew-(Revithada) (163 kcal, 17.3 g carb, 5.3 g protein, 8.3 g fat per 100 g), weighted 50/50 to match the menu's vegetables-plus-chickpeas composition and taken at the house 150 g k"
   },
+  "veg cheese ball": {
+    "aliases": [
+      "veg cheese ball (assorted fresh veggies with cheese)",
+      "veg cheese balls",
+      "vegetable cheese ball"
+    ],
+    "calories": 220,
+    "carbs": 20,
+    "confidence": "medium",
+    "fat": 12,
+    "protein": 6,
+    "source": "Derived from the table's own corn cheese ball (210 kcal, 5 g protein, 20 g carb, 12 g fat), the same crumb-fried cheese-and-vegetable snack with a different filling; the mixed-vegetable version carries slightly more cheese, hence the small protein and calorie bump. Long parenthetical menu name mappe"
+  },
   "veg chowder soup": {
     "aliases": [],
     "calories": 120,
@@ -1752,6 +3065,18 @@
     "fat": 5,
     "protein": 3,
     "source": "seed"
+  },
+  "veg kofta curry": {
+    "aliases": [
+      "veg kofta",
+      "vegetable kofta curry"
+    ],
+    "calories": 290,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 19,
+    "protein": 8,
+    "source": "https://www.vegrecipesofindia.com/veg-kofta-curry-recipe (526 kcal, 35 g carb, 12 g protein, 38 g fat per restaurant-style serving) and https://nutriscan.app/calories-nutrition/malai-kofta (280 kcal, 12 g protein, 18 g fat per 150 g of 2 koftas with gravy), renormalised onto the house 150 g katori o"
   },
   "veg manchurian": {
     "aliases": [],
@@ -1800,6 +3125,18 @@
     "protein": 5,
     "source": "seed"
   },
+  "vegetable pepper soup": {
+    "aliases": [
+      "pepper vegetable soup",
+      "veg pepper soup"
+    ],
+    "calories": 80,
+    "carbs": 10,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 3,
+    "source": "Ingredient-level reconstruction at the house 200 ml soup bowl: clear vegetable stock with diced vegetables, crushed black pepper and ~1 tsp oil plus light cornflour thickening; anchored on the table's own hot garlic vegetable soup (90 kcal) and sabz shorba (90 kcal), which are the same thin-soup fam"
+  },
   "vermicelli upma": {
     "aliases": [],
     "calories": 230,
@@ -1835,5 +3172,32 @@
     "fat": 1,
     "protein": 2,
     "source": "seed"
+  },
+  "white dhokla": {
+    "aliases": [
+      "khatta dhokla",
+      "rice dhokla",
+      "safed dhokla"
+    ],
+    "calories": 140,
+    "carbs": 24,
+    "confidence": "medium",
+    "fat": 3,
+    "protein": 4,
+    "source": "Derived from the table's besan dhokla record (160 kcal, 5 g protein, 24 g carb, 5 g fat) for the rice-and-urad fermented version: white/khatta dhokla is rice-based rather than besan-based, so slightly less protein and less oil in the tempering. Cross-checked against https://www.tarladalal.com/calori"
+  },
+  "wholewheat ladoo": {
+    "aliases": [
+      "atta ladoo",
+      "gehu ka ladoo",
+      "wheat flour ladoo",
+      "whole wheat ladoo"
+    ],
+    "calories": 180,
+    "carbs": 22,
+    "confidence": "medium",
+    "fat": 8,
+    "protein": 4,
+    "source": "https://nutriscan.app/calories-nutrition/ladoo (180 kcal, 3 g protein, 24 g carb, 8 g fat per piece for the ghee-and-jaggery ladoo family), applied to the atta version at one ~35-40 g ladoo; atta ladoo runs marginally denser than besan because of the roasted flour-and-ghee ratio."
   }
 }
