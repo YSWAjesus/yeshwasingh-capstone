@@ -247,6 +247,38 @@ body:has([data-testid="stChatInputTextArea"]:focus)
 
 .bc-cta-anchor {{ height: 0; }}
 
+/* ------------------------------- the eaten log -------------------------- */
+.bc-log-today {{ margin: 0 0 .15rem; font-size: 1rem; }}
+.bc-log-today b {{ color: {ACCENT}; }}
+.bc-log-sub {{ margin: 0 0 .6rem; font-size: .82rem; opacity: .72; }}
+.bc-log-sub b {{ color: {ACCENT}; opacity: 1; }}
+.bc-log-warn {{
+  margin: .7rem 0 0; font-size: .74rem; opacity: .6;
+  border-top: 1px solid rgba(178,140,255,.18); padding-top: .5rem;
+}}
+.bc-log-week {{ display: flex; flex-direction: column; gap: .3rem;
+                margin: .5rem 0 .7rem; }}
+/* Grid, not flex: the day labels and the values must line up in columns even
+   though the bar between them is elastic. */
+.bc-log-day {{
+  display: grid; grid-template-columns: 2.4rem 1fr 4.6rem;
+  align-items: center; gap: .55rem; font-size: .76rem;
+}}
+.bc-log-name {{ font-family: 'Pixelify Sans', monospace; opacity: .62; }}
+.bc-log-day.is-today .bc-log-name {{ opacity: 1; color: {LILAC}; }}
+.bc-log-day.is-future {{ opacity: .34; }}
+.bc-log-bar {{
+  display: block; height: 7px; border-radius: 999px;
+  background: rgba(178,140,255,.13); overflow: hidden;
+}}
+.bc-log-bar i {{
+  display: block; height: 100%; border-radius: 999px;
+  background: {ACCENT}; min-width: 0;
+  transition: width .3s ease;
+}}
+.bc-log-day.is-today .bc-log-bar i {{ background: {LILAC}; }}
+.bc-log-value {{ text-align: right; opacity: .66; font-variant-numeric: tabular-nums; }}
+
 .stButton > button {{
   pointer-events: auto;
   /* Fully opaque: these sit ON the bar, so any transparency lets the
@@ -368,3 +400,73 @@ def perch(state: str, pose_index: int = 0) -> None:
 def answer_bubble(html_body: str) -> None:
     st.markdown(f'<div class="bc-answer">{html_body}</div>',
                 unsafe_allow_html=True)
+
+
+def log_panel(day: dict, week: dict, durable: bool) -> None:
+    """Today's plate and the week behind it.
+
+    Built as one HTML block rather than st.columns because Streamlit restacks
+    columns on narrow screens, and a seven-day strip that becomes a seven-row
+    list stops being a strip. Bars are percentage widths of the week's own
+    peak, so the shape is readable without an axis.
+    """
+    peak = max([d["calories"] for d in week["days"]] + [1])
+
+    rows = []
+    for entry in week["days"]:
+        width = round(entry["calories"] / peak * 100)
+        classes = "bc-log-day"
+        if entry["is_today"]:
+            classes += " is-today"
+        if entry["is_future"]:
+            classes += " is-future"
+        value = f"{entry['calories']} kcal" if entry["calories"] else "—"
+        rows.append(
+            f'<div class="{classes}">'
+            f'<span class="bc-log-name">{entry["short"]}</span>'
+            f'<span class="bc-log-bar"><i style="width:{width}%"></i></span>'
+            f'<span class="bc-log-value">{value}</span>'
+            f"</div>"
+        )
+
+    if day["meals"]:
+        eaten = ", ".join(
+            f"{r['meal'].lower()}" for r in day["rows"] if r.get("meal"))
+        headline = (
+            f'<p class="bc-log-today">Today: <b>{day["calories"]} kcal</b> · '
+            f'{day["protein"]}g protein · {day["carbs"]}g carbs · '
+            f'{day["fat"]}g fat</p>'
+            f'<p class="bc-log-sub">{day["meals"]} meal'
+            f'{"" if day["meals"] == 1 else "s"} logged'
+            f'{" — " + eaten if eaten else ""}.'
+            + (f' {day["incomplete"]} had a dish with no macro estimate, so '
+               f'the real total is a little higher.'
+               if day["incomplete"] else "")
+            + "</p>"
+        )
+    else:
+        headline = ('<p class="bc-log-today">Nothing logged today yet.</p>'
+                    '<p class="bc-log-sub">Photograph your tray and tick what '
+                    'you took — it adds up here.</p>')
+
+    total = week["total"]
+    if total["days_logged"]:
+        footer = (f'<p class="bc-log-sub">This week: <b>{total["calories"]} '
+                  f'kcal</b> across {total["meals"]} meals on '
+                  f'{total["days_logged"]} day'
+                  f'{"" if total["days_logged"] == 1 else "s"} — averaging '
+                  f'{total["avg_calories"]} kcal on the days you logged.</p>')
+    else:
+        footer = ""
+
+    warning = "" if durable else (
+        '<p class="bc-log-warn">This log lives on the server\'s own disk, '
+        'which is wiped whenever the app redeploys. Treat it as temporary '
+        'until a persistent volume is attached.</p>')
+
+    st.markdown(
+        f'<div class="bc-answer bc-log">{headline}'
+        f'<div class="bc-log-week">{"".join(rows)}</div>'
+        f"{footer}{warning}</div>",
+        unsafe_allow_html=True,
+    )

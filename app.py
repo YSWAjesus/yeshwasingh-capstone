@@ -24,8 +24,10 @@ from pathlib import Path
 import streamlit as st
 
 import macros
+import meal_log
 import menu_data
 import query
+import time_logic
 import ui
 from gemini_client import GeminiError
 
@@ -65,8 +67,19 @@ def get_detected_items(photo_bytes: bytes, candidate_items: tuple):
 st.session_state.setdefault("messages", [])
 st.session_state.setdefault("tray_photo", None)
 st.session_state.setdefault("show_tray", False)
+st.session_state.setdefault("show_log", False)
 st.session_state.setdefault("pose", 0)
 st.session_state.setdefault("tagline", random.choice(TAGLINES))
+
+# Who this log belongs to. Carried in the URL rather than a cookie or an
+# account: bookmark the page and your log comes back, open it in a private
+# window and you are a new person. No sign-up, nothing identifying stored.
+# Re-set on every run because Streamlit drops params it did not put there.
+if "uid" not in st.session_state:
+    from_url = st.query_params.get("u")
+    st.session_state.uid = (from_url if meal_log._is_safe_id(from_url)
+                            else meal_log.new_user_id())
+st.query_params["u"] = st.session_state.uid
 
 ui.wordmark()
 
@@ -92,7 +105,8 @@ elif menu_source == "cache":
 pending = st.session_state.pop("pending_prompt", None)
 has_conversation = (bool(st.session_state.messages)
                     or st.session_state.tray_photo is not None
-                    or st.session_state.show_tray)
+                    or st.session_state.show_tray
+                    or st.session_state.show_log)
 
 # ------------------------------------------------------------ landing state
 if not has_conversation:
@@ -150,10 +164,50 @@ if tray_photo is not None:
             right.metric("Fat", f"{totals['fat']} g")
             if unmatched:
                 st.caption("No estimate yet for: " + ", ".join(unmatched))
-        if st.button("Clear tray"):
+
+            # Pre-picked from the clock, because you almost always log the
+            # meal you are currently eating; still changeable for the times
+            # you don't.
+            suggested = time_logic.meal_context()["meal_type"]
+            meal_col, log_col = st.columns([2, 3])
+            meal_choice = meal_col.selectbox(
+                "Which meal", meal_log.MEALS,
+                index=(meal_log.MEALS.index(suggested)
+                       if suggested in meal_log.MEALS else 0),
+                label_visibility="collapsed")
+            if log_col.button("Log this meal", type="primary"):
+                meal_log.log_meal(st.session_state.uid, selected, totals,
+                                  meal=meal_choice, unmatched=unmatched)
+                st.session_state.tray_photo = None
+                st.session_state.show_tray = False
+                st.session_state.show_log = True
+                st.rerun()
+
+        tray_buttons = st.columns([2, 3])
+        if tray_buttons[0].button("Clear tray"):
             st.session_state.tray_photo = None
             st.session_state.show_tray = False
             st.rerun()
+        if tray_buttons[1].button("See my log"):
+            st.session_state.show_log = True
+            st.rerun()
+
+# ------------------------------------------------------------- the eaten log
+if st.session_state.show_log:
+    ui.log_panel(meal_log.day_summary(st.session_state.uid),
+                 meal_log.week_summary(st.session_state.uid),
+                 meal_log.LOG_IS_DURABLE)
+    log_buttons = st.columns([2, 2, 3])
+    if log_buttons[0].button("Log another"):
+        st.session_state.show_log = False
+        st.session_state.show_tray = True
+        st.rerun()
+    if log_buttons[1].button("Undo last"):
+        meal_log.undo_last(st.session_state.uid)
+        st.rerun()
+    if log_buttons[2].button("Close log"):
+        st.session_state.show_log = False
+        st.rerun()
 
 # ------------------------------------------- follow-up pills in the prompt bar
 # Rendered just before the input so they land next to it in the DOM; CSS
@@ -193,6 +247,12 @@ if submitted is not None:
     typed = submitted.text or pending
 
 if typed:
+    # "What did I eat today?" is a question about the log, not the menu, and
+    # query.answer would cheerfully answer it with today's mess listing.
+    if meal_log.is_log_question(typed):
+        st.session_state.show_log = True
+        st.rerun()
+
     st.session_state.messages.append({"role": "user", "content": typed})
     result = query.answer(typed, menu, now=datetime.now())
     st.session_state.pose += 1

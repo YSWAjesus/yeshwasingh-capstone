@@ -6,3 +6,4 @@ __pycache__/
 .streamlit/secrets.toml
 data/proposals/
 .claude/settings.local.json
+data/logs/
