@@ -20,14 +20,47 @@ import menu_data  # noqa: E402
 from gemini_client import GeminiError  # noqa: E402
 
 # What a partial read actually looks like: plausible, well-formed, and wrong.
-# One day out of seven. Without the structural gate this would sail through.
-PARTIAL = {"Monday": {"date": "14-Sep", "Lunch": {"Gravy Veg": "Paneer Kadai"}}}
+# One day out of seven. The response schema cannot catch this -- every field
+# name and enum value here is valid -- which is exactly why the >= 5 days gate
+# still has to exist. Schema guarantees shape, not completeness.
+PARTIAL = {"days": [{
+    "day": "Monday", "date": "14-Sep",
+    "sections": [{"section": "Lunch",
+                  "rows": [{"category": "Gravy Veg", "dish": "Paneer Kadai"}]}],
+}]}
+
+
+def as_payload(menu):
+    """Turn a stored menu back into the array shape Gemini now returns.
+
+    Fixture-only: the app converts in the other direction. Keeping the test
+    honest means feeding parse_menu_image what the API really hands it,
+    conversion included, rather than a pre-converted dict.
+    """
+    days = []
+    for day in menu_data.DAYS:
+        if day not in menu:
+            continue
+        stored = menu[day]
+        sections = [
+            {"section": name,
+             "rows": [{"category": c, "dish": d} for c, d in rows.items()]}
+            for name, rows in stored.items()
+            if name not in ("date", "Brunch") and isinstance(rows, dict)
+        ]
+        days.append({
+            "day": day,
+            "date": stored.get("date", ""),
+            "sections": sections,
+            "brunch": stored.get("Brunch", []),
+        })
+    return {"days": days}
 
 
 def case(name, fake, expect_attempts):
     calls = {"n": 0}
 
-    def stub(prompt, image_path=None):
+    def stub(prompt, image_path=None, schema=None):
         calls["n"] += 1
         return fake()
 
@@ -48,10 +81,10 @@ def case(name, fake, expect_attempts):
 def case_recovers():
     """The common case: one bad reading, then a good one. The user sees nothing."""
     calls = {"n": 0}
-    good = menu_data.json.loads(
-        (ROOT / "data" / "menu_snapshot.json").read_text())
+    good = as_payload(menu_data.json.loads(
+        (ROOT / "data" / "menu_snapshot.json").read_text()))
 
-    def stub(prompt, image_path=None):
+    def stub(prompt, image_path=None, schema=None):
         calls["n"] += 1
         return PARTIAL if calls["n"] == 1 else good
 

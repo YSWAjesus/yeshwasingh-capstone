@@ -34,11 +34,17 @@ def _get_model():
     return genai.GenerativeModel(MODEL_NAME)
 
 
-def generate_json(prompt: str, image_path=None) -> dict:
+def generate_json(prompt: str, image_path=None, schema=None) -> dict:
     """
     Send a prompt (optionally with an image) to Gemini and parse the reply
     as JSON. Raises GeminiError on any failure — missing key, API error, or
     a response that isn't valid JSON — so callers never see a raw traceback.
+
+    `schema` is an OpenAPI-subset dict passed as response_schema. Without it,
+    a shape described in the prompt text is only a request: the model is free
+    to rename a field or invent a day label, and the caller finds out by
+    reading None off a dict. With it, the field names and any enums are
+    enforced by the API before the response is returned at all.
     """
     model = _get_model()
 
@@ -48,11 +54,12 @@ def generate_json(prompt: str, image_path=None) -> dict:
         mime_type = "image/png" if image_path.suffix.lower() == ".png" else "image/jpeg"
         parts.append({"mime_type": mime_type, "data": image_path.read_bytes()})
 
+    generation_config = {"response_mime_type": "application/json"}
+    if schema is not None:
+        generation_config["response_schema"] = schema
+
     try:
-        response = model.generate_content(
-            parts,
-            generation_config={"response_mime_type": "application/json"},
-        )
+        response = model.generate_content(parts, generation_config=generation_config)
     except Exception as exc:  # network/auth/quota errors from the SDK
         raise GeminiError(f"Gemini request failed: {exc}") from exc
 
