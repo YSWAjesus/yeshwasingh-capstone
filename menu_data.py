@@ -26,7 +26,17 @@ import halls
 from gemini_client import GeminiError, generate_json
 
 SAMPLE_MENU_PATH = Path(__file__).parent / "sample_menu.jpg"
-CACHED_MENU_PATH = Path(__file__).parent / ".cache" / "menu.jpg"
+
+# Where the downloaded photo and its parse are kept. Configurable for the same
+# reason the meal log is: a container's own disk is wiped on every deploy, so
+# with the default every deploy threw away a perfectly good parse and paid for
+# a fresh OCR on the next visitor. That is a 40-90 second cold start and, on
+# the free tier's 5-requests-per-minute ceiling, up to 3 of those requests --
+# enough to rate-limit the app into its error state on a bad day. Pointed at a
+# mounted volume, a deploy costs nothing and the menu is served instantly.
+CACHE_DIR = Path(os.environ.get("BC_CACHE_DIR")
+                 or Path(__file__).parent / ".cache")
+CACHED_MENU_PATH = CACHE_DIR / "menu.jpg"
 
 # The real photo already sitting in the student's shared Drive folder.
 # Update this each week after re-uploading a fresh menu photo to Drive.
@@ -169,7 +179,7 @@ def fetch_menu_image(file_id: str = None):
             return CACHED_MENU_PATH, "cache"
         return SAMPLE_MENU_PATH, "sample"
 
-    CACHED_MENU_PATH.parent.mkdir(exist_ok=True)
+    CACHED_MENU_PATH.parent.mkdir(parents=True, exist_ok=True)
     CACHED_MENU_PATH.write_bytes(content)
     return CACHED_MENU_PATH, "drive"
 
@@ -270,7 +280,7 @@ def parse_menu_image(image_path: Path = None, attempts: int = 3) -> dict:
     )
 
 
-PARSE_CACHE_DIR = Path(__file__).parent / ".cache" / "parsed"
+PARSE_CACHE_DIR = CACHE_DIR / "parsed"
 
 
 def load_menu(use_cache: bool = True):
