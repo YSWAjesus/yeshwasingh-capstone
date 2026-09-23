@@ -5,8 +5,64 @@ A generic question ("what's there to eat?") should answer the meal you can
 actually still go and eat, not the one that just closed.
 """
 
+import os
 import re
-from datetime import datetime, time
+from datetime import datetime, time, timedelta, timezone
+
+# ---------------------------------------------------------------------------
+# THE CLOCK. Every part of this app that asks "what time is it" must come
+# through here.
+#
+# Railway runs its containers in UTC. The serving windows below are IST. Those
+# two facts together meant the deployed app answered a generic "what's there
+# to eat?" with the wrong meal all day, every day: at 13:00 IST, standing in
+# the lunch queue, UTC said 07:30 and the app said breakfast was being served.
+# At 20:30 at dinner it said lunch. Nothing looked broken -- it just quietly
+# answered the wrong question.
+#
+# now() returns naive wall-clock time in BC_TZ, deliberately naive because
+# everything downstream compares naive datetimes and formats weekday names.
+# ---------------------------------------------------------------------------
+BC_TZ = os.environ.get("BC_TZ") or "Asia/Kolkata"
+
+# A zone whose offset is fixed for all time, so it can be reconstructed without
+# the IANA database. India has not observed DST since 1945, which makes +05:30
+# exactly correct rather than an approximation. Slim container images often
+# ship no tzdata; falling back to UTC there would silently restore the very bug
+# this exists to fix, so an unknown zone with no database is refused outright.
+_FIXED_OFFSETS = {"Asia/Kolkata": timedelta(hours=5, minutes=30), "UTC": timedelta(0)}
+
+try:
+    from zoneinfo import ZoneInfo
+    _ZONE = ZoneInfo(BC_TZ)
+    TZ_SOURCE = "zoneinfo"
+except Exception:  # missing tzdata, or an unknown zone name
+    _offset = _FIXED_OFFSETS.get(BC_TZ)
+    if _offset is None:
+        raise RuntimeError(
+            f"BC_TZ={BC_TZ!r} could not be resolved: the IANA timezone database "
+            f"is unavailable and there is no fixed offset for it. Install tzdata "
+            f"or set BC_TZ to one of {sorted(_FIXED_OFFSETS)}. Refusing to fall "
+            f"back to UTC, which would silently report the wrong meal."
+        )
+    _ZONE = timezone(_offset)
+    TZ_SOURCE = "fixed-offset"
+
+
+def _clock() -> datetime:
+    """The one real reading of the clock. Private so that functions taking a
+    `now` parameter can still reach it without the parameter shadowing it."""
+    return datetime.now(_ZONE).replace(tzinfo=None)
+
+
+def now() -> datetime:
+    """Wall-clock time where the mess is, as a naive datetime."""
+    return _clock()
+
+
+def today():
+    """Today's date where the mess is."""
+    return _clock().date()
 
 # ---------------------------------------------------------------------------
 # REAL SERVING WINDOWS — EDIT ME.
@@ -38,7 +94,7 @@ def meal_context(now: datetime = None) -> dict:
     day_offset=1 means the meal is tomorrow's — without it, a query at 23:00
     would answer with this morning's breakfast, eaten 16 hours ago.
     """
-    now = now or datetime.now()
+    now = now or _clock()
     current = _mins(now.time())
 
     for name, start, end in SERVING_WINDOWS:
@@ -111,7 +167,7 @@ def day_reference_from_text(text: str, now: datetime = None):
     if offset is not None:
         return offset, "relative"
 
-    today_index = (now or datetime.now()).weekday()
+    today_index = (now or _clock()).weekday()
 
     for index, name in enumerate(WEEKDAYS):
         if name.lower() in lowered:

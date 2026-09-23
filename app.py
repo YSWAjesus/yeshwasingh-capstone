@@ -139,7 +139,7 @@ if st.session_state.show_tray and st.session_state.tray_photo is None:
 
 tray_photo = st.session_state.tray_photo
 if tray_photo is not None:
-    today = datetime.now().strftime("%A")
+    today = time_logic.now().strftime("%A")
     today_items = sorted(set(menu_data.all_items_for_day(menu, today)))
 
     st.image(tray_photo, width=200)
@@ -254,7 +254,7 @@ if typed:
         st.rerun()
 
     st.session_state.messages.append({"role": "user", "content": typed})
-    result = query.answer(typed, menu, now=datetime.now())
+    result = query.answer(typed, menu, now=time_logic.now())
     st.session_state.pose += 1
     st.session_state.messages.append({
         "role": "assistant",

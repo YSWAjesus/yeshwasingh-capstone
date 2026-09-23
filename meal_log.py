@@ -21,6 +21,8 @@ import uuid
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
+import time_logic
+
 LOG_DIR = Path(os.environ.get("BC_LOG_DIR")
                or Path(__file__).parent / "data" / "logs")
 
@@ -73,7 +75,10 @@ def log_meal(user_id: str, items, totals: dict, meal: str = None,
     if path is None:
         raise ValueError("bad user id")
 
-    when = when or datetime.now()
+    # time_logic owns the clock. Stamping from datetime.now() here would file
+    # an IST evening meal under the previous UTC day on a Railway container,
+    # and a day tracker cannot have a day boundary that is 5h30m out.
+    when = when or time_logic.now()
     entry = {
         "id": uuid.uuid4().hex[:12],
         "ts": when.isoformat(timespec="seconds"),
@@ -137,7 +142,7 @@ def _sum(rows) -> dict:
 
 
 def day_summary(user_id: str, on: date = None) -> dict:
-    on = on or date.today()
+    on = on or time_logic.today()
     rows = [r for r in entries(user_id) if r["date"] == on.isoformat()]
     return {**_sum(rows), "date": on.isoformat(), "rows": rows}
 
@@ -148,10 +153,13 @@ def week_summary(user_id: str, anchor: date = None) -> dict:
     Monday-start matches the mess's own menu week, so "this week" in the app
     means the same seven days the menu photo covers.
     """
-    anchor = anchor or date.today()
+    anchor = anchor or time_logic.today()
     monday = anchor - timedelta(days=anchor.weekday())
     rows = entries(user_id)
 
+    # Hoisted: date.today() was re-read on every iteration, so a run spanning
+    # midnight could mark two different days "today".
+    real_today = time_logic.today()
     days = []
     for offset in range(7):
         current = monday + timedelta(days=offset)
@@ -160,8 +168,8 @@ def week_summary(user_id: str, anchor: date = None) -> dict:
             "date": current.isoformat(),
             "name": current.strftime("%A"),
             "short": current.strftime("%a"),
-            "is_today": current == date.today(),
-            "is_future": current > date.today(),
+            "is_today": current == real_today,
+            "is_future": current > real_today,
             **_sum(day_rows),
         })
 

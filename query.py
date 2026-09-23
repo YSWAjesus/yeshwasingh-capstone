@@ -198,7 +198,7 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
       follow_up_prompt  what clicking the button should ask, or None
       servings          the Serving objects behind this answer
     """
-    now = now or datetime.now()
+    now = now or time_logic.now()
 
     asked_meal = time_logic.meal_type_from_text(user_text)
     asked_day, day_kind = time_logic.day_reference_from_text(user_text, now)

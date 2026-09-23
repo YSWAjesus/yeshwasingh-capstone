@@ -8,3 +8,6 @@ requests==2.32.5
 google-generativeai==0.8.6
 python-dotenv==1.2.1
 pillow==11.3.0
+# The IANA timezone database. Slim container images often omit it, and
+# time_logic refuses to fall back to UTC rather than report the wrong meal.
+tzdata==2025.2
