@@ -71,6 +71,17 @@ picker. On the deployed HTTPS URL, both work.
 3. That parse is cached on disk keyed by a hash of the image, so a restart
    doesn't re-run a 15–60 second OCR on an unchanged photo.
 
+### Asking about it
+
+Any meal on any day of the uploaded week:
+
+- `what's for dinner` — the meal you can still go and eat, from the clock
+- `lunch tomorrow`, `toms lunch`, `dinner tmrw` — relative days, spelling-tolerant
+- `thursday dinner`, `fri lunch`, `whats for dinner sat` — any weekday, abbreviated or not
+- `what's on Thursday`, `show me friday` — a named weekday with no meal returns the
+  **whole day**, every meal. "Tomorrow" deliberately does not: it keeps the sense of
+  the current time of day, so at lunchtime it still means tomorrow's lunch.
+
 ### Each new week
 
 The app re-downloads the photo every 30 minutes (`ttl=1800` on the cached
@@ -159,7 +170,19 @@ rather than implying otherwise. On Railway:
 ```bash
 railway volume add --mount-path /data
 railway variables --set "BC_LOG_DIR=/data/logs"
+railway variables --set "BC_CACHE_DIR=/data/cache"
 ```
+
+`BC_CACHE_DIR` matters more than it looks. The menu photo and its parse are
+cached there; on the container's own disk they are wiped by every deploy, so
+each deploy costs a fresh 40-90 second OCR. The free tier allows **20
+requests per day** for this model, and the parse retries up to 3 times, so a
+few deploys can exhaust a day's quota. On the volume, a deploy costs nothing.
+
+As a second line of defence, `load_menu` falls back to the committed
+`data/menu_snapshot.json` when Gemini is unavailable — but only if the photo
+still hashes to `data/menu_snapshot.sha256`. Change the photo and the
+fallback correctly refuses: a wrong menu is worse than no menu.
 
 ---
 

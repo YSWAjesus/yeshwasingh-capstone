@@ -6,16 +6,49 @@ Running total across every session below, Assessment 1 through deployment.
 
 | | |
 |---|---|
-| **Sessions logged** | 10 |
-| **Total time** | ~18 hr |
-| **Total tokens (approx.)** | ~2.4M |
-| **Commits** | 25 across 5 branches (the last seven straight to `main`) |
-| **Span** | 2026-09-11 → 2026-09-22 |
+| **Sessions logged** | 11 |
+| **Total time** | ~20 hr |
+| **Total tokens (approx.)** | ~2.7M |
+| **Commits** | 29 across 5 branches (the last eleven straight to `main`) |
+| **Span** | 2026-09-11 → 2026-09-23 |
 
 Per-session detail follows, newest first. One entry per commit; date, time
 spent, rough tokens used, what shipped.
 
 ---
+
+### 2026-09-23 — Any meal, any day; and surviving the free tier
+
+- **Time spent:** ~2 hr
+- **Tokens used (approx.):** ~300k
+- **Shipped:**
+  - **Meal log verified end to end on the live app.** Injected a tray photo,
+    ticked dishes, logged it, then restarted the container: the log came
+    back. That closes the "writability inferred, not proven" caveat from the
+    previous session — the mounted volume is genuinely durable.
+  - **Any meal on any day.** Day abbreviations (`sat`, `thurs`, `weds`), and
+    naming a weekday with no meal now returns the whole day rather than
+    whichever meal the clock pointed at.
+- **What broke:**
+  - `whats for dinner sat` answered **today's** dinner. "sat" was
+    unrecognised, so the day parser returned None and it silently fell back
+    to today — the same failure shape as "toms" the week before. A confident
+    answer about the wrong day is indistinguishable from a right one.
+  - Building the whole-day view exposed an older bug: day parsing read
+    `datetime.now()` directly while `query.answer` worked from an injected
+    `now`. Whenever those differed, every named weekday came out shifted by a
+    day. Caught only because the date rolled over mid-session and a test
+    written against a fixed Tuesday started returning Wednesday.
+  - **Ran out of Gemini quota on the live app.** The free tier allows 20
+    requests per *day* for this model, not per minute as the first 429
+    implied. Verification runs plus cold starts — each able to spend 3 on the
+    retry loop — exhausted it, and the deployed app sat on its error message
+    for a menu that had been read correctly hours earlier. Two fixes: the
+    parse cache moved onto the volume so a deploy no longer throws away a
+    good parse and pays for a fresh OCR, and `load_menu` now falls back to
+    the committed snapshot when the photo still hashes to the recorded
+    sha256. The hash guard is what separates a safety net from a stale-menu
+    bug: change the photo and the check fails and the error stands.
 
 ### 2026-09-22 — New week, schema-constrained OCR, and a meal log
 
