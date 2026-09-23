@@ -282,6 +282,34 @@ def parse_menu_image(image_path: Path = None, attempts: int = 3) -> dict:
 
 PARSE_CACHE_DIR = CACHE_DIR / "parsed"
 
+# A parse of a known photo, committed to the repo by tools/snapshot_menu.py
+# alongside the sha256 of the exact image it was read from.
+SNAPSHOT_PATH = Path(__file__).parent / "data" / "menu_snapshot.json"
+SNAPSHOT_DIGEST_PATH = Path(__file__).parent / "data" / "menu_snapshot.sha256"
+
+
+def snapshot_for(digest: str):
+    """The committed parse, but ONLY if it was read from these exact bytes.
+
+    This is a fallback for the day Gemini is unavailable — an outage, or the
+    free tier's daily request cap, both of which otherwise leave a student
+    staring at an error for a menu that has not changed since it was last
+    read successfully.
+
+    The digest guard is what makes this honest rather than a stale-menu bug:
+    same bytes means same photo means the stored parse IS the answer. A
+    different photo fails the check and the error stands.
+    """
+    if not (SNAPSHOT_PATH.exists() and SNAPSHOT_DIGEST_PATH.exists()):
+        return None
+    if SNAPSHOT_DIGEST_PATH.read_text().strip() != digest:
+        return None
+    try:
+        menu = json.loads(SNAPSHOT_PATH.read_text())
+    except ValueError:
+        return None
+    return menu if isinstance(menu, dict) and menu else None
+
 
 def load_menu(use_cache: bool = True):
     """Fetch this week's photo and OCR it. Returns (menu, source).
@@ -301,6 +329,10 @@ def load_menu(use_cache: bool = True):
             return json.loads(cache_file.read_text()), source
         except ValueError:
             cache_file.unlink(missing_ok=True)
+
+    stored = snapshot_for(digest) if use_cache else None
+    if stored is not None:
+        return stored, source
 
     menu = parse_menu_image(path)
     PARSE_CACHE_DIR.mkdir(parents=True, exist_ok=True)
