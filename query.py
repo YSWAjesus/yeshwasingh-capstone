@@ -95,6 +95,82 @@ def _render_serving_html(serving) -> str:
             f'</span></h4><ul>{"".join(rows)}</ul>')
 
 
+# The order a day is actually eaten in, for whole-day answers.
+MEAL_ORDER = ["Breakfast", "Lunch", "Snacks", "Dinner"]
+
+
+def _meal_label(meal_type: str, servings) -> str:
+    """What to call this meal in the reply.
+
+    Sunday's breakfast and lunch rows are one combined brunch column, so
+    calling it "breakfast" reads as wrong to anyone looking at the photo.
+    """
+    if any(s.hall is None for s in servings):
+        return "brunch"
+    return meal_type.lower()
+
+
+def _whole_day_answer(menu: dict, weekday: str) -> dict:
+    """Every meal of a named day.
+
+    Asking "what is there on Thursday" used to answer with Thursday's lunch
+    alone, because with no meal named the app fell back to whichever meal the
+    clock was pointing at. Naming a weekday is a planning question, so it
+    gets the whole day.
+    """
+    day_menu = halls.resolve_day(menu, weekday)
+
+    blocks = []
+    for meal_type in MEAL_ORDER:
+        servings = halls.servings_for_meal(day_menu, meal_type)
+        if not servings:
+            continue
+        # Sunday's brunch satisfies both Breakfast and Lunch, which would
+        # otherwise print the same combined list twice under two headings.
+        if blocks and servings[0].hall is None and blocks[-1][1][0].hall is None:
+            continue
+        blocks.append((meal_type, servings))
+
+    if not blocks:
+        return {"reply": f"I don't have {weekday} in this week's menu photo.",
+                "meal_type": None, "follow_up": None, "follow_up_label": None,
+                "follow_up_prompt": None, "servings": []}
+
+    opener = f"Here's all of {weekday}:"
+    parts = [opener]
+    html = [f'<div class="lead">{_escape(opener)}</div>']
+
+    for meal_type, servings in blocks:
+        label = _meal_label(meal_type, servings).title()
+        parts.append(f"### {label}")
+        parts.append("\n\n".join(_render_serving(s) for s in servings))
+        html.append(f'<div class="meal">{_escape(label)}</div>')
+        html += [_render_serving_html(s) for s in servings]
+
+    every_serving = [s for _m, servings in blocks for s in servings]
+    missing = sum(1 for s in every_serving
+                  for _c, d in s.rows if not macros.lookup(d))
+    if missing:
+        noun = "dish isn't" if missing == 1 else "dishes aren't"
+        parts.append(f"_{missing} {noun} in the macro table yet — "
+                     f"no numbers invented for them._")
+        html.append(f'<div class="none">{missing} {noun} in the macro table '
+                    f'yet — nothing invented for them.</div>')
+
+    return {
+        "reply": "\n\n".join(parts),
+        "reply_html": "".join(html),
+        # No meal-specific pill: every meal is already on screen, so offering
+        # one would just re-show a section the user is looking at.
+        "follow_up_options": [{"label": "Track what I ate", "action": "tray"}],
+        "meal_type": None,
+        "follow_up": None,
+        "follow_up_label": None,
+        "follow_up_prompt": None,
+        "servings": every_serving,
+    }
+
+
 def _suggest_follow_ups(menu, weekday, meal_type, limit=2):
     """Offer only meals that actually have data — never a dead end."""
     day_menu = halls.resolve_day(menu, weekday)
@@ -125,7 +201,14 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
     now = now or datetime.now()
 
     asked_meal = time_logic.meal_type_from_text(user_text)
-    asked_day = time_logic.day_offset_from_text(user_text)
+    asked_day, day_kind = time_logic.day_reference_from_text(user_text, now)
+
+    # A named weekday with no meal ("what's on Thursday") is a planning
+    # question about the whole day. "Tomorrow" is not: it keeps the sense of
+    # the current time of day, so at lunchtime it still means tomorrow's lunch.
+    if asked_meal is None and day_kind == "weekday":
+        target = now + timedelta(days=asked_day)
+        return _whole_day_answer(menu, target.strftime("%A"))
 
     if asked_meal:
         meal_type = asked_meal
@@ -158,16 +241,21 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
                 "servings": []}
 
     when = {0: "today", 1: "tomorrow"}.get(offset, weekday)
+    label = _meal_label(meal_type, servings)
     if status == "just_ended":
         opener = f"{meal_type} is just finishing — here's what was on:"
     elif status == "upcoming":
         window = time_logic.window_for(meal_type)
         starts = window[0].strftime("%H:%M") if window else ""
         opener = f"{meal_type} starts at {starts} — here's what's coming:"
+    elif when == weekday:
+        # Naming the weekday twice ("Thursday's (Thursday) dinner") is what
+        # the parenthetical did whenever the day was further out than tomorrow.
+        opener = f"Here's {weekday}'s {label}:"
     elif offset:
-        opener = f"Here's {when}'s ({weekday}) {meal_type.lower()}:"
+        opener = f"Here's {when}'s ({weekday}) {label}:"
     else:
-        opener = f"Here's {weekday}'s {meal_type.lower()}:"
+        opener = f"Here's {weekday}'s {label}:"
 
     parts = [opener]
     headline = _headline(servings, "Tomorrow" if offset == 1

@@ -83,14 +83,54 @@ WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
             "Saturday", "Sunday"]
 
 
-def day_offset_from_text(text: str):
-    """Days from today the user is asking about, or None if they didn't say.
+# Short forms people actually type. Full names are matched first and return
+# before these are consulted, so "sat" inside "saturday" never reaches here.
+DAY_ABBREVIATIONS = {
+    "mon": 0, "tue": 1, "tues": 1, "wed": 2, "weds": 2,
+    "thu": 3, "thur": 3, "thurs": 3, "fri": 4, "sat": 5, "sun": 6,
+}
 
-    Handles "tomorrow"/"today"/"tonight" and bare weekday names ("on friday").
-    A named weekday resolves to the NEXT one, so asking on Friday about
-    "monday" looks three days forward rather than four days back.
+
+def day_reference_from_text(text: str, now: datetime = None):
+    """(offset, kind) where kind is "relative", "weekday" or None.
+
+    The kind matters, not just the number. "Tomorrow" carries the sense of
+    the current time of day — at lunchtime it means tomorrow's lunch. A named
+    weekday is a calendar reference: you are planning, so naming "Thursday"
+    with no meal means the whole of Thursday, not whichever meal happens to
+    be being served as you type.
+
+    `now` must be the same clock the caller uses to turn the offset back into
+    a date. This used to read datetime.now() directly while query.answer
+    worked from an injected `now`, so the two disagreed whenever they were not
+    the same day and every named weekday came out shifted.
     """
     lowered = text.lower()
+
+    offset = _relative_offset(lowered)
+    if offset is not None:
+        return offset, "relative"
+
+    today_index = (now or datetime.now()).weekday()
+
+    for index, name in enumerate(WEEKDAYS):
+        if name.lower() in lowered:
+            return (index - today_index) % 7, "weekday"
+
+    for abbreviation, index in DAY_ABBREVIATIONS.items():
+        if re.search(rf"\b{abbreviation}\b", lowered):
+            return (index - today_index) % 7, "weekday"
+
+    return None, None
+
+
+def day_offset_from_text(text: str, now: datetime = None):
+    """Days from today the user is asking about, or None if they didn't say."""
+    return day_reference_from_text(text, now)[0]
+
+
+def _relative_offset(lowered: str):
+    """today / tonight / tomorrow / day after tomorrow, or None."""
 
     # Spelling-tolerant: people type tomorow / tommorow / tommorrow / tmrw.
     # Listing exact variants missed "tommorow" in real use, so match the shape.
@@ -119,12 +159,6 @@ def day_offset_from_text(text: str):
         return 1
     if "today" in lowered or "tonight" in lowered:
         return 0
-
-    from datetime import datetime as _dt
-    today_index = _dt.now().weekday()
-    for index, name in enumerate(WEEKDAYS):
-        if name.lower() in lowered:
-            return (index - today_index) % 7
     return None
 
 

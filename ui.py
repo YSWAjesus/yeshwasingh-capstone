@@ -180,6 +180,16 @@ body:has(.bc-cta-anchor)
   font-family: 'Pixelify Sans', monospace;
   margin: 1rem 0 .35rem 0; font-size: 1rem; color: {LILAC};
 }}
+/* Meal heading in a whole-day answer. Sits above the hall headings (h4), so
+   it is the brighter of the two and carries a rule to group what follows. */
+.bc-answer .meal {{
+  font-family: 'Pixelify Sans', monospace;
+  font-size: 1.05rem; color: #F3ECFF;
+  margin: 1.15rem 0 .1rem 0; padding-bottom: .25rem;
+  border-bottom: 1px solid rgba(178,140,255,.22);
+}}
+.bc-answer .meal:first-of-type {{ margin-top: .7rem; }}
+.bc-answer .meal + h4 {{ margin-top: .45rem; }}
 .bc-answer .kcal {{ color: {ACCENT}; font-family: 'Pixelify Sans', monospace; }}
 .bc-answer .macros {{ opacity: .62; font-size: .8rem; }}
 .bc-answer .none {{ opacity: .45; font-size: .8rem; font-style: italic; }}
@@ -452,7 +462,8 @@ def log_panel(day: dict, week: dict, durable: bool) -> None:
     total = week["total"]
     if total["days_logged"]:
         footer = (f'<p class="bc-log-sub">This week: <b>{total["calories"]} '
-                  f'kcal</b> across {total["meals"]} meals on '
+                  f'kcal</b> across {total["meals"]} meal'
+                  f'{"" if total["meals"] == 1 else "s"} on '
                   f'{total["days_logged"]} day'
                   f'{"" if total["days_logged"] == 1 else "s"} — averaging '
                   f'{total["avg_calories"]} kcal on the days you logged.</p>')
