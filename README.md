@@ -149,6 +149,36 @@ Run it with `/refresh-macros` in Claude Code. See
 
 ---
 
+## Tracking a day
+
+Log anything you ate, not just what the mess served. Tap **Track what I ate**
+(no photo needed — photographing a tray makes sense, photographing a banana
+does not), pick from today's menu or the everyday-foods list, or type any food
+at all. Set servings per item. Optionally set a daily target and watch the day
+against it.
+
+**Where the numbers come from, and what happens when there are none.** Every
+macro in this app comes from a validated record with a source and a confidence
+band — nothing is estimated at request time, and no model is asked to guess a
+calorie count. So a food with no record is logged and *disclosed*, never
+invented:
+
+- the entry form says which items have a number before you commit
+  (`banana — 105 kcal each` against `protein shake — no macro estimate yet`)
+- the day view names the foods it has no record for, rather than counting them
+- a target bar over such a day **drops the percentage entirely**, reads
+  `315 / 2030kcal, at least`, and hatches the fill. A percentage would assert a
+  completeness the data does not have.
+
+There is no default daily target. Setting one is the student's call; a 2000
+kcal default would be the app inventing a number about their body.
+
+`pantry.py` lists the everyday foods offered as taps. It creates no nutrition
+data — every name already resolves to an existing record, and
+`tools/check_quick_add.py` fails if one stops.
+
+---
+
 ## The meal log
 
 Photograph your tray, tick what you actually took, and log it. The app keeps
@@ -173,6 +203,13 @@ railway variables --set "BC_LOG_DIR=/data/logs"
 railway variables --set "BC_CACHE_DIR=/data/cache"
 ```
 
+**`BC_TZ` matters as much.** It defaults to `Asia/Kolkata` and decides which
+meal the app thinks is being served. Railway containers run UTC; before this
+was threaded through, the deployed app told a student at 13:00 in the lunch
+queue that breakfast was on, and at 20:30 at dinner that it was lunch — every
+day, silently. `tzdata` is pinned for it, and a zone that cannot be resolved
+raises rather than falling back to UTC.
+
 `BC_CACHE_DIR` matters more than it looks. The menu photo and its parse are
 cached there; on the container's own disk they are wiped by every deploy, so
 each deploy costs a fresh 40-90 second OCR. The free tier allows **20
@@ -189,6 +226,9 @@ fallback correctly refuses: a wrong menu is worse than no menu.
 ## Tools
 
 ```bash
+python3 tools/test_clock.py           # the app answers the meal you're standing in front of
+python3 tools/test_intents.py         # menu questions and log questions go different places
+python3 tools/check_quick_add.py      # every quick-add food still resolves
 python3 tools/snapshot_menu.py        # fetch + OCR this week's photo
 python3 tools/menu_macro_audit.py     # which dishes have no macros
 python3 tools/check_app_replies.py    # ask every day/meal, report gaps

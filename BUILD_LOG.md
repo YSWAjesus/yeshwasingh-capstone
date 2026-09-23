@@ -6,16 +6,58 @@ Running total across every session below, Assessment 1 through deployment.
 
 | | |
 |---|---|
-| **Sessions logged** | 11 |
-| **Total time** | ~20 hr |
-| **Total tokens (approx.)** | ~2.7M |
-| **Commits** | 29 across 5 branches (the last eleven straight to `main`) |
+| **Sessions logged** | 12 |
+| **Total time** | ~23 hr |
+| **Total tokens (approx.)** | ~4.5M |
+| **Commits** | 31 across 5 branches (the last thirteen straight to `main`) |
 | **Span** | 2026-09-11 → 2026-09-23 |
 
 Per-session detail follows, newest first. One entry per commit; date, time
 spent, rough tokens used, what shipped.
 
 ---
+
+### 2026-09-23 — A day tracker, and the clock that made it possible
+
+- **Time spent:** ~3 hr
+- **Tokens used (approx.):** ~1.8M (a 12-agent design workflow accounts for ~1.5M)
+- **Approach:** the brief ("track all macros in a day, like Healthify") collides
+  head-on with the rule the project is built around — every macro comes from a
+  validated record, and off-menu food has none. Rather than pick a resolution
+  silently, six agents mapped the subsystems, three designed the feature from
+  different angles (smallest-change, Healthify-parity, honesty-first), and three
+  judged all three on nutrition honesty, phone usability and blast radius. The
+  minimal design won on all three lenses; the honesty-first design's treatment
+  of incomplete days was grafted onto it. Every load-bearing claim was then
+  re-verified by hand before any code was written.
+- **What the mapping found, before the feature — the app was answering the
+  wrong meal all day, every day.** Railway runs containers in UTC; the serving
+  windows are IST. At 13:00 in the lunch queue the app said breakfast was being
+  served; at 20:30 at dinner it said lunch. Nothing crashed, so it had been live
+  and unnoticed. Five of seven meal times were wrong. time_logic now owns a
+  single clock (BC_TZ, default Asia/Kolkata) and app.py, meal_log and query all
+  take their time from it. A missing tzdata is refused rather than silently
+  degrading to UTC, because that would restore the bug while looking fine.
+- **Shipped:** off-menu food via free text; 36 everyday foods offered alongside
+  today's menu, every one already resolving to a sourced record; quantity as
+  repetition (the existing schema could always express it — only the UI could
+  not); per-user daily targets with no default.
+- **The honesty work, which was most of the work:** unknown foods are NAMED not
+  counted; a target bar over an incomplete day drops the percentage entirely and
+  reads "at least", with a hatched fill, because a percentage asserts a
+  completeness the data does not have; the entry form says which foods have a
+  number before you commit; and no runtime model call estimates unknown food.
+  Five names that were pure naming misses (milk, idli, roti, chapati, dahi) were
+  added as aliases through the validator — table size unchanged at 291.
+- **Two traps found while building:** `st.expander` renders its children whether
+  open or not, so the camera widget mounted on every visit and the browser asked
+  for camera permission just for opening the panel; and the pill-hiding CSS keyed
+  only on the chat input, so a multiselect dropdown opened underneath the pills.
+- **New tests:** `test_clock.py` (pins the seven meal times, asserts the old UTC
+  reading fails most of them, greps for modules reading the clock directly),
+  `test_intents.py` (12 log questions and 12 menu questions — nothing tested
+  routing before, which is how "toms" and "sat" reached production), and
+  `check_quick_add.py`.
 
 ### 2026-09-23 — Any meal, any day; and surviving the free tier
 
