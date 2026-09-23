@@ -13,6 +13,7 @@ Layout follows the Figma mock:
 """
 
 import base64
+import html
 from pathlib import Path
 
 import streamlit as st
@@ -242,12 +243,26 @@ body:has(.bc-cta-anchor)
    drop out; click away and they come back. :has() on :focus is why this needs
    no rerun — Streamlit never re-renders, so there is no flash. */
 body:has([data-testid="stChatInputTextArea"]:focus)
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor),
+/* Any focused field, not just the chat bar. The pill row and the bar own the
+   bottom ~90px; a multiselect dropdown or a servings stepper in the panel
+   above opens straight into that space, and on a phone under a soft keyboard
+   the option you are reaching for lands underneath them. */
+body:has([data-testid="stVerticalBlock"] input:focus)
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor),
+body:has([data-baseweb="popover"])
   [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
   opacity: 0;
   transform: translateX(-50%) translateY(5px);
 }}
 /* An invisible pill must not still be clickable. */
 body:has([data-testid="stChatInputTextArea"]:focus)
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+  .stButton > button,
+body:has([data-testid="stVerticalBlock"] input:focus)
+  [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
+  .stButton > button,
+body:has([data-baseweb="popover"])
   [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
   .stButton > button {{
   pointer-events: none;
@@ -266,6 +281,44 @@ body:has([data-testid="stChatInputTextArea"]:focus)
   margin: .7rem 0 0; font-size: .74rem; opacity: .6;
   border-top: 1px solid rgba(178,140,255,.18); padding-top: .5rem;
 }}
+/* Named gaps: which foods have no record, not just how many. */
+.bc-log-gap {{
+  margin: .1rem 0 .55rem; font-size: .78rem; opacity: .75;
+  color: #FFD9BE;
+}}
+
+/* ---- progress toward a target the student set themselves ---- */
+.bc-targets {{ display: flex; flex-direction: column; gap: .34rem;
+               margin: .1rem 0 .85rem; }}
+/* Grid for the same reason the week strip is one: the labels and the values
+   must line up in columns while the bar between them stays elastic. */
+.bc-target {{
+  display: grid; grid-template-columns: 4.4rem 1fr auto;
+  align-items: center; gap: .55rem; font-size: .76rem;
+}}
+.bc-t-name {{ font-family: 'Pixelify Sans', monospace; opacity: .8; }}
+.bc-t-bar {{
+  display: block; height: 9px; border-radius: 999px;
+  background: rgba(178,140,255,.13); overflow: hidden;
+}}
+.bc-t-bar i {{
+  display: block; height: 100%; border-radius: 999px;
+  background: {ACCENT}; transition: width .3s ease;
+}}
+.bc-target.is-over .bc-t-bar i {{ background: {LILAC}; }}
+/* A day containing a food with no record cannot be measured, only bounded.
+   The fill is hatched to say "at least this much" rather than "this much",
+   and the percentage is dropped entirely in the markup — a percentage
+   asserts a completeness the data does not have. */
+.bc-target.is-floor .bc-t-bar i {{
+  background: repeating-linear-gradient(
+    135deg, {ACCENT}, {ACCENT} 5px,
+    rgba(255,138,61,.45) 5px, rgba(255,138,61,.45) 10px);
+}}
+.bc-t-value {{ opacity: .7; font-variant-numeric: tabular-nums;
+               white-space: nowrap; }}
+.bc-t-pct {{ opacity: .55; margin-left: .4rem; }}
+
 .bc-log-week {{ display: flex; flex-direction: column; gap: .3rem;
                 margin: .5rem 0 .7rem; }}
 /* Grid, not flex: the day labels and the values must line up in columns even
@@ -412,8 +465,65 @@ def answer_bubble(html_body: str) -> None:
                 unsafe_allow_html=True)
 
 
-def log_panel(day: dict, week: dict, durable: bool) -> None:
-    """Today's plate and the week behind it.
+def _esc(value) -> str:
+    """Escape at the boundary, not at the call sites.
+
+    log_panel renders through unsafe_allow_html. It was safe only because
+    every value it interpolated was an int coerced by meal_log or a meal name
+    from a fixed list. Food names are typed by the user now, so this block is
+    an injection sink unless everything entering it goes through here.
+    """
+    return html.escape(str(value), quote=True)
+
+
+def _trim(text, limit: int = 28) -> str:
+    """Escaped and length-capped: a 40-character food name overflows the
+    label track and breaks the grid alignment the strip reads by."""
+    text = str(text)
+    return _esc(text if len(text) <= limit else text[: limit - 1] + "\u2026")
+
+
+def _pct_width(value) -> int:
+    """The one place a computed number enters markup, so clamp it here."""
+    try:
+        return max(0, min(100, int(value)))
+    except (TypeError, ValueError):
+        return 0
+
+
+def _target_rows_html(rows) -> str:
+    """Progress toward the targets this person actually set.
+
+    When any food that day has no macro record the bar is a FLOOR, not a
+    measurement, so the percentage is dropped entirely and the wording
+    becomes "of N, at least". A percentage asserts a completeness the data
+    does not have, and geometry outargues a caveat in prose.
+    """
+    out = []
+    for row in rows:
+        width = _pct_width(row["fill_pct"])
+        over = " is-over" if row["consumed"] > row["target"] else ""
+        floor = "" if row["complete"] else " is-floor"
+        if row["complete"]:
+            trailing = f'{row["consumed"]} / {row["target"]}{row["unit"]}'
+            aside = f'<span class="bc-t-pct">{row["pct"]}%</span>'
+        else:
+            trailing = (f'{row["consumed"]} / {row["target"]}{row["unit"]}'
+                        f', at least')
+            aside = ""
+        out.append(
+            f'<div class="bc-target{over}{floor}">'
+            f'<span class="bc-t-name">{_esc(row["label"])}</span>'
+            f'<span class="bc-t-bar"><i style="width:{width}%"></i></span>'
+            f'<span class="bc-t-value">{_esc(trailing)}{aside}</span>'
+            f'</div>'
+        )
+    return f'<div class="bc-targets">{"".join(out)}</div>' if out else ""
+
+
+def log_panel(day: dict, week: dict, durable: bool,
+              target_rows=None) -> None:
+    """Today's plate, the targets behind it, and the week behind that.
 
     Built as one HTML block rather than st.columns because Streamlit restacks
     columns on narrow screens, and a seven-day strip that becomes a seven-row
@@ -424,40 +534,55 @@ def log_panel(day: dict, week: dict, durable: bool) -> None:
 
     rows = []
     for entry in week["days"]:
-        width = round(entry["calories"] / peak * 100)
+        width = _pct_width(round(entry["calories"] / peak * 100))
         classes = "bc-log-day"
         if entry["is_today"]:
             classes += " is-today"
         if entry["is_future"]:
             classes += " is-future"
-        value = f"{entry['calories']} kcal" if entry["calories"] else "—"
+        value = f"{entry['calories']} kcal" if entry["calories"] else "\u2014"
         rows.append(
             f'<div class="{classes}">'
-            f'<span class="bc-log-name">{entry["short"]}</span>'
+            f'<span class="bc-log-name">{_esc(entry["short"])}</span>'
             f'<span class="bc-log-bar"><i style="width:{width}%"></i></span>'
-            f'<span class="bc-log-value">{value}</span>'
+            f'<span class="bc-log-value">{_esc(value)}</span>'
             f"</div>"
         )
 
+    unknown = day.get("unknown_names") or []
     if day["meals"]:
-        eaten = ", ".join(
-            f"{r['meal'].lower()}" for r in day["rows"] if r.get("meal"))
+        eaten = ", ".join(_esc(r["meal"].lower())
+                          for r in day["rows"] if r.get("meal"))
+        DASH = "\u2014"
+        eaten_clause = f" {DASH} {eaten}" if eaten else ""
         headline = (
-            f'<p class="bc-log-today">Today: <b>{day["calories"]} kcal</b> · '
-            f'{day["protein"]}g protein · {day["carbs"]}g carbs · '
+            f'<p class="bc-log-today">Today: <b>{day["calories"]} kcal</b> \u00b7 '
+            f'{day["protein"]}g protein \u00b7 {day["carbs"]}g carbs \u00b7 '
             f'{day["fat"]}g fat</p>'
             f'<p class="bc-log-sub">{day["meals"]} meal'
             f'{"" if day["meals"] == 1 else "s"} logged'
-            f'{" — " + eaten if eaten else ""}.'
-            + (f' {day["incomplete"]} had a dish with no macro estimate, so '
-               f'the real total is a little higher.'
-               if day["incomplete"] else "")
-            + "</p>"
+            f'{eaten_clause}.</p>'
         )
+        if unknown:
+            # Name them. The count alone ("1 had a dish with no estimate")
+            # tells a student nothing about what to go and check, and now
+            # that they type the food in themselves it is their own word
+            # that is missing.
+            shown = [_trim(n) for n in unknown[:6]]
+            tail = f' and {len(unknown) - 6} more' if len(unknown) > 6 else ""
+            single = len(unknown) == 1
+            noun = "food has" if single else "foods have"
+            them = "it" if single else "them"
+            headline += (
+                f'<p class="bc-log-gap">{len(unknown)} {noun} no macro '
+                f'estimate yet \u2014 {", ".join(shown)}{tail}. Nothing was '
+                f'invented for {them}, so the totals above are a floor.</p>'
+            )
     else:
         headline = ('<p class="bc-log-today">Nothing logged today yet.</p>'
-                    '<p class="bc-log-sub">Photograph your tray and tick what '
-                    'you took — it adds up here.</p>')
+                    '<p class="bc-log-sub">Tap <b>Track what I ate</b> and tick '
+                    'what you took \u2014 anything you ate counts, not just the '
+                    'mess.</p>')
 
     total = week["total"]
     if total["days_logged"]:
@@ -465,7 +590,7 @@ def log_panel(day: dict, week: dict, durable: bool) -> None:
                   f'kcal</b> across {total["meals"]} meal'
                   f'{"" if total["meals"] == 1 else "s"} on '
                   f'{total["days_logged"]} day'
-                  f'{"" if total["days_logged"] == 1 else "s"} — averaging '
+                  f'{"" if total["days_logged"] == 1 else "s"} \u2014 averaging '
                   f'{total["avg_calories"]} kcal on the days you logged.</p>')
     else:
         footer = ""
@@ -477,6 +602,7 @@ def log_panel(day: dict, week: dict, durable: bool) -> None:
 
     st.markdown(
         f'<div class="bc-answer bc-log">{headline}'
+        f'{_target_rows_html(target_rows or [])}'
         f'<div class="bc-log-week">{"".join(rows)}</div>'
         f"{footer}{warning}</div>",
         unsafe_allow_html=True,

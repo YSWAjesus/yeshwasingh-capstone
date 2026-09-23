@@ -26,7 +26,9 @@ import streamlit as st
 import macros
 import meal_log
 import menu_data
+import pantry
 import query
+import targets
 import time_logic
 import ui
 from gemini_client import GeminiError
@@ -46,6 +48,9 @@ TAGLINES = [
     "Most protein at dinner?",
     "What's for snacks?",
     "What's for lunch tomorrow?",
+    # Teaches the phrase that opens the day view. Without something like this
+    # a student could only reach their log by first asking about the mess.
+    "How much protein have I had?",
 ]
 
 @st.cache_data(ttl=1800, show_spinner="Reading this week's menu photo...")
@@ -121,91 +126,135 @@ for index, message in enumerate(st.session_state.messages):
     ui.answer_bubble(message.get("html") or message["content"])
 
 # ------------------------------------------------------------ tray tracker
-if st.session_state.show_tray and st.session_state.tray_photo is None:
-    st.caption("Add a photo of your tray — **+** in the bar below opens your "
-               "camera roll (and the camera itself on a phone).")
-    # The in-page camera widget needs a secure context: it works on localhost
-    # and over HTTPS, but a phone hitting this over plain http on the LAN gets
-    # a blocked camera. The "+" upload path has no such restriction and opens
-    # the native "Take Photo" picker on iOS and Android, so it is the reliable
-    # route on a phone until this is deployed behind HTTPS.
-    snap = st.camera_input("Photograph your tray", label_visibility="collapsed")
-    if snap is not None:
-        st.session_state.tray_photo = snap.getvalue()
-        st.rerun()
-    if st.button("Never mind"):
-        st.session_state.show_tray = False
-        st.rerun()
-
-tray_photo = st.session_state.tray_photo
-if tray_photo is not None:
+# The panel is reachable with NO photo. Logging the mess is a photo-first
+# flow, but a banana in your room is not worth photographing, and requiring
+# a picture was the whole reason this could only track the mess.
+if st.session_state.show_tray or st.session_state.tray_photo is not None:
+    tray_photo = st.session_state.tray_photo
     today = time_logic.now().strftime("%A")
     today_items = sorted(set(menu_data.all_items_for_day(menu, today)))
 
-    st.image(tray_photo, width=200)
-    if not today_items:
-        st.write(f"I don't have {today}'s menu to check your tray against.")
-    else:
-        with st.spinner("Looking at your tray..."):
-            detected = get_detected_items(tray_photo, tuple(today_items))
-        st.caption("Tick what's actually on your plate — I've pre-selected what "
-                   "I could recognise.")
-        selected = st.multiselect("On your tray", options=today_items,
-                                  default=detected, label_visibility="collapsed")
-        if selected:
-            for entry in macros.per_item_macros(selected):
-                st.markdown(f"- {entry['item']} — "
-                            f"{macros.format_macros(entry['macros'])}")
-            totals, unmatched = macros.estimate_macros(selected)
-            st.metric("Total", f"{totals['calories']} kcal")
-            left, middle, right = st.columns(3)
-            left.metric("Protein", f"{totals['protein']} g")
-            middle.metric("Carbs", f"{totals['carbs']} g")
-            right.metric("Fat", f"{totals['fat']} g")
-            if unmatched:
-                st.caption("No estimate yet for: " + ", ".join(unmatched))
+    detected = []
+    if tray_photo is not None:
+        st.image(tray_photo, width=180)
+        if today_items:
+            with st.spinner("Looking at your tray..."):
+                detected = get_detected_items(tray_photo, tuple(today_items))
 
-            # Pre-picked from the clock, because you almost always log the
-            # meal you are currently eating; still changeable for the times
-            # you don't.
-            suggested = time_logic.meal_context()["meal_type"]
-            meal_col, log_col = st.columns([2, 3])
-            meal_choice = meal_col.selectbox(
-                "Which meal", meal_log.MEALS,
-                index=(meal_log.MEALS.index(suggested)
-                       if suggested in meal_log.MEALS else 0),
-                label_visibility="collapsed")
-            if log_col.button("Log this meal", type="primary"):
-                meal_log.log_meal(st.session_state.uid, selected, totals,
-                                  meal=meal_choice, unmatched=unmatched)
-                st.session_state.tray_photo = None
-                st.session_state.show_tray = False
-                st.session_state.show_log = True
+    # Today's menu first, then everyday foods that already have a sourced
+    # record. Both are real records; the pantry names simply are not on the
+    # mess grid today. Anything else can still be typed.
+    options = today_items + pantry.options(exclude=today_items)
+
+    st.caption("Tick what you ate — today's menu, or type anything else."
+               + (" I've pre-selected what I could recognise."
+                  if detected else ""))
+    selected = st.multiselect(
+        "What you ate", options=options, default=detected,
+        accept_new_options=True, label_visibility="collapsed",
+        placeholder="Pick from today's menu, or type any food")
+
+    # A toggle, NOT an expander. Streamlit renders an expander's children
+    # whether it is open or not, so st.camera_input mounted on every visit and
+    # the browser asked for camera permission just for opening the panel — for
+    # a student who came to log a banana. This way the widget does not exist
+    # until it is asked for.
+    if tray_photo is None:
+        if st.toggle("Add a photo of my tray", key="want_camera"):
+            st.caption("The **+** in the bar below also works, and opens the "
+                       "camera directly on a phone.")
+            snap = st.camera_input("Photograph your tray",
+                                   label_visibility="collapsed")
+            if snap is not None:
+                st.session_state.tray_photo = snap.getvalue()
                 st.rerun()
 
-        tray_buttons = st.columns([2, 3])
-        if tray_buttons[0].button("Clear tray"):
+    if selected:
+        # Quantity is expressed by REPEATING a name: macros.estimate_macros
+        # adds one record per element, so three phulkas are exactly three
+        # times one phulka. Nothing in macros.py or meal_log.py had to change,
+        # and the per-serving record the validator gates never sees a scaled
+        # number.
+        st.caption("How many servings of each?")
+        plate = []
+        for position, item in enumerate(selected):
+            macro = macros.lookup(item)
+            known = (f"{macro['calories']} kcal each" if macro
+                     else "no macro estimate yet")
+            count = st.number_input(
+                f"{item} — {known}", min_value=1, max_value=20, value=1,
+                step=1, key=f"qty_{position}_{item}")
+            plate += [item] * int(count)
+
+        totals, unmatched = macros.estimate_macros(plate)
+        st.markdown(f"**{totals['calories']} kcal** · {totals['protein']}g "
+                    f"protein · {totals['carbs']}g carbs · {totals['fat']}g fat")
+        if unmatched:
+            missing = sorted(set(unmatched))
+            st.caption("No macro estimate yet for "
+                       + ", ".join(missing)
+                       + " — logged, but counted as zero, so this total is a "
+                         "floor.")
+
+        # Pre-picked from the clock, because you almost always log the meal
+        # you are currently eating; still changeable for the times you don't.
+        suggested = time_logic.meal_context()["meal_type"]
+        meal_col, log_col = st.columns([2, 3])
+        meal_choice = meal_col.selectbox(
+            "Which meal", meal_log.MEALS,
+            index=(meal_log.MEALS.index(suggested)
+                   if suggested in meal_log.MEALS else 0),
+            label_visibility="collapsed")
+        if log_col.button("Log this", type="primary"):
+            meal_log.log_meal(st.session_state.uid, plate, totals,
+                              meal=meal_choice, unmatched=unmatched)
             st.session_state.tray_photo = None
             st.session_state.show_tray = False
-            st.rerun()
-        if tray_buttons[1].button("See my log"):
             st.session_state.show_log = True
             st.rerun()
 
+    tray_buttons = st.columns([2, 3])
+    if tray_buttons[0].button("Never mind"):
+        st.session_state.tray_photo = None
+        st.session_state.show_tray = False
+        st.rerun()
+    if tray_buttons[1].button("See my day"):
+        st.session_state.tray_photo = None
+        st.session_state.show_tray = False
+        st.session_state.show_log = True
+        st.rerun()
+
 # ------------------------------------------------------------- the eaten log
 if st.session_state.show_log:
-    ui.log_panel(meal_log.day_summary(st.session_state.uid),
-                 meal_log.week_summary(st.session_state.uid),
-                 meal_log.LOG_IS_DURABLE)
+    day, week = meal_log.day_and_week(st.session_state.uid)
+    ui.log_panel(day, week, meal_log.LOG_IS_DURABLE,
+                 target_rows=targets.progress(st.session_state.uid, day))
+
+    with st.expander("Daily target"):
+        st.caption("Set only what you want to track. Leave one at 0 and it "
+                   "gets no bar — the app has no opinion about what you "
+                   "should eat.")
+        current = targets.load(st.session_state.uid)
+        entered = {}
+        for key in targets.TARGET_KEYS:
+            entered[key] = st.number_input(
+                f"{key.title()} ({targets.UNITS[key]})",
+                min_value=0, max_value=targets.CEILINGS[key],
+                value=int(current.get(key, 0)), step=10 if key == "calories" else 5,
+                key=f"target_{key}")
+        if st.button("Save target"):
+            targets.save(st.session_state.uid, entered)
+            st.rerun()
+
     log_buttons = st.columns([2, 2, 3])
-    if log_buttons[0].button("Log another"):
+    if log_buttons[0].button("Log more"):
         st.session_state.show_log = False
         st.session_state.show_tray = True
         st.rerun()
     if log_buttons[1].button("Undo last"):
         meal_log.undo_last(st.session_state.uid)
         st.rerun()
-    if log_buttons[2].button("Close log"):
+    if log_buttons[2].button("Close"):
         st.session_state.show_log = False
         st.rerun()
 
@@ -214,6 +263,12 @@ if st.session_state.show_log:
 # lifts the whole block into position over the bar.
 last_message = st.session_state.messages[-1] if st.session_state.messages else None
 options = (last_message or {}).get("follow_up_options") or []
+# On a fresh session there is no last message, so there were no pills, so the
+# only way in was to ask about the mess first. Tracking a day is half the app;
+# it needs a way in from a cold start.
+if not options and not has_conversation:
+    options = [{"label": "Track what I ate", "action": "tray"},
+               {"label": "My day", "action": "log"}]
 if options:
     with st.container():
         st.markdown('<div class="bc-cta-anchor"></div>', unsafe_allow_html=True)
@@ -224,6 +279,8 @@ if options:
             if columns[position].button(option["label"], key=f"cta_{position}"):
                 if option.get("action") == "tray":
                     st.session_state.show_tray = True
+                elif option.get("action") == "log":
+                    st.session_state.show_log = True
                 else:
                     st.session_state.pending_prompt = option["prompt"]
                 st.rerun()

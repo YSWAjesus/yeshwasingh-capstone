@@ -44,6 +44,15 @@ _LOG_INTENT = re.compile(
     r"|(?:show|see|open)\s+(?:me\s+)?(?:the\s+)?log"
     r"|calories?\s+(?:so\s+far|today)"
     r"|protein\s+so\s+far"
+    # "How much protein have I had today" and "how many calories did I eat"
+    # both missed every branch above and were answered with THE MESS MENU --
+    # a list of dishes with macros, which reads close enough to an intake
+    # answer to be believed. In a day tracker this is the most likely
+    # question anyone asks, so it gets its own branch. The bounded gap keeps
+    # it from reaching across a whole sentence into an unrelated "I ate".
+    r"|how\s+(?:much|many)\b[^?]{0,40}?\bi\s+(?:ate|eat|eaten|had|have|log|logged)"
+    r"|(?:set|change|update)\s+(?:my\s+)?(?:daily\s+)?(?:calorie|protein|carb|carbs|fat|macro)\w*\s+(?:target|goal)"
+    r"|(?:my\s+)?(?:daily\s+)?(?:target|goal)s?\b"
     r")\b"
 )
 
@@ -79,8 +88,25 @@ def log_meal(user_id: str, items, totals: dict, meal: str = None,
     # an IST evening meal under the previous UTC day on a Railway container,
     # and a day tracker cannot have a day boundary that is 5h30m out.
     when = when or time_logic.now()
+
+    # `unmatched` is a DISCLOSURE list, not a quantity list. estimate_macros
+    # appends one entry per repetition, so three servings of an unknown food
+    # arrive as the same name three times; storing that would make the copy
+    # read "3 foods have no estimate" for one food.
+    gaps, seen = [], set()
+    for name in (unmatched or []):
+        key = str(name).strip().lower()
+        if key and key not in seen:
+            seen.add(key)
+            gaps.append(str(name))
+
     entry = {
         "id": uuid.uuid4().hex[:12],
+        # Schema version. The shape did not change, but the MEANING of `items`
+        # did: from v2 a repeated name means a repeated serving. Rows already
+        # on the volume carry no `v` and are read as one serving each, which
+        # is what they were.
+        "v": 2,
         "ts": when.isoformat(timespec="seconds"),
         "date": when.date().isoformat(),
         "meal": meal or "",
@@ -91,7 +117,7 @@ def log_meal(user_id: str, items, totals: dict, meal: str = None,
         "fat": int(totals.get("fat", 0)),
         # Kept per entry so a day's total can say how complete it is, rather
         # than quietly under-reporting dishes with no macro record.
-        "unmatched": [str(i) for i in (unmatched or [])],
+        "unmatched": gaps,
     }
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a") as handle:
@@ -137,14 +163,38 @@ def _sum(rows) -> dict:
         for key in total:
             total[key] += int(row.get(key, 0))
     total["meals"] = len(rows)
+    # Two different counts, because the copy needs both: how many MEALS were
+    # incomplete, and which FOODS are missing. Reporting "1 meal was
+    # incomplete" when three foods had no record tells the student nothing
+    # about what to go and check.
     total["incomplete"] = sum(1 for row in rows if row.get("unmatched"))
+    names, seen = [], set()
+    for row in rows:
+        for name in row.get("unmatched") or []:
+            key = str(name).strip().lower()
+            if key and key not in seen:
+                seen.add(key)
+                names.append(str(name))
+    total["unknown_names"] = names
+    total["unknown_items"] = len(names)
     return total
+
+
+def day_and_week(user_id: str, on: date = None):
+    """Both summaries from ONE read of the file.
+
+    The panel needs both on every rerun, and each summary re-read the whole
+    log independently — two full reads per render, growing with history, on a
+    phone connection.
+    """
+    rows = entries(user_id)
+    on = on or time_logic.today()
+    return (_day_from(rows, on), _week_from(rows, on))
 
 
 def day_summary(user_id: str, on: date = None) -> dict:
     on = on or time_logic.today()
-    rows = [r for r in entries(user_id) if r["date"] == on.isoformat()]
-    return {**_sum(rows), "date": on.isoformat(), "rows": rows}
+    return _day_from(entries(user_id), on)
 
 
 def week_summary(user_id: str, anchor: date = None) -> dict:
@@ -154,11 +204,19 @@ def week_summary(user_id: str, anchor: date = None) -> dict:
     means the same seven days the menu photo covers.
     """
     anchor = anchor or time_logic.today()
-    monday = anchor - timedelta(days=anchor.weekday())
-    rows = entries(user_id)
+    return _week_from(entries(user_id), anchor)
 
-    # Hoisted: date.today() was re-read on every iteration, so a run spanning
-    # midnight could mark two different days "today".
+
+def _day_from(rows: list, on: date) -> dict:
+    same_day = [r for r in rows if r["date"] == on.isoformat()]
+    return {**_sum(same_day), "date": on.isoformat(), "rows": same_day}
+
+
+def _week_from(rows: list, anchor: date) -> dict:
+    monday = anchor - timedelta(days=anchor.weekday())
+
+    # Hoisted: time_logic.today() was re-read on every iteration, so a run
+    # spanning midnight could mark two different days "today".
     real_today = time_logic.today()
     days = []
     for offset in range(7):

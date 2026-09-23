@@ -771,7 +771,9 @@
     "source": "Modelled on falafel, its nearest analogue: https://www.healthline.com/nutrition/is-falafel-healthy (USDA: 333 kcal, 13.3 g protein, 31.8 g carb, 17.8 g fat per 100 g of fried chickpea patties) and https://nishnushnyc.com/2021/12/31/falafel-nutrition-facts-faqs (221 kcal, 10.6 g protein, 22.1 g carb,"
   },
   "curd": {
-    "aliases": [],
+    "aliases": [
+      "dahi"
+    ],
     "calories": 60,
     "carbs": 5,
     "confidence": "medium",
@@ -1331,7 +1333,9 @@
     "source": "https://www.tarladalal.com/calories-for-hara-bhara-kabab-veg-hara-bhara-kebab-32747 (118 kcal, 3.8 g protein, 12.2 g carb, 6.0 g fat per kebab), doubled for the two-kebab portion the mess plates."
   },
   "hot & cold milk": {
-    "aliases": [],
+    "aliases": [
+      "milk"
+    ],
     "calories": 120,
     "carbs": 9,
     "confidence": "medium",
@@ -1360,7 +1364,9 @@
     "source": "Existing seed record for 'hot garlic vegetable soup', numbers unchanged. Menu name 'Hot Garlic Soup' is the shortened form of the same soup; name resolution only, no new nutrition research."
   },
   "idly": {
-    "aliases": [],
+    "aliases": [
+      "idli"
+    ],
     "calories": 150,
     "carbs": 30,
     "confidence": "medium",
@@ -2362,7 +2368,10 @@
     "source": "https://bitekit.app/tools/pasta-calorie-calculator (200 g cooked pasta = 316 kcal, 11.6 g protein, 61.8 g carb; cheese/cream sauces add ~190 kcal per 100 g) applied to a ~180 g cooked-pasta portion with a cheese-and-harissa sauce; sits above the penne alla rosa proposed in the same pass because of t"
   },
   "phulka": {
-    "aliases": [],
+    "aliases": [
+      "chapati",
+      "roti"
+    ],
     "calories": 90,
     "carbs": 18,
     "confidence": "medium",
