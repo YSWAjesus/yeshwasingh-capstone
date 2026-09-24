@@ -6,16 +6,38 @@ Running total across every session below, Assessment 1 through deployment.
 
 | | |
 |---|---|
-| **Sessions logged** | 12 |
-| **Total time** | ~23 hr |
-| **Total tokens (approx.)** | ~4.5M |
-| **Commits** | 31 across 5 branches (the last thirteen straight to `main`) |
-| **Span** | 2026-09-11 → 2026-09-23 |
+| **Sessions logged** | 13 |
+| **Total time** | ~24 hr |
+| **Total tokens (approx.)** | ~5.0M |
+| **Commits** | 44 across 5 branches (the last sixteen straight to `main`) |
+| **Span** | 2026-09-11 → 2026-09-24 |
 
 Per-session detail follows, newest first. One entry per commit; date, time
 spent, rough tokens used, what shipped.
 
 ---
+
+### 2026-09-24 — Interface: one prompt bar, and the mark as a reset
+
+- **Time spent:** ~1 hr
+- **Tokens used (approx.):** ~500k
+- **Shipped:** the prompt bar was drawing two borders — Streamlit nests its own
+  container inside the styled element, and that inner one carried a lighter
+  fill (#2a1358) and a larger radius (20px) than the outer (12px), so the two
+  read as a double-faceted edge with a visible gap. Measured 293x43 outside
+  against 290x40 inside. Only the outer element draws now. The wordmark became
+  a silent reset (a link that reloads with the user id kept, so the screen
+  clears but the log survives), and the follow-up pills were removed from the
+  opening screen — they are follow-ups, not a landing call to action.
+- **What broke:** fitting two pills and the send arrow into 375px. The last
+  pill covered 26px of the 40px arrow and a tap on the arrow's centre landed on
+  the pill. Right padding could not fix it (pills pack from the left), the
+  columns were `flex: 0 0 auto` so they could not shrink, and once they could,
+  both ellipsised while still leaving 18px unused. The real problem was that
+  "What's for snacks?" is a sentence; as a chip it became "Snacks?" and the
+  prompt it sends is unchanged. Also sized the target steppers to the range
+  each macro is actually set in — a calorie target moved 10 at a time, which
+  was 250 taps to set one.
 
 ### 2026-09-23 — A day tracker, and the clock that made it possible
 
