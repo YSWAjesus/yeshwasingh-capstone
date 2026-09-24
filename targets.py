@@ -21,6 +21,12 @@ TARGET_KEYS = ("calories", "protein", "carbs", "fat")
 
 UNITS = {"calories": "kcal", "protein": "g", "carbs": "g", "fat": "g"}
 
+# How much one tap of the stepper moves each target. Sized to the range each
+# macro is actually set in, so reaching a real number is a few taps rather
+# than a trip to the keyboard: a daily calorie target lives around 2000-3000,
+# so a step of 10 meant 200 taps to get there.
+STEPS = {"calories": 250, "protein": 25, "carbs": 25, "fat": 10}
+
 # Above these, a "target" is a typo rather than an intention. Generous on
 # purpose: an athlete eating 5000 kcal is real, 50000 is a stray zero.
 CEILINGS = {"calories": 8000, "protein": 400, "carbs": 1200, "fat": 400}

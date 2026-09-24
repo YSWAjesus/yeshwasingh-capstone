@@ -240,7 +240,7 @@ if st.session_state.show_log:
             entered[key] = st.number_input(
                 f"{key.title()} ({targets.UNITS[key]})",
                 min_value=0, max_value=targets.CEILINGS[key],
-                value=int(current.get(key, 0)), step=10 if key == "calories" else 5,
+                value=int(current.get(key, 0)), step=targets.STEPS[key],
                 key=f"target_{key}")
         if st.button("Save target"):
             targets.save(st.session_state.uid, entered)
