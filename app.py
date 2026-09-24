@@ -48,9 +48,12 @@ TAGLINES = [
     "Most protein at dinner?",
     "What's for snacks?",
     "What's for lunch tomorrow?",
-    # Teaches the phrase that opens the day view. Without something like this
-    # a student could only reach their log by first asking about the mess.
-    "How much protein have I had?",
+    # Teaches the phrase that opens the day view. With pills gone from the
+    # opening screen, the hint is the only thing that says the log exists.
+    # Short like the rest: Pixelify runs wide and anything longer wraps to a
+    # second line inside a single-line bar.
+    "Protein so far today?",
+    "What did I eat today?",
 ]
 
 @st.cache_data(ttl=1800, show_spinner="Reading this week's menu photo...")
@@ -86,7 +89,7 @@ if "uid" not in st.session_state:
                             else meal_log.new_user_id())
 st.query_params["u"] = st.session_state.uid
 
-ui.wordmark()
+ui.wordmark(reset_to=st.session_state.uid)
 
 # --------------------------------------------------------------- menu load
 try:
@@ -263,12 +266,10 @@ if st.session_state.show_log:
 # lifts the whole block into position over the bar.
 last_message = st.session_state.messages[-1] if st.session_state.messages else None
 options = (last_message or {}).get("follow_up_options") or []
-# On a fresh session there is no last message, so there were no pills, so the
-# only way in was to ask about the mess first. Tracking a day is half the app;
-# it needs a way in from a cold start.
-if not options and not has_conversation:
-    options = [{"label": "Track what I ate", "action": "tray"},
-               {"label": "My day", "action": "log"}]
+# Pills are FOLLOW-UPS: they only ever appear after an answer, never on the
+# opening screen. A landing screen with two calls to action stops being the
+# blank slate the design is built around. The way into the log from cold is
+# the bar itself -- one of the rotating hints teaches the phrase.
 if options:
     with st.container():
         st.markdown('<div class="bc-cta-anchor"></div>', unsafe_allow_html=True)

@@ -293,9 +293,14 @@ def answer(user_text: str, menu: dict, now: datetime = None) -> dict:
         # next meal that actually has data; the second opens the tray tracker,
         # which is where totalling macros is meaningful (you tick your own
         # plate) rather than summing a whole buffet.
+        # Terse on purpose. "What's for snacks?" is a sentence, and two
+        # sentence-length chips plus the send arrow do not fit a 375px bar --
+        # they either cover the arrow or get ellipsised. As a follow-up chip
+        # sitting under an answer about lunch, "Snacks?" says the same thing.
+        # The PROMPT it sends is unchanged; only the label shortened.
         "follow_up_options": (
-            [{"label": f"What's for {m.lower()}?",
-              "prompt": f"what's for {m.lower()}"} for m in follow_ups[:1]]
+            [{"label": f"{m}?", "prompt": f"what's for {m.lower()}"}
+             for m in follow_ups[:1]]
             + [{"label": "Track what I ate", "action": "tray"}]
         ),
         "meal_type": meal_type,

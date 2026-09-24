@@ -95,17 +95,48 @@ def inject_theme() -> None:
   padding-top: .5rem !important;
 }}
 
-/* Near-black fill with a thin lilac edge, per the mock — not a purple slab. */
+/* ONE bar.
+   Streamlit nests its own container inside the element we style, and that
+   inner one carries a LIGHTER purple fill (#2a1358) and a BIGGER corner
+   radius (20px) than the outer (12px). Inset by the outer border, the two
+   shapes read as a double-faceted edge: a rounded rectangle with a pill
+   floating inside it and a visible gap between. Measured at 293x43 outside,
+   290x40 inside.
+   The fix is that only the outer element may draw. Everything below it is
+   flattened to transparent with no radius of its own, and overflow:hidden
+   clips any corner a future Streamlit release re-introduces. */
 [data-testid="stChatInput"] {{
-  background: #0d0620 !important;
-  border: 1.5px solid rgba(178,140,255,.75) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 30px rgba(0,0,0,.55);
+  background: #0b0617 !important;
+  border: 1px solid rgba(178,140,255,.5) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 34px rgba(0,0,0,.5);
+  overflow: hidden !important;
+  min-height: 52px;
+  display: flex; align-items: center;
 }}
-/* Divider after the "+", as drawn. */
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] [data-baseweb="textarea"],
+[data-testid="stChatInput"] [data-baseweb="base-input"],
+[data-testid="stChatInput"] [data-baseweb="input"] {{
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}}
+[data-testid="stChatInput"] > div {{ width: 100%; min-height: 50px; }}
+/* The send control inherits a 0 20px 20px 0 radius that echoed the inner
+   pill's right edge. */
+[data-testid="stChatInputSubmitButton"] {{
+  border-radius: 0 !important;
+  background: transparent !important;
+}}
+/* Divider after the "+", as drawn. Full-height rule rather than a short tick,
+   which is what the reference shows. */
 [data-testid="stChatInputFileUploadButton"] {{
-  border-right: 1px solid rgba(178,140,255,.35);
-  margin-right: .55rem; padding-right: .2rem;
+  border-right: 1px solid rgba(178,140,255,.3);
+  margin-right: .7rem; padding-right: .15rem;
+  align-self: stretch; display: flex; align-items: center;
 }}
 [data-testid="stChatInputTextArea"] {{
   font-family: 'Pixelify Sans', monospace !important;
@@ -139,13 +170,20 @@ body:has(.bc-cta-anchor)
   position: fixed; top: 14px; left: 26px; z-index: 80;
   font-family: 'Pixelify Sans', monospace;
   font-size: 1.15rem; letter-spacing: .5px; opacity: .95;
-  pointer-events: none;
+  /* Clickable, but nothing about it announces that: no underline, no colour
+     shift, inherited text colour. It resets on click. */
+  display: inline-block; cursor: pointer;
+  color: #F3ECFF !important; text-decoration: none !important;
+  transition: opacity .15s ease, transform .15s ease;
   /* It is fixed, so answers scroll underneath it — this keeps it legible
      instead of tangling with the dish list. */
   background: rgba(7,4,15,.82);
   padding: .12rem .55rem .18rem .5rem; border-radius: 9px;
   backdrop-filter: blur(6px);
 }}
+/* The only acknowledgement that it does anything at all. */
+.bc-mark:hover {{ opacity: 1; transform: translateY(-1px); }}
+.bc-mark:active {{ transform: translateY(0); opacity: .8; }}
 .bc-mark em {{ color: {LILAC}; font-style: normal; }}
 
 /* ---------------- landing hero ----------------
@@ -230,6 +268,10 @@ body:has(.bc-cta-anchor)
   bottom: 32px; z-index: 120;
   width: 1290px; max-width: 94vw;
   padding-left: 8.4rem;                /* clears the "+" and its divider */
+  /* Reserve the send arrow's own width. Without it the last pill sat over
+     the arrow -- measured 26px of its 40px covered at 375px, and a tap on
+     the arrow's centre landed on the pill instead. */
+  padding-right: 3.4rem;
   pointer-events: none;
   gap: .4rem !important;
   /* Animated so focusing the bar doesn't snap them away. Opacity and
@@ -402,7 +444,7 @@ body:has([data-baseweb="popover"])
 
   [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor) {{
     width: 100%; max-width: 100%;
-    padding-left: 3rem; padding-right: .4rem;
+    padding-left: 3rem; padding-right: 2.8rem;  /* right: clears the send arrow */
     bottom: 30px;
   }}
   /* Streamlit stacks columns on narrow screens, which would push a pill
@@ -411,13 +453,24 @@ body:has([data-baseweb="popover"])
     [data-testid="stHorizontalBlock"] {{
     flex-wrap: nowrap !important; gap: .3rem !important;
   }}
+  /* 0 1 auto, not 0 0 auto: the columns must be allowed to SHRINK. At 375px
+     two natural-width pills run 19px past the send arrow, and because they
+     pack from the left, right padding on the row cannot pull them back --
+     only shrinking can. Each gives up a few pixels and the pair lands inside
+     the space the arrow leaves, clipping a character at most rather than
+     covering the control. */
   [data-testid="stVerticalBlock"]:has(> [data-testid="stElementContainer"] .bc-cta-anchor)
     [data-testid="stColumn"] {{
-    width: auto !important; flex: 0 0 auto !important;
+    width: auto !important; flex: 0 1 auto !important;
     min-width: 0 !important;
   }}
+  /* Sized so BOTH pills clear the send arrow at 375px. Measured: at
+     .62rem/.45rem the pair ran to x=352 while the arrow starts at x=326, so
+     a tap on the arrow landed on a pill. Padding-right on the row cannot fix
+     that -- the pills are left-packed, so their right edge is their own
+     width, not the container's. */
   .stButton > button {{
-    font-size: .62rem; height: 24px; min-height: 24px; padding: 0 .45rem;
+    font-size: .6rem; height: 25px; min-height: 25px; padding: 0 .45rem;
   }}
   [data-testid="stChatInputTextArea"] {{ font-size: .85rem !important; }}
   [data-testid="stChatInputFileUploadButton"] button::after {{ font-size: 1.5rem; }}
@@ -429,9 +482,24 @@ body:has([data-baseweb="popover"])
     )
 
 
-def wordmark() -> None:
-    st.markdown('<div class="bc-mark">🍛 BatchCaptain<em>.AI</em></div>',
-                unsafe_allow_html=True)
+def wordmark(reset_to: str = None) -> None:
+    """The mark, and quietly the way back to a blank slate.
+
+    A plain link rather than a button: a reload starts a fresh Streamlit
+    session, which clears the conversation, the tray and the open panel
+    without any of them needing to know about a reset. It carries the user
+    id so the log survives — starting over means a clean screen, not a new
+    identity and a lost week.
+
+    Deliberately unadorned. There is no "New chat" chrome on a screen whose
+    whole point is that it has almost nothing on it; the mark is simply
+    clickable, the way a masthead is.
+    """
+    href = f"?u={html.escape(str(reset_to), quote=True)}" if reset_to else "?"
+    st.markdown(
+        f'<a class="bc-mark" href="{href}" target="_self" '
+        f'title="Start over">🍛 BatchCaptain<em>.AI</em></a>',
+        unsafe_allow_html=True)
 
 
 def hero() -> None:
